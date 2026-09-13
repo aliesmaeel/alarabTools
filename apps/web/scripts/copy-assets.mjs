@@ -38,4 +38,12 @@ for (const f of ["webp/encode.js", "webp/decode.js", "oxipng/optimise.js"]) {
   } catch { /* file may not exist in this version */ }
 }
 
-console.log(`assets copied: pdf.js worker, fonts, codecs (${CODECS.join(", ")})`);
+// HEIC decoder (ESM bundle with the wasm inlined) and MediaPipe vision runtime (loaded on the main thread).
+mkdirSync(join(codecsDst, "heif"), { recursive: true });
+copyFileSync(join(dirname(imageCore.resolve("libheif-js/package.json")), "libheif-wasm", "libheif-bundle.mjs"), join(codecsDst, "heif", "libheif.mjs"));
+const mp = dirname(require.resolve("@mediapipe/tasks-vision"));
+mkdirSync(join(codecsDst, "mediapipe"), { recursive: true });
+copyFileSync(join(mp, "vision_bundle.mjs"), join(codecsDst, "mediapipe", "vision_bundle.mjs"));
+cpSync(join(mp, "wasm"), join(codecsDst, "mediapipe", "wasm"), { recursive: true });
+
+console.log(`assets copied: pdf.js worker, fonts, codecs (${CODECS.join(", ")}, heif, mediapipe)`);

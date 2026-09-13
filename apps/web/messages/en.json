@@ -341,6 +341,17 @@
       "sizePercent": "Text size, % of image width",
       "stroke": "Outline colour"
     },
-    "needCaption": "Enter a top or bottom caption."
+    "needCaption": "Enter a top or bottom caption.",
+    "blurFaces": {
+      "blur": "Blur",
+      "pixelate": "Pixelate",
+      "strength": "Strength",
+      "light": "Light",
+      "medium": "Medium",
+      "strong": "Strong",
+      "padding": "Extra area around each face, %",
+      "hint": "Faces are found on your device with a small open-source model; nothing is uploaded.",
+      "found": "{count, plural, =0 {No faces were found, so the image is unchanged.} one {1 face blurred.} other {# faces blurred.}}"
+    }
   }
 }

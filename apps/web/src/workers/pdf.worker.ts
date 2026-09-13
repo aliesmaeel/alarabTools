@@ -37,7 +37,8 @@ function pagesOf(o: Record<string, unknown>, n: number): number[] | undefined {
 }
 
 export type Output = { name: string; bytes: Uint8Array; mime: string };
-export type RunResult = { ok: true; outputs: Output[] } | { ok: false; code: "password" | "error"; message: string };
+/** `note` is an optional message key under "options" shown with the result (e.g. how many faces were found). */
+export type RunResult = { ok: true; outputs: Output[]; note?: { key: string; count?: number } } | { ok: false; code: "password" | "error"; message: string };
 export type ProgressFn = (done: number, total: number) => void;
 
 function base(name: string) {

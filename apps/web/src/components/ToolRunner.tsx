@@ -14,7 +14,7 @@ type Phase =
   | { kind: "pick" }
   | { kind: "configure" }
   | { kind: "running"; done: number; total: number }
-  | { kind: "done"; blob: Blob; name: string; count: number; size: number }
+  | { kind: "done"; blob: Blob; name: string; count: number; size: number; note?: { key: string; count?: number } }
   | { kind: "error"; message: string };
 
 export function ToolRunner({ tool, what }: { tool: ToolDef; what: string }) {
@@ -73,7 +73,7 @@ export function ToolRunner({ tool, what }: { tool: ToolDef; what: string }) {
     finished = true;
     if (result.ok) {
       const { blob, name } = bundle(result.outputs, mod.zipName ?? `${tool.id}.zip`);
-      setPhase({ kind: "done", blob, name, count: result.outputs.length, size: blob.size });
+      setPhase({ kind: "done", blob, name, count: result.outputs.length, size: blob.size, note: result.note });
     } else if (result.code === "password") {
       setNeedPassword(true);
       setPhase({ kind: "configure" });
@@ -103,6 +103,7 @@ export function ToolRunner({ tool, what }: { tool: ToolDef; what: string }) {
           <div className="flex flex-col">
             <h2 className="text-2xl font-semibold">{t("doneTitle")}</h2>
             <span className="text-sm text-ink-2">{phase.count > 1 ? t("doneFiles", { count: phase.count }) : phase.name} · {formatBytes(phase.size, locale)}</span>
+            {phase.note && <span data-testid="result-note" className="text-sm text-ink">{to(phase.note.key, { count: phase.note.count ?? 0 })}</span>}
           </div>
         </div>
         <div className="flex flex-wrap gap-3">

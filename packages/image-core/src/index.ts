@@ -40,8 +40,38 @@ export function formatOf(mime: string): Format | null {
   return null;
 }
 
-/** Decode any browser-supported image with EXIF orientation applied. HEIC is not supported by browsers. */
+/** True for HEIC/HEIF by type or, when the browser reports no type, by extension. */
+export function isHeif(file: Blob & { name?: string }): boolean {
+  return /^image\/hei[cf]/i.test(file.type) || (!file.type && /\.hei[cf]$/i.test(file.name ?? ""));
+}
+
+type HeifImage = { get_width(): number; get_height(): number; is_primary(): boolean; display(target: ImageData, cb: (r: ImageData | null) => void): void; free(): void };
+type HeifModule = { HeifDecoder: new () => { decode(bytes: Uint8Array): HeifImage[] } };
+
+/** Decode HEIC/HEIF with libheif (browsers other than Safari cannot). Returns the primary image, rotated as the file says. */
+export async function decodeHeif(blob: Blob): Promise<ImageData> {
+  const mod = await (await codec<{ default: () => Promise<HeifModule> }>("heif/libheif.mjs")).default();
+  const images = new mod.HeifDecoder().decode(new Uint8Array(await blob.arrayBuffer()));
+  if (!images.length) throw new Error("undecodable");
+  try {
+    const image = images.find((i) => i.is_primary()) ?? images[0];
+    const target = new ImageData(image.get_width(), image.get_height());
+    const out = await new Promise<ImageData | null>((resolve) => image.display(target, resolve));
+    if (!out) throw new Error("undecodable");
+    return out;
+  } finally {
+    for (const i of images) i.free();
+  }
+}
+
+/** Decode any browser-supported image with EXIF orientation applied; HEIC goes through libheif. */
 export async function decode(blob: Blob, maxSide = 8192): Promise<ImageData> {
+  if (isHeif(blob)) {
+    const img = await decodeHeif(blob);
+    const scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+    if (scale === 1) return img;
+    return resize(img, Math.max(1, Math.round(img.width * scale)), Math.max(1, Math.round(img.height * scale)));
+  }
   const bitmap = await createImageBitmap(blob, { imageOrientation: "from-image" });
   const scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height));
   const w = Math.max(1, Math.round(bitmap.width * scale));
