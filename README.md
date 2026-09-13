@@ -14,6 +14,7 @@ packages/pdf-core pdf-lib operations shared by the browser worker and (later) th
 packages/arabic   Bidi + shaping-aware text drawing, digits, Hijri dates, bundled OFL fonts.
 packages/image-core Decode/resize/encode on ImageData; jSquash codecs (mozjpeg, libwebp, oxipng) loaded at runtime.
 packages/jobs     Job records and queue (Redis), storage adapters (R2 via S3 API, or a local folder), key layout.
+packages/ai       AI gateway: provider catalog, encrypted keys in Redis, usage meters, routing rules, fetch adapters.
 packages/*        ui (later).
 ```
 
@@ -48,6 +49,7 @@ Copy `apps/web/.env.example` to `apps/web/.env.local`. Set `NEXT_PUBLIC_SITE_URL
 
 - P0 Foundation: done (registry, bilingual site, tool page template with SEO metadata and JSON-LD, sitemap, smoke test, CI).
 - P1 Browser PDF tools: done (19): merge, split, remove pages, extract pages, organize, scan to PDF, rotate, crop, protect, unlock, sign, compare, JPG to PDF, PDF to JPG, page numbers, watermark (text or logo), Hijri date stamp, Arabic fonts (text to PDF/PNG), edit PDF (text, images, drawing, shapes, highlight, whiteout).
+- P4 AI gateway and admin dashboard: in progress. Done: gateway (Groq, Cloudflare Workers AI, Azure Document Intelligence and Translator, Google Vision and Translation, OCR.space, Gemini, Mistral; mock provider for tests), /admin dashboard (password sign-in, provider cards with key entry, test button and usage meters, routing order and safety margin, audit log). Remaining: OCR PDF, PDF to Word/Excel/PowerPoint, fix Arabic text.
 - P3 Server pipeline: in progress. Working (9): compress PDF, repair PDF, PDF to PDF/A, Word/Excel/PowerPoint to PDF, HTML to PDF, HTML to image, redact PDF (true redaction: marked pages are rasterised).
   Files are deleted after one hour by the worker's sweeper; uploads and downloads go straight to storage with signed URLs (10 minutes).
 - P2 Browser image tools: done (10): compress, resize, convert to JPG, convert from JPG (PNG/WebP), rotate/flip, crop, watermark (text or logo), meme generator, blur faces, photo editor (presets, adjustments, Arabic text, stickers, frames). HEIC/HEIF input works in every image tool (libheif). Upscale is P5.
@@ -60,6 +62,12 @@ Copy `apps/web/.env.example` to `apps/web/.env.local`. Set `NEXT_PUBLIC_SITE_URL
 4. `SERVER_TOOLS=1 BASE_URL=http://localhost:3117 pnpm exec playwright test e2e/server-tools.spec.ts`.
 
 Production: `docker compose up --build` gives Redis + MinIO + the worker image (`apps/worker/Dockerfile`, based on the Playwright image with LibreOffice, Ghostscript, qpdf, poppler and Arabic fonts). On Vercel set `REDIS_URL` (Upstash, `rediss://`) and the `S3_*` variables for R2; the worker gets the same variables wherever it runs. It needs no inbound ports.
+
+## Admin dashboard
+
+`/admin` is the owner's area. It needs `ADMIN_PASSWORD`, `ADMIN_SECRET` (signs the 12-hour session cookie), `KEYS_SECRET` (encrypts provider keys at rest; the worker needs the same value) and `REDIS_URL`. Signed-out visitors get a 404 for every admin page; the sign-in form is at `/admin` and is rate-limited to 5 attempts per 15 minutes per IP. Provider keys are written through the dashboard and never shown again (only the last four characters). Set `AI_MOCK=1` to expose a mock provider for tests.
+
+Deviation from the architecture doc, to revisit: keys are encrypted with a symmetric secret shared by the web app and the worker (the doc proposes a worker-only key pair), and sign-in is a password rather than a passkey.
 
 ## How a browser tool works
 

@@ -7,6 +7,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+    env:
+      REDIS_URL: redis://localhost:6379
+      KEYS_SECRET: ci-keys-secret
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -19,6 +26,7 @@ jobs:
       - run: pnpm --filter @alarab/arabic test
       - run: pnpm --filter @alarab/pdf-core test
       - run: pnpm --filter @alarab/jobs test
+      - run: pnpm --filter @alarab/ai test
       - run: pnpm --filter worker typecheck
       - run: pnpm --filter web lint
       - run: pnpm --filter web build
