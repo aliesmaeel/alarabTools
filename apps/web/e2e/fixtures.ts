@@ -32,7 +32,7 @@ export async function openTool(page: Page, path: string, files: { name: string; 
 
 /** Click the run button (the last big button in the options panel) and wait for the download. */
 export async function runAndDownload(page: Page): Promise<Download> {
-  const runButton = page.locator("aside button").first();
+  const runButton = page.getByTestId("run");
   await expect(runButton).toBeEnabled();
   await runButton.click();
   const downloadButton = page.getByRole("button", { name: /Download result|تنزيل النتيجة/ });

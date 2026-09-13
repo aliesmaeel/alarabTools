@@ -15,6 +15,9 @@ export const IMPLEMENTED = new Set([
   "protect-pdf",
   "unlock-pdf",
   "jpg-to-pdf",
+  "add-page-numbers",
+  "add-watermark",
+  "hijri-date-stamp",
 ]);
 
 // Lazy so a tool page only ships its own form.
@@ -29,6 +32,9 @@ export async function loadToolModule(id: string): Promise<ToolModule | null> {
     case "protect-pdf": return erase((await import("./pdf-options")).protectPdf);
     case "unlock-pdf": return erase((await import("./pdf-options")).unlockPdf);
     case "jpg-to-pdf": return erase((await import("./pdf-options")).jpgToPdf);
+    case "add-page-numbers": return erase((await import("./text-options")).addPageNumbers);
+    case "add-watermark": return erase((await import("./text-options")).addWatermark);
+    case "hijri-date-stamp": return erase((await import("./text-options")).hijriDateStamp);
     default: return null;
   }
 }

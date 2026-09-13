@@ -61,7 +61,7 @@ test("wrong password asks again instead of failing", async ({ page }) => {
   const doc = await PDFDocument.load(await pdfFixture(1));
   doc.encrypt({ userPassword: "right", ownerPassword: "right" });
   await openTool(page, "/en/rotate-pdf", [{ name: "locked.pdf", mimeType: PDF, buffer: Buffer.from(await doc.save()) }]);
-  await page.locator("aside button").first().click();
+  await page.getByTestId("run").click();
   await expect(page.getByText("This file is password protected")).toBeVisible();
 });
 

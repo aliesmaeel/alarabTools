@@ -1,23 +1,23 @@
 {
-  "name": "@alarab/pdf-core",
+  "name": "@alarab/arabic",
   "version": "0.1.0",
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts",
-    "./stamp": "./src/stamp.ts"
+    ".": "./src/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "tsx src/index.test.ts && tsx src/stamp.test.ts"
+    "test": "tsx src/index.test.ts"
   },
   "dependencies": {
-    "@alarab/arabic": "workspace:*",
-    "@cantoo/pdf-lib": "^2.11.0"
+    "@cantoo/fontkit": "^2.0.12",
+    "@cantoo/pdf-lib": "^2.11.0",
+    "bidi-js": "^1.1.0"
   },
   "devDependencies": {
     "@types/node": "^22.20.2",
-    "tsx": "^4.23.13",
+    "tsx": "^4.20.0",
     "typescript": "^5.9.0"
   }
 }

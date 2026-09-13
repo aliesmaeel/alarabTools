@@ -146,6 +146,57 @@
       "a4": "A4 page",
       "a4Hint": "The image is scaled to fit the page",
       "margin": "Margin around the image"
+    },
+    "needText": "Enter the watermark text.",
+    "needDate": "Pick a date.",
+    "font": "Font",
+    "size": "Size",
+    "color": "Colour",
+    "opacity": "Opacity %",
+    "margin": "Distance from edge",
+    "pagesOptional": "Specific pages (optional)",
+    "digits": {
+      "label": "Digits"
+    },
+    "position": {
+      "label": "Position",
+      "top-left": "Top left",
+      "top-center": "Top centre",
+      "top-right": "Top right",
+      "center": "Centre",
+      "bottom-left": "Bottom left",
+      "bottom-center": "Bottom centre",
+      "bottom-right": "Bottom right"
+    },
+    "pageNumbers": {
+      "format": "Format",
+      "plain": "1",
+      "ofTotal": "1 / 10",
+      "worded": "Page 1 of 10",
+      "start": "Start at"
+    },
+    "watermark": {
+      "text": "Watermark text",
+      "placeholder": "e.g. CONFIDENTIAL, DRAFT, your company",
+      "layout": "Layout",
+      "center": "Centred on the page",
+      "tile": "Repeated across the page",
+      "corner": "In a corner",
+      "rotate": "Angle in degrees"
+    },
+    "hijri": {
+      "date": "Date",
+      "dateHint": "The Hijri date uses the Umm al-Qura calendar and can differ by a day from official announcements.",
+      "calendars": "Calendar",
+      "both": "Hijri and Gregorian",
+      "hijriOnly": "Hijri only",
+      "gregorianOnly": "Gregorian only",
+      "style": "Style",
+      "long": "With month name",
+      "numeric": "Numeric",
+      "prefix": "Text before the date (optional)",
+      "prefixPlaceholder": "e.g. Date:",
+      "firstPageOnly": "First page only"
     }
   }
 }

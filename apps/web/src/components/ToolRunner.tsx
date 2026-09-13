@@ -64,7 +64,7 @@ export function ToolRunner({ tool, what }: { tool: ToolDef; what: string }) {
     setPhase({ kind: "running", done: 0, total: 1 });
     // Progress travels on its own message channel, so a late update can land after the result; ignore those.
     let finished = false;
-    const result = await engine.run(tool.id, files, options, (done, total) => {
+    const result = await engine.run(tool.id, files, { ...options, locale }, (done, total) => {
       if (!finished) setPhase((p) => (p.kind === "running" ? { kind: "running", done, total } : p));
     });
     finished = true;
@@ -160,6 +160,7 @@ export function ToolRunner({ tool, what }: { tool: ToolDef; what: string }) {
         {validation && files.length > 0 && <span className="text-xs text-ink-2">{to(validation)}</span>}
         <button
           type="button"
+          data-testid="run"
           disabled={!canRun || phase.kind === "running"}
           onClick={runTool}
           className="inline-flex h-14 items-center justify-center gap-2.5 rounded-[10px] bg-lapis text-lg font-semibold text-white hover:bg-lapis-deep disabled:cursor-not-allowed disabled:opacity-40"

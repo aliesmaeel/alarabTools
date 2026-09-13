@@ -1,6 +1,27 @@
 /// <reference lib="webworker" />
 import * as Comlink from "comlink";
 import * as pdf from "@alarab/pdf-core";
+import * as stamp from "@alarab/pdf-core/stamp";
+import { defaultDigits, fontInfo, formatGregorian, formatHijri, type DigitSystem } from "@alarab/arabic";
+
+const fontCache = new Map<string, Promise<Uint8Array>>();
+/** Bundled fonts are served from /fonts; fetched once per worker. */
+function loadFont(id: string): Promise<Uint8Array> {
+  const file = fontInfo(id).file;
+  let p = fontCache.get(file);
+  if (!p) {
+    p = fetch(new URL(`/fonts/${encodeURIComponent(file)}`, self.location.origin)).then(async (r) => {
+      if (!r.ok) throw new Error(`font ${file}: ${r.status}`);
+      return new Uint8Array(await r.arrayBuffer());
+    });
+    fontCache.set(file, p);
+  }
+  return p;
+}
+
+function pagesOf(o: Record<string, unknown>, n: number): number[] | undefined {
+  return typeof o.pages === "string" && o.pages.trim() ? pdf.parsePageRanges(o.pages, n) : undefined;
+}
 
 export type Output = { name: string; bytes: Uint8Array; mime: string };
 export type RunResult = { ok: true; outputs: Output[] } | { ok: false; code: "password" | "error"; message: string };
@@ -118,6 +139,52 @@ async function dispatch(toolId: string, files: File[], o: Record<string, unknown
       const bytes = await pdf.imagesToPdf(images, { pageSize: o.pageSize === "a4" ? "a4" : "fit", margin: o.margin ? 28 : 0 });
       onProgress(files.length + 1, files.length + 1);
       return [{ name: `${files.length === 1 ? base(first.name) : "images"}.pdf`, bytes, mime: PDF }];
+    }
+    case "add-page-numbers": {
+      const bytes = await bytesOf(first);
+      const style = { fontBytes: await loadFont(String(o.font)), size: Number(o.size) || 12, color: stamp.hexToRgb(String(o.color)) };
+      const digits = (o.digits || defaultDigits(String(o.locale ?? "ar"))) as DigitSystem;
+      const out = await stamp.addPageNumbers(bytes, {
+        style, digits, position: o.position as Exclude<stamp.Position, "center">, margin: Number(o.margin) || 0, start: Number(o.start) || 1,
+        template: String(o.template || "{n}"), pages: pagesOf(o, await pdf.pageCount(bytes)),
+      });
+      return [{ name: `${base(first.name)}-numbered.pdf`, bytes: out, mime: PDF }];
+    }
+    case "add-watermark": {
+      const style = { fontBytes: await loadFont(String(o.font)), size: Number(o.size) || 48, color: stamp.hexToRgb(String(o.color)), opacity: (Number(o.opacity) || 25) / 100 };
+      const outs: Output[] = [];
+      for (let i = 0; i < files.length; i++) {
+        const bytes = await bytesOf(files[i]);
+        const layout = String(o.layout);
+        const out = await stamp.stampText(bytes, {
+          text: String(o.text), style, tile: layout === "tile", rotate: layout === "corner" ? 0 : Number(o.rotate) || 0,
+          position: layout === "corner" ? (o.position as stamp.Position) : "center", margin: 24, pages: pagesOf(o, await pdf.pageCount(bytes)),
+        });
+        outs.push({ name: `${base(files[i].name)}-watermarked.pdf`, bytes: out, mime: PDF });
+        onProgress(i + 1, files.length);
+      }
+      return outs;
+    }
+    case "hijri-date-stamp": {
+      const locale = String(o.locale ?? "ar") as "ar" | "en";
+      const digits = (o.digits || defaultDigits(locale)) as DigitSystem;
+      const date = new Date(`${o.date}T00:00:00Z`);
+      if (Number.isNaN(date.getTime())) throw new Error("bad-date");
+      const dateStyle = o.dateStyle === "numeric" ? "numeric" : "long";
+      const lines: string[] = [];
+      if (o.calendars !== "gregorian") lines.push(formatHijri(date, locale, dateStyle, digits));
+      if (o.calendars !== "hijri") lines.push(formatGregorian(date, locale, dateStyle, digits));
+      const prefix = String(o.prefix ?? "").trim();
+      const text = (prefix ? [prefix, ...lines] : lines).join("\n");
+      const style = { fontBytes: await loadFont(String(o.font)), size: Number(o.size) || 14, color: stamp.hexToRgb(String(o.color)), opacity: (Number(o.opacity) || 100) / 100 };
+      const outs: Output[] = [];
+      for (let i = 0; i < files.length; i++) {
+        const bytes = await bytesOf(files[i]);
+        const out = await stamp.stampText(bytes, { text, style, position: o.position as stamp.Position, margin: Number(o.margin) || 0, pages: pagesOf(o, await pdf.pageCount(bytes)) });
+        outs.push({ name: `${base(files[i].name)}-dated.pdf`, bytes: out, mime: PDF });
+        onProgress(i + 1, files.length);
+      }
+      return outs;
     }
     default:
       throw new Error(`Tool ${toolId} is not implemented`);

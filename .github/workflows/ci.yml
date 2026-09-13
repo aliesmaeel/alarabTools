@@ -16,6 +16,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @alarab/tools test
+      - run: pnpm --filter @alarab/arabic test
       - run: pnpm --filter @alarab/pdf-core test
       - run: pnpm --filter web lint
       - run: pnpm --filter web build

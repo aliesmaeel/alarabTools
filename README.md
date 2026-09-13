@@ -11,6 +11,7 @@ apps/web          Next.js 16 site (App Router, next-intl, Tailwind 4). Deploys t
 apps/worker       Job runner for server tools (phase P3, not started).
 packages/tools    The tool registry: every page, badge, sitemap entry and API route reads from it.
 packages/pdf-core pdf-lib operations shared by the browser worker and (later) the API worker.
+packages/arabic   Bidi + shaping-aware text drawing, digits, Hijri dates, bundled OFL fonts.
 packages/*        image-core, arabic, jobs, ui (later phases).
 ```
 
@@ -20,6 +21,7 @@ packages/*        image-core, arabic, jobs, ui (later phases).
 pnpm install
 pnpm --filter web dev          # http://localhost:3000 (Arabic), /en (English)
 pnpm --filter @alarab/tools test
+pnpm --filter @alarab/arabic test
 pnpm --filter @alarab/pdf-core test
 pnpm --filter web build && pnpm --filter web start
 node apps/web/scripts/smoke.mjs   # checks every page in the sitemap against a running server
@@ -35,12 +37,15 @@ Copy `apps/web/.env.example` to `apps/web/.env.local`. Set `NEXT_PUBLIC_SITE_URL
 - Use Tailwind logical utilities only (`ps-`, `pe-`, `ms-`, `me-`, `start-`, `end-`) so layouts mirror correctly in RTL.
 - The privacy badge ("On your device" / "On our servers") comes from the tool's `runtime` field; never hard-code it.
 - UI strings live in `apps/web/messages/{ar,en}.json`. Tool names and summaries live in the registry.
+- Digits: Arabic-Indic (١٢٣) by default on the Arabic site, Western (123) on English; tools that print numbers offer both (`defaultDigits` in `@alarab/arabic`).
+- Any text drawn into a PDF goes through `drawText` in `@alarab/arabic`, which splits bidi runs so Arabic joins and reads right-to-left. Never call `page.drawText` with Arabic directly.
+- Fonts are in `packages/arabic/fonts` (source of truth) and copied to `apps/web/public/fonts`.
 
 ## Status
 
 - P0 Foundation: done (registry, bilingual site, tool page template with SEO metadata and JSON-LD, sitemap, smoke test, CI).
-- P1 Browser PDF tools: in progress. Working: merge, split, remove pages, extract pages, rotate, crop, protect, unlock, JPG to PDF.
-  Remaining: organize (thumbnails), PDF to JPG, compare, scan to PDF, then the Arabic-text tools (page numbers, watermark, sign, edit, Hijri stamp, fonts).
+- P1 Browser PDF tools: in progress. Working: merge, split, remove pages, extract pages, rotate, crop, protect, unlock, JPG to PDF, page numbers, watermark, Hijri date stamp.
+  Remaining: organize (thumbnails), PDF to JPG, compare, scan to PDF, sign, edit, Arabic fonts.
 
 ## How a browser tool works
 

@@ -11,6 +11,7 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
+    "@alarab/arabic": "workspace:*",
     "@alarab/pdf-core": "workspace:*",
     "@alarab/tools": "workspace:*",
     "comlink": "^4.4.2",
