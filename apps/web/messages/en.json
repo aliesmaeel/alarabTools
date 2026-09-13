@@ -388,6 +388,44 @@
       "frameWidth": "Frame width",
       "frameRadius": "Rounded corners",
       "formatSame": "Same as the original"
-    }
+    },
+    "editPdf": {
+      "tools": {
+        "select": "Select",
+        "text": "Text",
+        "image": "Image",
+        "draw": "Draw",
+        "rect": "Rectangle",
+        "ellipse": "Ellipse",
+        "highlight": "Highlight",
+        "whiteout": "Whiteout"
+      },
+      "hint": {
+        "select": "Click an element to select it, drag to move it.",
+        "text": "Click on the page to add text.",
+        "image": "Choose an image; it appears in the middle of the page, then drag it into place.",
+        "draw": "Draw on the page with the mouse or your finger.",
+        "rect": "Drag on the page to draw a rectangle.",
+        "ellipse": "Drag on the page to draw an ellipse.",
+        "highlight": "Drag over the text you want to highlight.",
+        "whiteout": "Drag over the area you want to cover."
+      },
+      "newText": "Your text",
+      "text": "Text",
+      "fill": "Fill",
+      "noFill": "No fill",
+      "stroke": "Line colour",
+      "strokeWidth": "Line width",
+      "delete": "Delete",
+      "undo": "Undo",
+      "clearPage": "Clear this page",
+      "prev": "Previous",
+      "next": "Next",
+      "pageOf": "Page {n} of {total}",
+      "pages": "Pages",
+      "edits": "{count, plural, =0 {No changes yet} one {1 change} other {# changes}}",
+      "chooseImage": "Choose image"
+    },
+    "needEdits": "Add at least one change to the PDF."
   }
 }

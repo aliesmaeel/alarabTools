@@ -46,8 +46,7 @@ Copy `apps/web/.env.example` to `apps/web/.env.local`. Set `NEXT_PUBLIC_SITE_URL
 ## Status
 
 - P0 Foundation: done (registry, bilingual site, tool page template with SEO metadata and JSON-LD, sitemap, smoke test, CI).
-- P1 Browser PDF tools: in progress. Working (18): merge, split, remove pages, extract pages, organize, scan to PDF, rotate, crop, protect, unlock, sign, compare, JPG to PDF, PDF to JPG, page numbers, watermark (text or logo), Hijri date stamp, Arabic fonts (text to PDF/PNG).
-  Remaining: edit PDF (planned after the image tools; it is the largest).
+- P1 Browser PDF tools: done (19): merge, split, remove pages, extract pages, organize, scan to PDF, rotate, crop, protect, unlock, sign, compare, JPG to PDF, PDF to JPG, page numbers, watermark (text or logo), Hijri date stamp, Arabic fonts (text to PDF/PNG), edit PDF (text, images, drawing, shapes, highlight, whiteout).
 - P2 Browser image tools: done (10): compress, resize, convert to JPG, convert from JPG (PNG/WebP), rotate/flip, crop, watermark (text or logo), meme generator, blur faces, photo editor (presets, adjustments, Arabic text, stickers, frames). HEIC/HEIF input works in every image tool (libheif). Upscale is P5.
 
 ## How a browser tool works
@@ -55,5 +54,7 @@ Copy `apps/web/.env.example` to `apps/web/.env.local`. Set `NEXT_PUBLIC_SITE_URL
 `ToolRunner` (client) collects files and options, then calls `src/lib/engine.ts`, which talks to `src/workers/pdf.worker.ts` over Comlink. The worker runs `@alarab/pdf-core` and returns `{name, bytes, mime}[]`; several outputs are zipped with fflate. Each tool's option form lives in `src/tools/` and is lazy-loaded so pages stay light.
 
 Image tools run in a second worker (`src/workers/image.worker.ts`) on `@alarab/image-core`. The jSquash WASM codecs are not bundled: Turbopack's production build never finishes on their emscripten glue, so `scripts/copy-assets.mjs` copies the packages to `public/codecs/` and the worker imports them from there at runtime. The same folder holds libheif (HEIC decoding) and the MediaPipe vision runtime; the BlazeFace model lives in `public/models/` (Apache-2.0). Face detection runs on the main thread because MediaPipe's loader cannot run inside a module worker.
+
+Checking Arabic output: render PDFs with poppler (`pdftoppm -png file.pdf out`), not LibreOffice. LibreOffice re-runs its own bidi layout on import and hides glyph-order bugs; poppler draws the glyphs exactly as the PDF places them.
 
 Tools that need page previews use pdf.js on the main thread (`src/lib/pdfjs.ts`; its worker is copied to `public/` by `scripts/copy-assets.mjs`). A tool module can provide a `Workspace` component (page thumbnails, placement UI) and/or `runOnMain` to run with canvas instead of the PDF worker.

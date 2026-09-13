@@ -7,7 +7,8 @@
     ".": "./src/index.ts",
     "./stamp": "./src/stamp.ts",
     "./document": "./src/document.ts",
-    "./pages": "./src/pages.ts"
+    "./pages": "./src/pages.ts",
+    "./edit": "./src/edit.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

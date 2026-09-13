@@ -3,6 +3,7 @@ import * as Comlink from "comlink";
 import * as pdf from "@alarab/pdf-core";
 import * as stamp from "@alarab/pdf-core/stamp";
 import { textDocument } from "@alarab/pdf-core/document";
+import { applyEdits, type Edit } from "@alarab/pdf-core/edit";
 import { defaultDigits, formatGregorian, formatHijri, type DigitSystem } from "@alarab/arabic";
 
 import { ensureFontFace, loadFont } from "./fonts";
@@ -280,6 +281,13 @@ async function dispatch(toolId: string, files: File[], o: Record<string, unknown
       const bytes = await pdf.imagesToPdf(images, { pageSize: o.pageSize === "fit" ? "fit" : "a4", margin: 0 });
       onProgress(files.length + 1, files.length + 1);
       return [{ name: "scan.pdf", bytes, mime: PDF }];
+    }
+    case "edit-pdf": {
+      const edits = (o.edits as Edit[]) ?? [];
+      const bytes = await bytesOf(first);
+      const fontIds = Array.from(new Set(edits.flatMap((e) => (e.kind === "text" ? [e.font] : []))));
+      const fonts = Object.fromEntries(await Promise.all(fontIds.map(async (id) => [id, await loadFont(id)] as const)));
+      return [{ name: `${base(first.name)}-edited.pdf`, bytes: await applyEdits(bytes, edits, fonts), mime: PDF }];
     }
     case "sign-pdf": {
       const sig = o.sig as Uint8Array | null;

@@ -7,30 +7,52 @@ const bidi = bidiFactory();
 export type Run = { text: string; rtl: boolean };
 
 /**
- * Split mixed-direction text into runs in VISUAL order (left to right on the page).
- * Each RTL run keeps its LOGICAL character order: fontkit's Arabic shaper (used by pdf-lib)
- * joins the letters and reverses the glyphs itself, so the run is passed to it as typed.
+ * Code points fontkit's script detection files under "Arabic" even though bidi treats them as
+ * numbers or neutrals: Arabic-Indic digits, the Arabic percent/decimal/thousands signs and so on.
+ * (U+060C, U+061B, U+061F and U+0640 are "Common" in both.)
+ */
+const ARABIC_BLOCK = /[\u0600-\u060B\u060D-\u061A\u061C-\u061E\u0620-\u063F\u0641-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
+
+/**
+ * Split mixed-direction text into runs in VISUAL order (left to right on the page), each holding
+ * the characters in the order the shaper must RECEIVE them. fontkit (used by pdf-lib) joins the
+ * letters and reverses the glyphs of any run whose first strong script is Arabic, so:
+ * - RTL runs keep their logical order (fontkit reverses them into visual order);
+ * - LTR runs are split into Arabic-block and other segments, and the Arabic-block ones (e.g.
+ *   Arabic-Indic digits "١٤٤٨", which bidi lays out left to right) are pre-reversed so that
+ *   fontkit's reversal puts them back in reading order.
  */
 export function visualRuns(text: string, base: "ltr" | "rtl" | "auto" = "auto"): Run[] {
   if (!text) return [];
   const levels = bidi.getEmbeddingLevels(text, base);
   const order = bidi.getReorderedIndices(text, levels);
   const mirrored = bidi.getMirroredCharactersMap(text, levels.levels);
-  const runs: { chars: string[]; indices: number[]; rtl: boolean }[] = [];
+  const runs: { chars: string[]; rtl: boolean }[] = [];
   for (const i of order) {
     const rtl = levels.levels[i] % 2 === 1;
     const ch = mirrored.get(i) ?? text[i];
     const last = runs[runs.length - 1];
-    if (last && last.rtl === rtl) {
-      last.chars.push(ch);
-      last.indices.push(i);
-    } else runs.push({ chars: [ch], indices: [i], rtl });
+    if (last && last.rtl === rtl) last.chars.push(ch);
+    else runs.push({ chars: [ch], rtl });
   }
-  return runs.map((r) => ({
-    // Visual order for RTL runs is the reverse of logical order; undo it for the shaper.
-    text: r.rtl ? r.chars.reverse().join("") : r.chars.join(""),
-    rtl: r.rtl,
-  }));
+  const out: Run[] = [];
+  for (const r of runs) {
+    if (r.rtl) {
+      // Visual order for RTL runs is the reverse of logical order; undo it for the shaper.
+      out.push({ text: r.chars.reverse().join(""), rtl: true });
+      continue;
+    }
+    let seg: string[] = [], segArabic: boolean | null = null;
+    const flush = () => { if (seg.length) out.push({ text: segArabic ? seg.reverse().join("") : seg.join(""), rtl: false }); seg = []; };
+    for (const ch of r.chars) {
+      const arabic = ARABIC_BLOCK.test(ch);
+      if (segArabic !== null && arabic !== segArabic) flush();
+      segArabic = arabic;
+      seg.push(ch);
+    }
+    flush();
+  }
+  return out;
 }
 
 /** Detect whether text is mostly right-to-left (for choosing the default alignment). */

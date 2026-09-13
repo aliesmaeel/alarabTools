@@ -32,6 +32,12 @@ eq(ar.visualRuns("صفحة 12"), [{ text: "12", rtl: false }, { text: "صفحة 
 eq(ar.visualRuns("Page 3 من 10"), [{ text: "Page 3 10", rtl: false }, { text: "من ", rtl: true }], "mixed ltr");
 // brackets are mirrored inside RTL runs
 eq(ar.visualRuns("(نص)"), [{ text: ")نص(", rtl: true }], "mirrored brackets");
+// Arabic-Indic digits sit in an LTR run but fontkit treats them as Arabic script and reverses
+// them, so they are handed over pre-reversed (Latin digits are left alone).
+// (The paragraph is RTL, so the number sits on the right and the word on the left.)
+eq(ar.visualRuns("١٢٣ ريال"), [{ text: " ريال", rtl: true }, { text: "٣٢١", rtl: false }], "arabic-indic digits pre-reversed");
+eq(ar.visualRuns("التاريخ: ١٤٤٨/٠٤/٠١"), [{ text: "٨٤٤١", rtl: false }, { text: "/", rtl: false }, { text: "٤٠", rtl: false }, { text: "/", rtl: false }, { text: "١٠", rtl: false }, { text: "التاريخ: ", rtl: true }], "date with arabic-indic digits");
+eq(ar.visualRuns("عام 2026 ميلادي"), [{ text: " ميلادي", rtl: true }, { text: "2026", rtl: false }, { text: "عام ", rtl: true }], "latin digits untouched");
 assert(ar.isRtl("مرحبا world") && !ar.isRtl("hello عالم"), "isRtl by first strong char");
 
 // drawing with a real font: shaped glyphs and widths
