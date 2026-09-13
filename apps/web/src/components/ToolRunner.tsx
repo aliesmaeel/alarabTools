@@ -7,13 +7,14 @@ import { Dropzone } from "./Dropzone";
 import { loadToolModule } from "@/tools";
 import type { ToolModule, Options } from "@/tools/types";
 import * as engine from "@/lib/engine";
+import { runServerJob } from "@/lib/jobs-client";
 import { bundle, formatBytes, saveBlob } from "@/lib/download";
 import { TextInput } from "@/tools/fields";
 
 type Phase =
   | { kind: "pick" }
   | { kind: "configure" }
-  | { kind: "running"; done: number; total: number }
+  | { kind: "running"; done: number; total: number; stage?: "upload" | "queue" | "run" }
   | { kind: "done"; blob: Blob; name: string; count: number; size: number; note?: { key: string; count?: number } }
   | { kind: "error"; message: string };
 
@@ -41,7 +42,7 @@ export function ToolRunner({ tool, what }: { tool: ToolDef; what: string }) {
     setFiles(next);
     setNeedPassword(false);
     setPhase({ kind: "configure" });
-    engine.warmUp(tool.id);
+    if (tool.runtime === "browser") engine.warmUp(tool.id);
     if (next[0]?.type === "application/pdf") engine.pageCount(next[0]).then(setPageCount);
     else setPageCount(null);
   }
@@ -65,11 +66,13 @@ export function ToolRunner({ tool, what }: { tool: ToolDef; what: string }) {
     setPhase({ kind: "running", done: 0, total: 1 });
     // Progress travels on its own message channel, so a late update can land after the result; ignore those.
     let finished = false;
-    const progress = (done: number, total: number) => {
-      if (!finished) setPhase((p) => (p.kind === "running" ? { kind: "running", done, total } : p));
+    const progress = (done: number, total: number, stage?: "upload" | "queue" | "run") => {
+      if (!finished) setPhase((p) => (p.kind === "running" ? { kind: "running", done, total, stage } : p));
     };
     const prepared = { ...(mod.prepare ? mod.prepare(options) : options), locale };
-    const result = mod.runOnMain ? await mod.runOnMain(files, prepared, progress) : await engine.run(tool.id, files, prepared, progress);
+    const result = tool.runtime === "server"
+      ? await runServerJob(tool, files, prepared, locale, progress)
+      : mod.runOnMain ? await mod.runOnMain(files, prepared, progress) : await engine.run(tool.id, files, prepared, progress);
     finished = true;
     if (result.ok) {
       const { blob, name } = bundle(result.outputs, mod.zipName ?? `${tool.id}.zip`);
@@ -78,7 +81,7 @@ export function ToolRunner({ tool, what }: { tool: ToolDef; what: string }) {
       setNeedPassword(true);
       setPhase({ kind: "configure" });
     } else {
-      setPhase({ kind: "error", message: result.message === "no-pages" ? to("needPages") : result.message === "png-unsupported" ? t("pngUnsupported") : result.message === "undecodable" ? t("undecodable") : t("failed") });
+      setPhase({ kind: "error", message: result.message === "no-pages" ? to("needPages") : result.message === "png-unsupported" ? t("pngUnsupported") : result.message === "undecodable" ? t("undecodable") : result.message === "not-configured" ? t("comingSoon") : result.message === "too-large" ? t("tooLarge") : result.message === "rate-limited" ? t("rateLimited") : result.message === "timeout" ? t("timeout") : result.message === "bad-url" ? t("badUrl") : t("failed") });
     }
   }
 
@@ -189,7 +192,7 @@ export function ToolRunner({ tool, what }: { tool: ToolDef; what: string }) {
           onClick={runTool}
           className="inline-flex h-14 items-center justify-center gap-2.5 rounded-[10px] bg-lapis text-lg font-semibold text-white hover:bg-lapis-deep disabled:cursor-not-allowed disabled:opacity-40"
         >
-          {phase.kind === "running" ? t("working", { done: phase.done, total: phase.total }) : t("run", { name: tool.copy[locale as "ar" | "en"].name })}
+          {phase.kind === "running" ? (phase.stage === "upload" ? t("uploading", { pct: phase.done }) : phase.stage === "queue" ? t("queued") : phase.stage === "run" ? t("processing", { pct: phase.done }) : t("working", { done: phase.done, total: phase.total })) : t("run", { name: tool.copy[locale as "ar" | "en"].name })}
         </button>
         {phase.kind === "running" && (
           <div className="h-2 overflow-hidden rounded-full bg-ground" role="progressbar" aria-valuemin={0} aria-valuemax={phase.total} aria-valuenow={phase.done}>

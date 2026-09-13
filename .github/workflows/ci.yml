@@ -18,6 +18,8 @@ jobs:
       - run: pnpm --filter @alarab/tools test
       - run: pnpm --filter @alarab/arabic test
       - run: pnpm --filter @alarab/pdf-core test
+      - run: pnpm --filter @alarab/jobs test
+      - run: pnpm --filter worker typecheck
       - run: pnpm --filter web lint
       - run: pnpm --filter web build
       - name: Smoke test every page in both languages

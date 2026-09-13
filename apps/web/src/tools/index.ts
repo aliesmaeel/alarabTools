@@ -35,6 +35,16 @@ export const IMPLEMENTED = new Set([
   "blur-faces",
   "photo-editor",
   "edit-pdf",
+  // Server tools (worker + storage); they report "coming soon" until REDIS_URL is configured.
+  "compress-pdf",
+  "repair-pdf",
+  "pdf-to-pdfa",
+  "word-to-pdf",
+  "excel-to-pdf",
+  "powerpoint-to-pdf",
+  "html-to-pdf",
+  "html-to-image",
+  "redact-pdf",
 ]);
 
 /** Tools that run in the image worker (WASM codecs) instead of the PDF worker. */
@@ -72,6 +82,15 @@ export async function loadToolModule(id: string): Promise<ToolModule | null> {
     case "blur-faces": return erase((await import("./blur-faces")).blurFaces);
     case "photo-editor": return erase((await import("./photo-editor")).photoEditor);
     case "edit-pdf": return erase((await import("./edit-pdf")).editPdf);
+    case "compress-pdf": return erase((await import("./server-options")).compressPdf);
+    case "repair-pdf": return erase((await import("./server-options")).repairPdf);
+    case "pdf-to-pdfa": return erase((await import("./server-options")).pdfToPdfa);
+    case "word-to-pdf": return erase((await import("./server-options")).wordToPdf);
+    case "excel-to-pdf": return erase((await import("./server-options")).excelToPdf);
+    case "powerpoint-to-pdf": return erase((await import("./server-options")).powerpointToPdf);
+    case "html-to-pdf": return erase((await import("./server-options")).htmlToPdf);
+    case "html-to-image": return erase((await import("./server-options")).htmlToImage);
+    case "redact-pdf": return erase((await import("./redact")).redactPdf);
     default: return null;
   }
 }

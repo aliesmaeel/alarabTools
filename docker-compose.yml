@@ -1,0 +1,48 @@
+# Local stack for the server tools: Redis queue + MinIO (S3-compatible, stands in for R2) + the worker.
+# Run:  docker compose up --build
+# Then in apps/web/.env.local:
+#   REDIS_URL=redis://localhost:6379
+#   S3_BUCKET=alarab  S3_ENDPOINT=http://localhost:9000  S3_REGION=us-east-1  S3_FORCE_PATH_STYLE=1
+#   S3_ACCESS_KEY_ID=minio  S3_SECRET_ACCESS_KEY=minio12345
+services:
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+
+  minio:
+    image: minio/minio
+    ports: ["9000:9000", "9001:9001"]
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio12345
+    command: ["server", "/data", "--console-address", ":9001"]
+    volumes: ["minio:/data"]
+
+  minio-init:
+    image: minio/mc
+    depends_on: [minio]
+    entrypoint: >
+      /bin/sh -c "
+      until mc alias set local http://minio:9000 minio minio12345; do sleep 1; done;
+      mc mb -p local/alarab;
+      mc anonymous set none local/alarab;
+      exit 0"
+
+  worker:
+    build:
+      context: .
+      dockerfile: apps/worker/Dockerfile
+    depends_on: [redis, minio-init]
+    environment:
+      REDIS_URL: redis://redis:6379
+      S3_BUCKET: alarab
+      S3_ENDPOINT: http://minio:9000
+      S3_REGION: us-east-1
+      S3_FORCE_PATH_STYLE: "1"
+      S3_ACCESS_KEY_ID: minio
+      S3_SECRET_ACCESS_KEY: minio12345
+    restart: unless-stopped
+
+volumes:
+  minio: {}

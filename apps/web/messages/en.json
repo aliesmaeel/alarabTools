@@ -100,7 +100,14 @@
     "workingShort": "Working…",
     "privacyNoteText": "Created in your browser.",
     "pngUnsupported": "Your browser can't create a PNG here. Try PDF or a newer browser.",
-    "undecodable": "The image could not be read. HEIC isn't supported yet; try JPG, PNG or WebP."
+    "undecodable": "The image could not be read. HEIC isn't supported yet; try JPG, PNG or WebP.",
+    "uploading": "Uploading… {pct}%",
+    "queued": "Waiting in the queue…",
+    "processing": "Processing… {pct}%",
+    "tooLarge": "The file is larger than the limit.",
+    "rateLimited": "Too many jobs from your connection in the last hour. Please try again later.",
+    "timeout": "This took too long and was stopped. Try a smaller file.",
+    "badUrl": "Enter a valid public web address (https://…)."
   },
   "options": {
     "needPages": "Enter the page numbers first.",
@@ -426,6 +433,26 @@
       "edits": "{count, plural, =0 {No changes yet} one {1 change} other {# changes}}",
       "chooseImage": "Choose image"
     },
-    "needEdits": "Add at least one change to the PDF."
+    "needEdits": "Add at least one change to the PDF.",
+    "compressPdf": {
+      "ebook": "Recommended",
+      "ebookHint": "Good quality, much smaller (150 dpi images)",
+      "screen": "Smallest",
+      "screenHint": "Lowest quality, for screens only (72 dpi)",
+      "printer": "High quality",
+      "printerHint": "Keeps images sharp for printing (300 dpi)"
+    },
+    "html": {
+      "url": "Web page address",
+      "urlHint": "A public page; pages behind a login cannot be captured."
+    },
+    "redact": {
+      "pages": "Pages",
+      "hint": "Drag over anything to remove. Those pages are re-rendered so the text underneath is gone for good.",
+      "count": "{count, plural, =0 {No areas marked} one {1 area} other {# areas}}",
+      "remove": "Remove"
+    },
+    "needUrl": "Enter a valid web page address.",
+    "needBoxes": "Mark at least one area to remove."
   }
 }

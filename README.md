@@ -8,12 +8,13 @@ Plans and decisions live in [docs/](docs/): the architecture document, the accou
 
 ```
 apps/web          Next.js 16 site (App Router, next-intl, Tailwind 4). Deploys to Vercel.
-apps/worker       Job runner for server tools (phase P3, not started).
+apps/worker       Job runner for server tools: Redis queue, S3/R2 files, LibreOffice, Ghostscript, qpdf, Chromium.
 packages/tools    The tool registry: every page, badge, sitemap entry and API route reads from it.
 packages/pdf-core pdf-lib operations shared by the browser worker and (later) the API worker.
 packages/arabic   Bidi + shaping-aware text drawing, digits, Hijri dates, bundled OFL fonts.
 packages/image-core Decode/resize/encode on ImageData; jSquash codecs (mozjpeg, libwebp, oxipng) loaded at runtime.
-packages/*        jobs, ui (later phases).
+packages/jobs     Job records and queue (Redis), storage adapters (R2 via S3 API, or a local folder), key layout.
+packages/*        ui (later).
 ```
 
 ## Run it
@@ -47,7 +48,18 @@ Copy `apps/web/.env.example` to `apps/web/.env.local`. Set `NEXT_PUBLIC_SITE_URL
 
 - P0 Foundation: done (registry, bilingual site, tool page template with SEO metadata and JSON-LD, sitemap, smoke test, CI).
 - P1 Browser PDF tools: done (19): merge, split, remove pages, extract pages, organize, scan to PDF, rotate, crop, protect, unlock, sign, compare, JPG to PDF, PDF to JPG, page numbers, watermark (text or logo), Hijri date stamp, Arabic fonts (text to PDF/PNG), edit PDF (text, images, drawing, shapes, highlight, whiteout).
+- P3 Server pipeline: in progress. Working (9): compress PDF, repair PDF, PDF to PDF/A, Word/Excel/PowerPoint to PDF, HTML to PDF, HTML to image, redact PDF (true redaction: marked pages are rasterised).
+  Files are deleted after one hour by the worker's sweeper; uploads and downloads go straight to storage with signed URLs (10 minutes).
 - P2 Browser image tools: done (10): compress, resize, convert to JPG, convert from JPG (PNG/WebP), rotate/flip, crop, watermark (text or logo), meme generator, blur faces, photo editor (presets, adjustments, Arabic text, stickers, frames). HEIC/HEIF input works in every image tool (libheif). Upscale is P5.
+
+## Running the server tools locally
+
+1. Redis: `redis-server --port 6379` (or `docker compose up redis`).
+2. `apps/web/.env.local`: `REDIS_URL=redis://localhost:6379`, `JOBS_SECRET=<anything>`, `JOBS_DIR=~/alarab-jobs`. Without an S3 bucket the files live in that folder and the browser talks to `/api/files/...` with signed URLs.
+3. `apps/worker/.env`: same three plus `GS_BIN`, `QPDF_BIN`, `SOFFICE_BIN`, `WORK_DIR` (keep it under `$HOME` for the LibreOffice snap) and `CHROME_CHANNEL=chrome`. Then `pnpm --filter worker start`.
+4. `SERVER_TOOLS=1 BASE_URL=http://localhost:3117 pnpm exec playwright test e2e/server-tools.spec.ts`.
+
+Production: `docker compose up --build` gives Redis + MinIO + the worker image (`apps/worker/Dockerfile`, based on the Playwright image with LibreOffice, Ghostscript, qpdf, poppler and Arabic fonts). On Vercel set `REDIS_URL` (Upstash, `rediss://`) and the `S3_*` variables for R2; the worker gets the same variables wherever it runs. It needs no inbound ports.
 
 ## How a browser tool works
 
