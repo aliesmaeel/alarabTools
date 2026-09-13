@@ -33,6 +33,7 @@ export const IMPLEMENTED = new Set([
   "watermark-image",
   "meme-generator",
   "blur-faces",
+  "photo-editor",
 ]);
 
 /** Tools that run in the image worker (WASM codecs) instead of the PDF worker. */
@@ -68,6 +69,7 @@ export async function loadToolModule(id: string): Promise<ToolModule | null> {
     case "watermark-image": return erase((await import("./image-text")).watermarkImage);
     case "meme-generator": return erase((await import("./image-text")).memeGenerator);
     case "blur-faces": return erase((await import("./blur-faces")).blurFaces);
+    case "photo-editor": return erase((await import("./photo-editor")).photoEditor);
     default: return null;
   }
 }

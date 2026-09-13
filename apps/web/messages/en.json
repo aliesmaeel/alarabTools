@@ -352,6 +352,42 @@
       "padding": "Extra area around each face, %",
       "hint": "Faces are found on your device with a small open-source model; nothing is uploaded.",
       "found": "{count, plural, =0 {No faces were found, so the image is unchanged.} one {1 face blurred.} other {# faces blurred.}}"
+    },
+    "photoEditor": {
+      "tabs": {
+        "adjust": "Adjust",
+        "text": "Text",
+        "stickers": "Stickers",
+        "frame": "Frame"
+      },
+      "presets": "Presets",
+      "preset": {
+        "none": "Original",
+        "vivid": "Vivid",
+        "bw": "Black & white",
+        "vintage": "Vintage",
+        "cool": "Cool",
+        "warm": "Warm",
+        "soft": "Soft"
+      },
+      "brightness": "Brightness",
+      "contrast": "Contrast",
+      "saturation": "Saturation",
+      "hue": "Hue",
+      "blur": "Blur",
+      "grayscale": "Grayscale",
+      "sepia": "Sepia",
+      "invert": "Invert colours",
+      "reset": "Reset adjustments",
+      "addText": "Add text",
+      "newText": "Your text",
+      "text": "Text",
+      "outline": "Outline",
+      "removeLayer": "Remove",
+      "dragHint": "Drag text and stickers on the photo to move them.",
+      "frameWidth": "Frame width",
+      "frameRadius": "Rounded corners",
+      "formatSame": "Same as the original"
     }
   }
 }
