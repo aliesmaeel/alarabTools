@@ -224,6 +224,14 @@ async function dispatch(toolId: string, files: File[], o: Record<string, unknown
       }
       return outs;
     }
+    case "organize-pdf": {
+      const pages = (o.pages as { index: number; rotation: number; removed: boolean }[]) ?? [];
+      const kept = pages.filter((p) => !p.removed);
+      if (kept.length === 0) throw new Error("no-pages");
+      const rotations: Record<number, number> = {};
+      for (const p of kept) if (p.rotation) rotations[p.index] = p.rotation;
+      return [{ name: `${base(first.name)}-organized.pdf`, bytes: await pdf.organize(await bytesOf(first), kept.map((p) => p.index), rotations), mime: PDF }];
+    }
     case "arabic-fonts": {
       const text = String(o.text ?? "");
       const align = String(o.align ?? "start");

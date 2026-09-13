@@ -19,6 +19,8 @@ export const IMPLEMENTED = new Set([
   "add-watermark",
   "hijri-date-stamp",
   "arabic-fonts",
+  "organize-pdf",
+  "pdf-to-jpg",
 ]);
 
 // Lazy so a tool page only ships its own form.
@@ -37,6 +39,8 @@ export async function loadToolModule(id: string): Promise<ToolModule | null> {
     case "add-watermark": return erase((await import("./text-options")).addWatermark);
     case "hijri-date-stamp": return erase((await import("./text-options")).hijriDateStamp);
     case "arabic-fonts": return erase((await import("./text-options")).arabicFonts);
+    case "organize-pdf": return erase((await import("./organize")).organizePdf);
+    case "pdf-to-jpg": return erase((await import("./pdf-to-jpg")).pdfToJpg);
     default: return null;
   }
 }

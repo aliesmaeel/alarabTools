@@ -65,9 +65,10 @@ export function ToolRunner({ tool, what }: { tool: ToolDef; what: string }) {
     setPhase({ kind: "running", done: 0, total: 1 });
     // Progress travels on its own message channel, so a late update can land after the result; ignore those.
     let finished = false;
-    const result = await engine.run(tool.id, files, { ...options, locale }, (done, total) => {
+    const progress = (done: number, total: number) => {
       if (!finished) setPhase((p) => (p.kind === "running" ? { kind: "running", done, total } : p));
-    });
+    };
+    const result = mod.runOnMain ? await mod.runOnMain(files, { ...options, locale }, progress) : await engine.run(tool.id, files, { ...options, locale }, progress);
     finished = true;
     if (result.ok) {
       const { blob, name } = bundle(result.outputs, mod.zipName ?? `${tool.id}.zip`);
@@ -144,6 +145,9 @@ export function ToolRunner({ tool, what }: { tool: ToolDef; what: string }) {
             </label>
           )}
         </div>
+        {mod.Workspace ? (
+          <mod.Workspace files={files} value={options} onChange={setOptions} />
+        ) : (
         <ul className="flex flex-col gap-2">
           {files.map((f, i) => (
             <li key={`${f.name}-${f.size}-${i}`} className="flex items-center gap-3 rounded-lg border border-line px-3 py-2.5 text-sm">
@@ -162,6 +166,7 @@ export function ToolRunner({ tool, what }: { tool: ToolDef; what: string }) {
             </li>
           ))}
         </ul>
+        )}
         {errorBox}
       </div>
 

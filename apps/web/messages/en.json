@@ -221,6 +221,25 @@
       "fit": "Fit to text",
       "format": "Format",
       "png": "PNG with transparent background"
+    },
+    "needOnePage": "Keep at least one page.",
+    "organize": {
+      "hint": "Drag pages to reorder them, or use the buttons to rotate and remove.",
+      "pageAlt": "Page {n}",
+      "moveBack": "Move back",
+      "moveForward": "Move forward",
+      "rotate": "Rotate",
+      "remove": "Remove page",
+      "restore": "Restore page",
+      "failed": "The pages could not be displayed. Check that the file is valid and not password protected."
+    },
+    "pdfToJpg": {
+      "jpgHint": "Smaller files, good for photos",
+      "pngHint": "Higher quality, good for text",
+      "quality": "Resolution",
+      "dpi72": "Normal (72 dpi)",
+      "dpi150": "Good (150 dpi)",
+      "dpi300": "Print (300 dpi)"
     }
   }
 }

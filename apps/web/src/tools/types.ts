@@ -1,4 +1,5 @@
 import type { ComponentType } from "react";
+import type { RunResult } from "@/workers/pdf.worker";
 
 export type Options = Record<string, unknown>;
 
@@ -11,8 +12,18 @@ export type OptionsProps<O extends Options = Options> = {
   fileCount: number;
 };
 
+export type WorkspaceProps<O extends Options = Options> = {
+  files: File[];
+  value: O;
+  onChange: (next: O) => void;
+};
+
 export type ToolModule<O extends Options = Options> = {
   defaults: O;
+  /** Replaces the plain file list with a tool-specific editor (page thumbnails, signature placement...). */
+  Workspace?: ComponentType<WorkspaceProps<O>>;
+  /** Run on the main thread instead of the PDF worker (tools that need canvas / pdf.js). */
+  runOnMain?: (files: File[], options: O, onProgress: (done: number, total: number) => void) => Promise<RunResult>;
   /** Options form; omit for tools with no options. */
   Options?: ComponentType<OptionsProps<O>>;
   /** Return a message key under "options" when the options are not ready to run. */

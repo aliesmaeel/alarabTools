@@ -45,9 +45,11 @@ Copy `apps/web/.env.example` to `apps/web/.env.local`. Set `NEXT_PUBLIC_SITE_URL
 ## Status
 
 - P0 Foundation: done (registry, bilingual site, tool page template with SEO metadata and JSON-LD, sitemap, smoke test, CI).
-- P1 Browser PDF tools: in progress. Working (13): merge, split, remove pages, extract pages, rotate, crop, protect, unlock, JPG to PDF, page numbers, watermark (text or logo), Hijri date stamp, Arabic fonts (text to PDF/PNG).
-  Remaining: organize (thumbnails), PDF to JPG, compare, scan to PDF, sign, edit.
+- P1 Browser PDF tools: in progress. Working (15): merge, split, remove pages, extract pages, organize, rotate, crop, protect, unlock, JPG to PDF, PDF to JPG, page numbers, watermark (text or logo), Hijri date stamp, Arabic fonts (text to PDF/PNG).
+  Remaining: compare, scan to PDF, sign, edit.
 
 ## How a browser tool works
 
 `ToolRunner` (client) collects files and options, then calls `src/lib/engine.ts`, which talks to `src/workers/pdf.worker.ts` over Comlink. The worker runs `@alarab/pdf-core` and returns `{name, bytes, mime}[]`; several outputs are zipped with fflate. Each tool's option form lives in `src/tools/` and is lazy-loaded so pages stay light.
+
+Tools that need page previews use pdf.js on the main thread (`src/lib/pdfjs.ts`; its worker is copied to `public/` by `scripts/copy-assets.mjs`). A tool module can provide a `Workspace` component (page thumbnails, placement UI) and/or `runOnMain` to run with canvas instead of the PDF worker.

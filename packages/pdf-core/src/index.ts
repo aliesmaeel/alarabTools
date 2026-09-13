@@ -98,14 +98,14 @@ export async function rotate(bytes: Bytes, angle: 90 | 180 | 270 | -90, pages?: 
   return save(doc);
 }
 
-/** Reorder and rotate in one pass. `order` lists source indices in the new order; `rotations` are absolute per source index. */
+/** Reorder and rotate in one pass. `order` lists source indices in the new order; `rotations` are added to each page's existing rotation. */
 export async function organize(bytes: Bytes, order: number[], rotations: Record<number, number> = {}): Promise<Bytes> {
   const src = await load(bytes);
   const out = await PDFDocument.create();
   const pages = await out.copyPages(src, order);
   pages.forEach((p, i) => {
     const r = rotations[order[i]];
-    if (r !== undefined) p.setRotation(degrees(((r % 360) + 360) % 360));
+    if (r) p.setRotation(degrees((((p.getRotation().angle + r) % 360) + 360) % 360));
     out.addPage(p);
   });
   return save(out);

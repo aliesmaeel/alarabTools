@@ -6,7 +6,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./stamp": "./src/stamp.ts",
-    "./document": "./src/document.ts"
+    "./document": "./src/document.ts",
+    "./pages": "./src/pages.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
