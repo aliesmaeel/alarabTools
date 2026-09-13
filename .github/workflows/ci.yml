@@ -16,6 +16,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @alarab/tools test
+      - run: pnpm --filter @alarab/pdf-core test
       - run: pnpm --filter web lint
       - run: pnpm --filter web build
       - name: Smoke test every page in both languages
@@ -23,3 +24,4 @@ jobs:
           pnpm --filter web exec next start -p 3000 &
           for i in $(seq 1 30); do curl -sf http://localhost:3000/ >/dev/null && break; sleep 1; done
           node apps/web/scripts/smoke.mjs
+          BASE_URL=http://localhost:3000 pnpm --filter web exec playwright test

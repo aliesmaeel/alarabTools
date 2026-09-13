@@ -5,7 +5,7 @@ import { TOOLS, getTool, toolsInGroup, type Locale } from "@alarab/tools";
 import { routing } from "@/i18n/routing";
 import { Link } from "@/i18n/navigation";
 import { SITE_NAME, alternates, localizedUrl } from "@/lib/site";
-import { Dropzone } from "@/components/Dropzone";
+import { ToolRunner } from "@/components/ToolRunner";
 import { RuntimeBadge } from "@/components/RuntimeBadge";
 import { ToolCard } from "@/components/ToolCard";
 import { ToolIcon } from "@/components/ToolIcon";
@@ -101,7 +101,7 @@ export default async function ToolPage({ params }: PageProps<"/[locale]/[tool]">
         <RuntimeBadge runtime={tool.runtime} long />
       </header>
 
-      <Dropzone accepts={tool.accepts} maxFiles={tool.limits.maxFiles} maxBytes={tool.limits.maxBytes} what={what} />
+      <ToolRunner tool={tool} what={what} />
 
       <section className="grid gap-8 md:grid-cols-2">
         <div className="flex flex-col gap-3">

@@ -10,3 +10,7 @@ coverage/
 *.log
 .DS_Store
 design/alarabtools-mockup.html
+e2e/test-results/
+e2e/playwright-report/
+test-results/
+playwright-report/

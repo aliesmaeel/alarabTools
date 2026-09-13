@@ -75,5 +75,77 @@
     "title": "Page not found",
     "body": "The link may have changed. Try finding the tool from the home page.",
     "home": "Back to home"
+  },
+  "runner": {
+    "fileCount": "{count, plural, one {# file} other {# files}}",
+    "addMore": "Add files",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "remove": "Remove",
+    "run": "{name}",
+    "working": "Working… {done} of {total}",
+    "doneTitle": "Done!",
+    "doneFiles": "{count, plural, one {# file} other {# files}} in a ZIP",
+    "download": "Download result",
+    "startOver": "Another file",
+    "privacyNote": "Processed in your browser. Nothing was uploaded.",
+    "failed": "The file could not be processed. Check that it isn't damaged and try again.",
+    "passwordNeeded": "This file is password protected. Enter the password to continue:",
+    "browserNote": "Processed on your device; nothing is uploaded.",
+    "serverNote": "Uploaded over an encrypted connection and deleted after 1 hour."
+  },
+  "options": {
+    "needPages": "Enter the page numbers first.",
+    "needPassword": "Enter a password.",
+    "passwordMismatch": "The passwords don't match.",
+    "needCrop": "Set a crop amount on at least one side.",
+    "pagesExample": "Example: 1-3, 5 (the file has {count} pages)",
+    "split": {
+      "ranges": "Custom ranges",
+      "rangesHint": "Each range becomes its own file",
+      "rangesLabel": "Ranges, separated by semicolons",
+      "every": "Every N pages",
+      "everyLabel": "Pages per file",
+      "all": "Every page as a file ({count} files)"
+    },
+    "removePages": {
+      "label": "Pages to remove"
+    },
+    "extractPages": {
+      "label": "Pages to extract"
+    },
+    "rotate": {
+      "cw": "90° clockwise",
+      "ccw": "90° counter-clockwise",
+      "flip": "180°",
+      "pages": "Specific pages (optional)",
+      "allPages": "All pages"
+    },
+    "crop": {
+      "intro": "How much to trim from each side, in millimetres.",
+      "top": "Top",
+      "bottom": "Bottom",
+      "left": "Left",
+      "right": "Right"
+    },
+    "protect": {
+      "password": "Password",
+      "confirm": "Confirm password",
+      "permissions": "Allow",
+      "allowPrint": "Printing",
+      "allowCopy": "Copying text",
+      "allowModify": "Editing"
+    },
+    "unlock": {
+      "password": "File password",
+      "hint": "Leave empty if the file is only restricted and opens without a password."
+    },
+    "images": {
+      "fit": "Image size",
+      "fitHint": "Each page matches its image",
+      "a4": "A4 page",
+      "a4Hint": "The image is scaled to fit the page",
+      "margin": "Margin around the image"
+    }
   }
 }

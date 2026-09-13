@@ -7,16 +7,23 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
+    "@alarab/pdf-core": "workspace:*",
     "@alarab/tools": "workspace:*",
+    "comlink": "^4.4.2",
+    "fflate": "^0.8.3",
     "next": "16.3.5",
     "next-intl": "^4.14.4",
+    "pdfjs-dist": "^6.3.289",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
   "devDependencies": {
+    "@cantoo/pdf-lib": "^2.11.0",
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
