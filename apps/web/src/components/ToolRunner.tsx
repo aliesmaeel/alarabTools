@@ -41,7 +41,7 @@ export function ToolRunner({ tool, what }: { tool: ToolDef; what: string }) {
     setFiles(next);
     setNeedPassword(false);
     setPhase({ kind: "configure" });
-    engine.warmUp();
+    engine.warmUp(tool.id);
     if (next[0]?.type === "application/pdf") engine.pageCount(next[0]).then(setPageCount);
     else setPageCount(null);
   }
@@ -68,7 +68,8 @@ export function ToolRunner({ tool, what }: { tool: ToolDef; what: string }) {
     const progress = (done: number, total: number) => {
       if (!finished) setPhase((p) => (p.kind === "running" ? { kind: "running", done, total } : p));
     };
-    const result = mod.runOnMain ? await mod.runOnMain(files, { ...options, locale }, progress) : await engine.run(tool.id, files, { ...options, locale }, progress);
+    const prepared = { ...(mod.prepare ? mod.prepare(options) : options), locale };
+    const result = mod.runOnMain ? await mod.runOnMain(files, prepared, progress) : await engine.run(tool.id, files, prepared, progress);
     finished = true;
     if (result.ok) {
       const { blob, name } = bundle(result.outputs, mod.zipName ?? `${tool.id}.zip`);
@@ -77,7 +78,7 @@ export function ToolRunner({ tool, what }: { tool: ToolDef; what: string }) {
       setNeedPassword(true);
       setPhase({ kind: "configure" });
     } else {
-      setPhase({ kind: "error", message: result.message === "no-pages" ? to("needPages") : result.message === "png-unsupported" ? t("pngUnsupported") : t("failed") });
+      setPhase({ kind: "error", message: result.message === "no-pages" ? to("needPages") : result.message === "png-unsupported" ? t("pngUnsupported") : result.message === "undecodable" ? t("undecodable") : t("failed") });
     }
   }
 

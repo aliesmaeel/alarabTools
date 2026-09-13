@@ -26,6 +26,8 @@ export type ToolModule<O extends Options = Options> = {
   runOnMain?: (files: File[], options: O, onProgress: (done: number, total: number) => void) => Promise<RunResult>;
   /** Options form; omit for tools with no options. */
   Options?: ComponentType<OptionsProps<O>>;
+  /** Transform options right before running (derive worker-facing fields). */
+  prepare?: (o: O) => O;
   /** Return a message key under "options" when the options are not ready to run. */
   validate?: (o: O) => string | null;
   /** Tool takes typed input instead of files; the runner opens on the options panel. */

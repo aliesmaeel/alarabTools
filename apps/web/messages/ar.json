@@ -99,7 +99,8 @@
     "again": "نص آخر",
     "workingShort": "جارٍ العمل…",
     "privacyNoteText": "تم الإنشاء داخل متصفحك.",
-    "pngUnsupported": "متصفحك لا يدعم إنشاء PNG هنا. جرّب PDF أو متصفحًا أحدث."
+    "pngUnsupported": "متصفحك لا يدعم إنشاء PNG هنا. جرّب PDF أو متصفحًا أحدث.",
+    "undecodable": "تعذّر قراءة الصورة. صيغة HEIC غير مدعومة بعد؛ جرّب JPG أو PNG أو WebP."
   },
   "options": {
     "needPages": "اكتب أرقام الصفحات أولًا.",
@@ -285,6 +286,44 @@
       "checkAll": "فحص كل الصفحات",
       "changedPages": "صفحات مختلفة: {list}",
       "noChanges": "لا فروق في أي صفحة."
+    },
+    "needSize": "أدخل الحجم المطلوب.",
+    "needChange": "اختر تدويرًا أو قلبًا.",
+    "compressImage": {
+      "recommended": "موصى به",
+      "recommendedHint": "توازن جيد بين الحجم والجودة",
+      "high": "جودة عالية",
+      "highHint": "ضغط خفيف، فرق غير ملحوظ",
+      "extreme": "أقصى ضغط",
+      "extremeHint": "أصغر حجم ممكن مع بعض التنازل عن الجودة"
+    },
+    "resize": {
+      "percent": "بالنسبة المئوية",
+      "width": "بالعرض",
+      "height": "بالارتفاع",
+      "box": "ضمن إطار",
+      "boxHint": "لا تتجاوز العرض ولا الارتفاع",
+      "percentLabel": "النسبة ٪",
+      "widthPx": "العرض بالبكسل",
+      "heightPx": "الارتفاع بالبكسل",
+      "enlarge": "اسمح بالتكبير"
+    },
+    "convert": {
+      "quality": "الجودة",
+      "background": "لون الخلفية",
+      "backgroundHint": "للمناطق الشفافة",
+      "pngHint": "بلا فقد، يحفظ الشفافية",
+      "webpHint": "حجم أصغر مع جودة عالية"
+    },
+    "rotateImage": {
+      "none": "بدون تدوير",
+      "flipH": "قلب أفقي",
+      "flipV": "قلب رأسي"
+    },
+    "cropImage": {
+      "aspect": "نسبة الأبعاد",
+      "free": "حر",
+      "hint": "اسحب الإطار لتحريكه، أو اسحب أحد الأركان لتغيير حجمه."
     }
   }
 }

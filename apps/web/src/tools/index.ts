@@ -24,7 +24,16 @@ export const IMPLEMENTED = new Set([
   "sign-pdf",
   "scan-to-pdf",
   "compare-pdf",
+  "compress-image",
+  "resize-image",
+  "convert-to-jpg",
+  "convert-from-jpg",
+  "rotate-image",
+  "crop-image",
 ]);
+
+/** Tools that run in the image worker (WASM codecs) instead of the PDF worker. */
+export const IMAGE_TOOLS = new Set(["compress-image", "resize-image", "convert-to-jpg", "convert-from-jpg", "rotate-image", "crop-image"]);
 
 // Lazy so a tool page only ships its own form.
 export async function loadToolModule(id: string): Promise<ToolModule | null> {
@@ -47,6 +56,12 @@ export async function loadToolModule(id: string): Promise<ToolModule | null> {
     case "sign-pdf": return erase((await import("./sign")).signPdf);
     case "scan-to-pdf": return erase((await import("./scan")).scanToPdf);
     case "compare-pdf": return erase((await import("./compare")).comparePdf);
+    case "compress-image": return erase((await import("./image-options")).compressImage);
+    case "resize-image": return erase((await import("./image-options")).resizeImage);
+    case "convert-to-jpg": return erase((await import("./image-options")).convertToJpg);
+    case "convert-from-jpg": return erase((await import("./image-options")).convertFromJpg);
+    case "rotate-image": return erase((await import("./image-options")).rotateImage);
+    case "crop-image": return erase((await import("./crop-image")).cropImage);
     default: return null;
   }
 }

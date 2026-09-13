@@ -12,7 +12,8 @@ apps/worker       Job runner for server tools (phase P3, not started).
 packages/tools    The tool registry: every page, badge, sitemap entry and API route reads from it.
 packages/pdf-core pdf-lib operations shared by the browser worker and (later) the API worker.
 packages/arabic   Bidi + shaping-aware text drawing, digits, Hijri dates, bundled OFL fonts.
-packages/*        image-core, arabic, jobs, ui (later phases).
+packages/image-core Decode/resize/encode on ImageData; jSquash codecs (mozjpeg, libwebp, oxipng) loaded at runtime.
+packages/*        jobs, ui (later phases).
 ```
 
 ## Run it
@@ -47,9 +48,13 @@ Copy `apps/web/.env.example` to `apps/web/.env.local`. Set `NEXT_PUBLIC_SITE_URL
 - P0 Foundation: done (registry, bilingual site, tool page template with SEO metadata and JSON-LD, sitemap, smoke test, CI).
 - P1 Browser PDF tools: in progress. Working (18): merge, split, remove pages, extract pages, organize, scan to PDF, rotate, crop, protect, unlock, sign, compare, JPG to PDF, PDF to JPG, page numbers, watermark (text or logo), Hijri date stamp, Arabic fonts (text to PDF/PNG).
   Remaining: edit PDF (planned after the image tools; it is the largest).
+- P2 Browser image tools: in progress. Working (6): compress, resize, convert to JPG, convert from JPG (PNG/WebP), rotate/flip, crop.
+  Remaining: photo editor, image watermark, meme generator, blur faces, HEIC input, upscale.
 
 ## How a browser tool works
 
 `ToolRunner` (client) collects files and options, then calls `src/lib/engine.ts`, which talks to `src/workers/pdf.worker.ts` over Comlink. The worker runs `@alarab/pdf-core` and returns `{name, bytes, mime}[]`; several outputs are zipped with fflate. Each tool's option form lives in `src/tools/` and is lazy-loaded so pages stay light.
+
+Image tools run in a second worker (`src/workers/image.worker.ts`) on `@alarab/image-core`. The jSquash WASM codecs are not bundled: Turbopack's production build never finishes on their emscripten glue, so `scripts/copy-assets.mjs` copies the packages to `public/codecs/` and the worker imports them from there at runtime.
 
 Tools that need page previews use pdf.js on the main thread (`src/lib/pdfjs.ts`; its worker is copied to `public/` by `scripts/copy-assets.mjs`). A tool module can provide a `Workspace` component (page thumbnails, placement UI) and/or `runOnMain` to run with canvas instead of the PDF worker.

@@ -2,6 +2,8 @@
 
 import * as Comlink from "comlink";
 import type { PdfWorkerApi, ProgressFn, RunResult, Output } from "@/workers/pdf.worker";
+import type { ImageWorkerApi } from "@/workers/image.worker";
+import { IMAGE_TOOLS } from "@/tools";
 
 export type { RunResult, Output };
 
@@ -17,8 +19,19 @@ function get(): Comlink.Remote<PdfWorkerApi> {
   return remote;
 }
 
-export function warmUp() {
-  get();
+let imageWorker: Worker | null = null;
+let imageRemote: Comlink.Remote<ImageWorkerApi> | null = null;
+function getImage(): Comlink.Remote<ImageWorkerApi> {
+  if (!imageRemote) {
+    imageWorker = new Worker(new URL("../workers/image.worker.ts", import.meta.url), { type: "module" });
+    imageRemote = Comlink.wrap<ImageWorkerApi>(imageWorker);
+  }
+  return imageRemote;
+}
+
+export function warmUp(toolId?: string) {
+  if (toolId && IMAGE_TOOLS.has(toolId)) getImage();
+  else get();
 }
 
 export function pageCount(file: File): Promise<number | null> {
@@ -26,5 +39,6 @@ export function pageCount(file: File): Promise<number | null> {
 }
 
 export function run(toolId: string, files: File[], options: Record<string, unknown>, onProgress: ProgressFn): Promise<RunResult> {
-  return get().run(toolId, files, options, Comlink.proxy(onProgress));
+  const remote = IMAGE_TOOLS.has(toolId) ? getImage() : get();
+  return remote.run(toolId, files, options, Comlink.proxy(onProgress));
 }

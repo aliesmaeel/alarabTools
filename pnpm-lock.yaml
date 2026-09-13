@@ -20,12 +20,30 @@ importers:
       '@alarab/arabic':
         specifier: workspace:*
         version: link:../../packages/arabic
+      '@alarab/image-core':
+        specifier: workspace:*
+        version: link:../../packages/image-core
       '@alarab/pdf-core':
         specifier: workspace:*
         version: link:../../packages/pdf-core
       '@alarab/tools':
         specifier: workspace:*
         version: link:../../packages/tools
+      '@jsquash/jpeg':
+        specifier: ^1.6.0
+        version: 1.6.0
+      '@jsquash/oxipng':
+        specifier: ^2.3.0
+        version: 2.3.0
+      '@jsquash/png':
+        specifier: ^3.1.1
+        version: 3.1.1
+      '@jsquash/resize':
+        specifier: ^2.1.1
+        version: 2.1.1
+      '@jsquash/webp':
+        specifier: ^1.5.0
+        version: 1.5.0
       comlink:
         specifier: ^4.4.2
         version: 4.4.2
@@ -97,6 +115,28 @@ importers:
       tsx:
         specifier: ^4.20.0
         version: 4.23.13
+      typescript:
+        specifier: ^5.9.0
+        version: 5.9.3
+
+  packages/image-core:
+    dependencies:
+      '@jsquash/jpeg':
+        specifier: ^1.6.0
+        version: 1.6.0
+      '@jsquash/oxipng':
+        specifier: ^2.3.0
+        version: 2.3.0
+      '@jsquash/png':
+        specifier: ^3.1.1
+        version: 3.1.1
+      '@jsquash/resize':
+        specifier: ^2.1.1
+        version: 2.1.1
+      '@jsquash/webp':
+        specifier: ^1.5.0
+        version: 1.5.0
+    devDependencies:
       typescript:
         specifier: ^5.9.0
         version: 5.9.3
@@ -621,6 +661,21 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
+
+  '@jsquash/jpeg@1.6.0':
+    resolution: {integrity: sha512-zwN46Awh1VM6gXlIcALwb5WzqK5H2e6+Awcs1QP8AvS8ohsK/sbE4esvmH4jhlhW7+CgiUUww66vg0aTnlSIMA==}
+
+  '@jsquash/oxipng@2.3.0':
+    resolution: {integrity: sha512-aQ8wiEp6ztlTMXc+RMt/CG8crU3mEHDU+h+JYkIi6ctMhlh8+Ltj5XwQFfBuyzKYrp8NxaFW80Dp824bqjr+zA==}
+
+  '@jsquash/png@3.1.1':
+    resolution: {integrity: sha512-C10pc+0H6j0h8fENOfnGOvkXCmvpSQTDGlfGd0sHphZhPSGTyLjIrHba0FaZZdsKqA/wlmhYicUHb92vfZphaw==}
+
+  '@jsquash/resize@2.1.1':
+    resolution: {integrity: sha512-0R5UL1ZLHUT+carjVikcE1QfA+kfNQ2YamYyGVRmhfh4zttU5EY3bQBGxPIPtY2xIAw1P4Kgyxm2xrceRw1r2w==}
+
+  '@jsquash/webp@1.5.0':
+    resolution: {integrity: sha512-KggLoj2MnRSfIqTeKe1EmbljTX2vuV7mh79k89PCL1pyqiDULcPM1L47twxXt0hkb68F70bXiL31MxsuoZtKFw==}
 
   '@napi-rs/canvas-android-arm64@1.0.9':
     resolution: {integrity: sha512-4LGXk2/0HVzE29K8SzML5WubgCp++B1FH3qgl35XmSZE+lLdr6P9VRQEnZ0MCLZMTSuJP41yyhtoiVNEuvrTIA==}
@@ -2573,6 +2628,9 @@ packages:
     peerDependencies:
       react: ^17.0.0 || ^18.0.0 || >=19.0.0-rc <19.0.0 || ^19.0.0
 
+  wasm-feature-detect@1.9.0:
+    resolution: {integrity: sha512-zonE+xlIIYtxPy++L24ow0hAD8CICb4+FgPyROd3buyXIqsJvUEDkBgfCCoXOd1Hu3DUr0GOfnPIdcGV+YpNaA==}
+
   which-boxed-primitive@1.1.1:
     resolution: {integrity: sha512-TbX3mj8n0odCBFVlY8AxkqcHASw3L60jIuF8jFP78az3C2YhmGvqbHBpAjTRH2/xqYunrJ9g1jSyjCjpoWzIAA==}
     engines: {node: '>= 0.4'}
@@ -3047,6 +3105,20 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.6.0
+
+  '@jsquash/jpeg@1.6.0': {}
+
+  '@jsquash/oxipng@2.3.0':
+    dependencies:
+      wasm-feature-detect: 1.9.0
+
+  '@jsquash/png@3.1.1': {}
+
+  '@jsquash/resize@2.1.1': {}
+
+  '@jsquash/webp@1.5.0':
+    dependencies:
+      wasm-feature-detect: 1.9.0
 
   '@napi-rs/canvas-android-arm64@1.0.9':
     optional: true
@@ -5172,6 +5244,8 @@ snapshots:
       icu-minify: 4.14.4
       intl-messageformat: 11.2.15
       react: 19.2.8
+
+  wasm-feature-detect@1.9.0: {}
 
   which-boxed-primitive@1.1.1:
     dependencies:

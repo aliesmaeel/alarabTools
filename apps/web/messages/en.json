@@ -99,7 +99,8 @@
     "again": "Another text",
     "workingShort": "Working…",
     "privacyNoteText": "Created in your browser.",
-    "pngUnsupported": "Your browser can't create a PNG here. Try PDF or a newer browser."
+    "pngUnsupported": "Your browser can't create a PNG here. Try PDF or a newer browser.",
+    "undecodable": "The image could not be read. HEIC isn't supported yet; try JPG, PNG or WebP."
   },
   "options": {
     "needPages": "Enter the page numbers first.",
@@ -285,6 +286,44 @@
       "checkAll": "Check all pages",
       "changedPages": "Pages that differ: {list}",
       "noChanges": "No differences on any page."
+    },
+    "needSize": "Enter the target size.",
+    "needChange": "Pick a rotation or a flip.",
+    "compressImage": {
+      "recommended": "Recommended",
+      "recommendedHint": "Good balance of size and quality",
+      "high": "High quality",
+      "highHint": "Light compression, no visible difference",
+      "extreme": "Extreme",
+      "extremeHint": "Smallest files, some quality loss"
+    },
+    "resize": {
+      "percent": "By percentage",
+      "width": "By width",
+      "height": "By height",
+      "box": "Fit in a box",
+      "boxHint": "Never exceed the width or the height",
+      "percentLabel": "Percent",
+      "widthPx": "Width in pixels",
+      "heightPx": "Height in pixels",
+      "enlarge": "Allow enlarging"
+    },
+    "convert": {
+      "quality": "Quality",
+      "background": "Background colour",
+      "backgroundHint": "For transparent areas",
+      "pngHint": "Lossless, keeps transparency",
+      "webpHint": "Smaller files at high quality"
+    },
+    "rotateImage": {
+      "none": "No rotation",
+      "flipH": "Flip horizontally",
+      "flipV": "Flip vertically"
+    },
+    "cropImage": {
+      "aspect": "Aspect ratio",
+      "free": "Free",
+      "hint": "Drag the frame to move it, or drag a corner to resize."
     }
   }
 }
