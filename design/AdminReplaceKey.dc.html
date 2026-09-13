@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Reem+Kufi:wght@600;700&amp;display=swap">
+  <style>
+    body { margin: 0; background: #F4F5F8; }
+    a { color: #3346B8; text-decoration: none; } a:hover { color: #25338A; }
+    * { box-sizing: border-box; }
+  </style>
+</helmet>
+<div dir="ltr" lang="en" style="position: relative; width: 1440px; height: 900px; overflow: hidden; background: #F4F5F8; color: #161B2F; font-family: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;">
+
+  <!-- Page behind the dialog -->
+  <div style="position: absolute; inset: 0; display: grid; grid-template-columns: 240px minmax(0, 1fr);">
+    <aside style="background: #161B2F;"></aside>
+    <div style="padding: 32px 40px; display: flex; flex-direction: column; gap: 24px;">
+      <div style="height: 28px; width: 220px; border-radius: 6px; background: #D7DBE7;"></div>
+      <div style="height: 80px; border-radius: 12px; background: #FFFFFF; border: 1px solid #E3E6EF;"></div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px;">
+        <div style="height: 320px; border-radius: 12px; background: #FFFFFF; border: 1px solid #E3E6EF;"></div>
+        <div style="height: 320px; border-radius: 12px; background: #FFFFFF; border: 1px solid #E3E6EF;"></div>
+        <div style="height: 320px; border-radius: 12px; background: #FFFFFF; border: 1px solid #E3E6EF;"></div>
+        <div style="height: 320px; border-radius: 12px; background: #FFFFFF; border: 1px solid #E3E6EF;"></div>
+      </div>
+    </div>
+  </div>
+  <div style="position: absolute; inset: 0; background: rgba(22, 27, 47, 0.55);"></div>
+
+  <!-- Dialog -->
+  <div style="position: absolute; top: 110px; left: 50%; transform: translateX(-50%); width: 580px; background: #FFFFFF; border-radius: 16px; box-shadow: 0 30px 60px -20px rgba(10, 12, 25, 0.5); display: flex; flex-direction: column;">
+    <div style="padding: 24px 28px 0; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;">
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <h2 style="margin: 0; font-size: 21px; font-weight: 600;">Replace Google Cloud key</h2>
+        <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #5C627A;">Current key ends in <span style="font-family: 'IBM Plex Mono', monospace; color: #161B2F;">9c1d</span>. Its last test failed at 14:02 with "API key not valid."</p>
+      </div>
+      <div style="width: 36px; height: 36px; flex-shrink: 0; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #5C627A;"><svg viewBox="0 0 24 24" width="20" height="20" style="fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M6 6l12 12M18 6L6 18"></path></svg></div>
+    </div>
+
+    <div style="padding: 22px 28px; display: flex; flex-direction: column; gap: 18px;">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <label for="new-key" style="font-size: 14px; font-weight: 500;">New API key</label>
+        <div id="new-key" style="height: 46px; padding-inline: 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 2px solid #3346B8; border-radius: 8px; box-shadow: 0 0 0 4px #E9ECFA;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; letter-spacing: 0.12em; color: #161B2F;">••••••••••••••••••••••••••••••••••••••</span>
+          <svg viewBox="0 0 24 24" width="20" height="20" style="flex-shrink: 0; fill: none; stroke: #5C627A; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+        </div>
+        <span style="font-size: 13px; color: #5C627A;">In Google Cloud: APIs &amp; Services → Credentials. Restrict the key to Cloud Vision API and Cloud Translation API.</span>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 14px; font-weight: 500;">Used for</span>
+        <div style="display: flex; gap: 8px;">
+          <span style="padding-block: 4px; padding-inline: 10px; border-radius: 6px; background: #F0F2F7; color: #4A5068; font-size: 13px;">Arabic OCR · Cloud Vision</span>
+          <span style="padding-block: 4px; padding-inline: 10px; border-radius: 6px; background: #F0F2F7; color: #4A5068; font-size: 13px;">Translate · Cloud Translation</span>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 10px; font-size: 14px;">
+        <div style="width: 20px; height: 20px; border-radius: 5px; background: #3346B8; display: flex; align-items: center; justify-content: center;"><svg viewBox="0 0 24 24" width="14" height="14" style="fill: none; stroke: #FFFFFF; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;"><path d="M5 12l5 5 9-10"></path></svg></div>
+        <span>Test the new key before saving it, and keep the old key if the test fails</span>
+      </div>
+
+      <div style="display: flex; gap: 12px; padding: 14px 16px; border-radius: 10px; background: #F4F5F8;">
+        <svg viewBox="0 0 24 24" width="20" height="20" style="flex-shrink: 0; margin-top: 1px; fill: none; stroke: #3346B8; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>
+        <span style="font-size: 13.5px; line-height: 1.55; color: #3A405A;">Your browser encrypts this key so that only the worker can read it. After saving, nobody can view it again, including you. The dashboard will show the last four characters.</span>
+      </div>
+    </div>
+
+    <div style="padding: 16px 28px; border-top: 1px solid #ECEEF4; display: flex; justify-content: flex-end; gap: 10px;">
+      <a href="#" style="height: 42px; padding-inline: 18px; display: flex; align-items: center; border: 1px solid #D7DBE7; border-radius: 8px; color: #161B2F; font-size: 14px; font-weight: 500;">Cancel</a>
+      <a href="#" style="height: 42px; padding-inline: 18px; display: flex; align-items: center; border-radius: 8px; background: #3346B8; color: #FFFFFF; font-size: 14px; font-weight: 600;">Test and save</a>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

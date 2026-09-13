@@ -1,0 +1,124 @@
+{
+  "artboards": [
+    {
+      "file": "Main.dc.html",
+      "title": "Home (Arabic, desktop)",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 4500,
+      "page": "page-1"
+    },
+    {
+      "file": "MergeTool.dc.html",
+      "title": "Merge PDF workspace",
+      "x": 1540,
+      "y": 0,
+      "w": 1440,
+      "h": 960,
+      "page": "page-1"
+    },
+    {
+      "file": "CompressDone.dc.html",
+      "title": "Compress PDF result",
+      "x": 1540,
+      "y": 1100,
+      "w": 1440,
+      "h": 900,
+      "page": "page-1"
+    },
+    {
+      "file": "MobileEnglish.dc.html",
+      "title": "Home (English, phone)",
+      "x": 3080,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "page": "page-1"
+    },
+    {
+      "file": "AltSearchFirst.dc.html",
+      "title": "Alternative B: search-first",
+      "x": 3080,
+      "y": 1100,
+      "w": 1000,
+      "h": 700,
+      "page": "page-1"
+    },
+    {
+      "file": "AdminProviders.dc.html",
+      "title": "Admin: AI providers",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 1880,
+      "page": "page-2"
+    },
+    {
+      "file": "AdminRouting.dc.html",
+      "title": "Admin: Routing",
+      "x": 1540,
+      "y": 0,
+      "w": 1440,
+      "h": 1100,
+      "page": "page-2"
+    },
+    {
+      "file": "AdminReplaceKey.dc.html",
+      "title": "Admin: Replace key",
+      "x": 1540,
+      "y": 1240,
+      "w": 1440,
+      "h": 900,
+      "page": "page-2"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "brief-summary",
+      "x": 0,
+      "y": -200,
+      "w": 520,
+      "text": "alarabTools: Arabic-first, English second. 47 tools in 8 groups, including 3 Arabic-only tools.\nThe badge on each tool says where it runs: 'on your device' (never uploaded) or 'on the server' (deleted after 1 hour).\nAd slots are dashed boxes.",
+      "page": "page-1"
+    },
+    {
+      "id": "merge-note",
+      "x": 1540,
+      "y": -200,
+      "w": 460,
+      "text": "Merge runs in the browser, so the page says no file was uploaded.\nThe compress result shows what happens for server tools: a deletion countdown and 'delete now'.",
+      "page": "page-1"
+    },
+    {
+      "id": "alt-note",
+      "x": 3500,
+      "y": 1100,
+      "w": 360,
+      "text": "Alternative B: one big search box plus drop-a-file suggestions, with the full catalog one click away.\nFaster for people who know what they want. Weaker for SEO and for discovering tools like the Hijri stamp.",
+      "page": "page-1"
+    },
+    {
+      "id": "admin-note",
+      "x": 0,
+      "y": -190,
+      "w": 620,
+      "page": "page-2",
+      "text": "Owner-only dashboard at /admin, in English (only you use it).\nSample state: 4 providers working, Azure OCR paused at the 90% safety margin, a rejected Google Cloud key, OCR.space rate-limited, Mistral not set up.\nAll usage numbers are examples."
+    }
+  ],
+  "launch": {
+    "view": "canvas",
+    "page": "page-2"
+  },
+  "pages": [
+    {
+      "id": "page-1",
+      "name": "Public site"
+    },
+    {
+      "id": "page-2",
+      "name": "Admin dashboard"
+    }
+  ]
+}

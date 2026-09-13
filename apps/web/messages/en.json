@@ -1,0 +1,79 @@
+{
+  "site": {
+    "name": "alarabTools",
+    "tagline": "PDF and image tools in Arabic and English",
+    "switchLocale": "العربية"
+  },
+  "nav": {
+    "pdf": "PDF tools",
+    "images": "Image tools",
+    "ai": "AI",
+    "arabic": "Arabic tools",
+    "developers": "Developers"
+  },
+  "home": {
+    "title": "Every PDF and image tool, in Arabic and English.",
+    "lede": "{count} tools to merge, compress, convert and OCR Arabic text. Tools marked “On your device” never upload your files.",
+    "search": "Search tools… e.g. compress PDF",
+    "popular": "Most used:",
+    "legendBrowser": "The file is never uploaded",
+    "legendServer": "Deleted from our servers after 1 hour",
+    "toolCount": "{count, plural, one {# tool} other {# tools}}",
+    "metaTitle": "alarabTools: free PDF and image tools in Arabic and English",
+    "metaDescription": "{count} free tools to merge, compress and convert PDFs, edit images, and OCR Arabic scans. Most run in your browser without uploading anything."
+  },
+  "groups": {
+    "organize": "Organize PDF",
+    "optimize": "Optimize PDF",
+    "to-pdf": "Convert to PDF",
+    "from-pdf": "Convert from PDF",
+    "edit": "Edit and protect PDF",
+    "image": "Image tools",
+    "ai": "AI",
+    "arabic": "Arabic tools"
+  },
+  "runtime": {
+    "browser": "On your device",
+    "server": "On our servers",
+    "browserLong": "Runs on your device; nothing is uploaded",
+    "serverLong": "Processed on our servers and deleted after 1 hour"
+  },
+  "tool": {
+    "breadcrumbHome": "Home",
+    "dropTitle": "Choose a {what} or drop it here",
+    "dropTitlePlural": "Choose files or drop them here",
+    "dropHint": "Up to {maxFiles, plural, one {# file} other {# files}} · {maxMb} MB each",
+    "choose": "Choose files",
+    "comingSoon": "This tool is being built and will work soon.",
+    "howTo": "How to use {name}",
+    "step1": "Choose your files or drop them into the area above.",
+    "step2Browser": "Files are processed right in your browser, without being uploaded to any server.",
+    "step2Server": "Files are uploaded over an encrypted connection and processed within seconds.",
+    "step3": "Download the result. No watermark, no sign-up.",
+    "faqTitle": "Frequently asked questions",
+    "faqFreeQ": "Is this tool free?",
+    "faqFreeA": "Yes, completely free up to {maxMb} MB per file, with no account needed.",
+    "faqPrivacyQ": "What happens to my files?",
+    "faqPrivacyBrowser": "They never leave your device. All processing happens in your browser.",
+    "faqPrivacyServer": "They are permanently deleted from our servers after 1 hour, or immediately when you press “Delete now”.",
+    "otherTools": "More tools in {group}",
+    "what": {
+      "pdf": "PDF",
+      "image": "image",
+      "file": "file"
+    }
+  },
+  "footer": {
+    "rights": "© {year} alarabTools",
+    "privacy": "Privacy policy",
+    "terms": "Terms",
+    "contact": "Contact",
+    "allPdf": "All PDF tools",
+    "allImages": "All image tools"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "The link may have changed. Try finding the tool from the home page.",
+    "home": "Back to home"
+  }
+}

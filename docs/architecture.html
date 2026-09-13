@@ -1,0 +1,605 @@
+<title>alarabTools Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Reem+Kufi:wght@600&display=swap">
+<style>
+  :root {
+    --ground: #F4F5F8;
+    --surface: #FFFFFF;
+    --ink: #161B2F;
+    --ink-2: #545A72;
+    --line: #E1E4EE;
+    --lapis: #3346B8;
+    --lapis-soft: #E9ECFA;
+    --teal: #17735F;
+    --teal-soft: #E1F2EE;
+    --saffron: #8F5606;
+    --saffron-soft: #FBEFD6;
+    --red: #B42318;
+    --red-soft: #FDECEA;
+    --code-bg: #EEF0F6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #0F1220;
+      --surface: #171B2D;
+      --ink: #E7E9F2;
+      --ink-2: #A3A9C2;
+      --line: #2A3048;
+      --lapis: #9AA8F5;
+      --lapis-soft: #232B55;
+      --teal: #7FD3BD;
+      --teal-soft: #173A33;
+      --saffron: #F2C46B;
+      --saffron-soft: #3A2E15;
+      --red: #F59C92;
+      --red-soft: #3D1F1D;
+      --code-bg: #1E2338;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #0F1220;
+    --surface: #171B2D;
+    --ink: #E7E9F2;
+    --ink-2: #A3A9C2;
+    --line: #2A3048;
+    --lapis: #9AA8F5;
+    --lapis-soft: #232B55;
+    --teal: #7FD3BD;
+    --teal-soft: #173A33;
+    --saffron: #F2C46B;
+    --saffron-soft: #3A2E15;
+    --red: #F59C92;
+    --red-soft: #3D1F1D;
+    --code-bg: #1E2338;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    padding-inline: 20px;
+    padding-block: 0 80px;
+  }
+  [lang="ar"] { font-family: "IBM Plex Sans Arabic", "IBM Plex Sans", Tahoma, sans-serif; }
+  a { color: var(--lapis); text-underline-offset: 3px; }
+  a:focus-visible { outline: 2px solid var(--lapis); outline-offset: 2px; border-radius: 3px; }
+  code, pre { font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace; font-size: 0.86em; }
+  code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+  pre { background: var(--code-bg); padding: 16px 18px; border-radius: 8px; overflow-x: auto; line-height: 1.6; margin: 0; }
+  pre code { background: none; padding: 0; font-size: 1em; }
+
+  .masthead {
+    max-width: 1180px; margin-inline: auto;
+    padding-block: 40px 28px;
+    border-bottom: 1px solid var(--line);
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .wordmark { display: flex; align-items: center; gap: 10px; font-family: "Reem Kufi", "IBM Plex Sans", sans-serif; font-size: 20px; font-weight: 600; }
+  .wordmark .mark { width: 32px; height: 32px; border-radius: 8px; background: #3346B8; color: #FFFFFF; display: grid; place-items: center; font-size: 19px; line-height: 1; }
+  .wordmark span.t { color: var(--lapis); }
+  h1 { margin: 0; font-size: clamp(30px, 4.4vw, 44px); line-height: 1.15; font-weight: 600; letter-spacing: -0.015em; text-wrap: balance; }
+  .lede { margin: 0; font-size: 18px; color: var(--ink-2); max-width: 70ch; }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 14px; color: var(--ink-2); }
+  .meta b { color: var(--ink); font-weight: 500; }
+
+  .layout { max-width: 1180px; margin-inline: auto; display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 56px; padding-block-start: 36px; }
+  nav.toc { position: sticky; top: 24px; align-self: start; font-size: 14px; display: flex; flex-direction: column; gap: 2px; }
+  nav.toc .label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-2); margin-block-end: 6px; }
+  nav.toc a { color: var(--ink-2); text-decoration: none; padding-block: 4px; padding-inline: 10px; border-inline-start: 2px solid var(--line); }
+  nav.toc a:hover { color: var(--ink); border-inline-start-color: var(--lapis); }
+  article { min-width: 0; display: flex; flex-direction: column; gap: 56px; }
+  article > section { display: flex; flex-direction: column; gap: 16px; }
+  h2 { margin: 0; font-size: 26px; line-height: 1.25; font-weight: 600; letter-spacing: -0.01em; text-wrap: balance; }
+  h3 { margin: 0; margin-block-start: 12px; font-size: 18px; font-weight: 600; }
+  p { margin: 0; max-width: 72ch; }
+  ul, ol { margin: 0; padding-inline-start: 22px; display: flex; flex-direction: column; gap: 6px; max-width: 74ch; }
+  .muted { color: var(--ink-2); }
+
+  .facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; border-top: 1px solid var(--line); }
+  .facts div { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 12px; padding-block: 11px; border-bottom: 1px solid var(--line); font-size: 15px; }
+  .facts dt { color: var(--ink-2); }
+  .facts dd { margin: 0; }
+
+  .diagram { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; overflow-x: auto; }
+  .diagram pre.mermaid { background: none; padding: 0; font-family: "IBM Plex Sans", sans-serif; font-size: 14px; }
+
+  .lanes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .lane { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: flex; flex-direction: column; gap: 8px; font-size: 15px; }
+  .lane h4 { margin: 0; font-size: 15px; font-weight: 600; }
+  .lane p { color: var(--ink-2); }
+
+  .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
+  th, td { text-align: start; padding-block: 9px; padding-inline: 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-2); font-weight: 600; background: var(--surface); position: sticky; top: 0; }
+  tr:last-child td { border-bottom: none; }
+  tr.group td { background: var(--ground); font-weight: 600; font-size: 13px; letter-spacing: 0.02em; }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td .ar { font-family: "IBM Plex Sans Arabic", sans-serif; color: var(--ink-2); }
+
+  .pill { display: inline-block; padding-block: 1px; padding-inline: 8px; border-radius: 999px; font-size: 12.5px; font-weight: 500; white-space: nowrap; }
+  .pill.browser { background: var(--teal-soft); color: var(--teal); }
+  .pill.server { background: var(--lapis-soft); color: var(--lapis); }
+  .pill.later { background: var(--saffron-soft); color: var(--saffron); }
+  .pill.high { background: var(--red-soft); color: var(--red); }
+  .pill.med { background: var(--saffron-soft); color: var(--saffron); }
+  .pill.low { background: var(--teal-soft); color: var(--teal); }
+
+  .callout { background: var(--saffron-soft); border-radius: 10px; padding-block: 14px; padding-inline: 18px; max-width: 80ch; }
+  .callout b { font-weight: 600; }
+
+  ol.phases { list-style: none; padding: 0; gap: 0; max-width: none; counter-reset: phase -1; border-top: 1px solid var(--line); }
+  ol.phases > li { counter-increment: phase; display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 16px; padding-block: 18px; border-bottom: 1px solid var(--line); }
+  ol.phases > li::before { content: "P" counter(phase); font-family: "IBM Plex Mono", monospace; font-size: 15px; font-weight: 500; color: var(--lapis); padding-block-start: 2px; }
+  ol.phases h3 { margin: 0; }
+  ol.phases p { color: var(--ink-2); margin-block-start: 4px; }
+  ol.phases .exit { font-size: 14px; margin-block-start: 6px; }
+
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+    nav.toc { position: static; flex-direction: row; flex-wrap: wrap; gap: 4px 8px; }
+    nav.toc .label { width: 100%; }
+    nav.toc a { border-inline-start: none; padding-inline: 0; margin-inline-end: 10px; }
+    .lanes { grid-template-columns: minmax(0, 1fr); }
+    .facts { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 520px) {
+    .facts div { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+    ol.phases > li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<header class="masthead">
+  <div class="wordmark"><span class="mark" lang="ar">ع</span><span>alarab<span class="t">Tools</span></span></div>
+  <h1>System architecture and build plan</h1>
+  <p class="lede">How 47 PDF and image tools run across the visitor's browser, Vercel, and one small worker, for under $20 a month, with Arabic handled properly at every step.</p>
+  <div class="meta"><span>Status <b>Draft 1</b></span><span>Date <b>12 September 2026</b></span><span>Mockup <a href="https://claude.ai/code/artifact/0b492911-06f3-46f5-92af-443721189c77">alarabTools Mockup</a></span></div>
+</header>
+
+<div class="layout">
+  <nav class="toc" aria-label="Contents">
+    <span class="label">Contents</span>
+    <a href="#decisions">Decisions</a>
+    <a href="#overview">System overview</a>
+    <a href="#flow">How a job runs</a>
+    <a href="#components">Components</a>
+    <a href="#catalog">Tool catalog</a>
+    <a href="#arabic">Arabic and bilingual</a>
+    <a href="#security">Security and abuse</a>
+    <a href="#repo">Repository layout</a>
+    <a href="#cost">Hosting and cost</a>
+    <a href="#roadmap">Roadmap</a>
+    <a href="#risks">Risks and open decisions</a>
+  </nav>
+
+  <article>
+
+    <section id="decisions">
+      <h2>Decisions this plan is built on</h2>
+      <dl class="facts">
+        <div><dt>Languages</dt><dd>Arabic first (RTL), English second</dd></div>
+        <div><dt>Scope</dt><dd>All 47 tools before public launch; no deadline</dd></div>
+        <div><dt>Processing</dt><dd>Hybrid: 30 tools in the browser, 17 on a worker</dd></div>
+        <div><dt>Stack</dt><dd>Next.js on Vercel, Node.js worker in Docker</dd></div>
+        <div><dt>Budget</dt><dd>Under $20/month; under 1k visits/day at first</dd></div>
+        <div><dt>Revenue</dt><dd>Display ads + paid developer API (Stripe or Paddle)</dd></div>
+        <div><dt>Accounts</dt><dd>None for visitors; API developers only</dd></div>
+        <div><dt>AI</dt><dd>Free API tiers, one account per provider, open-source fallback</dd></div>
+        <div><dt>Files</dt><dd>25 MB max, deleted after 1 hour</dd></div>
+        <div><dt>SEO</dt><dd>One landing page per tool, per language</dd></div>
+        <div><dt>Admin</dt><dd>Owner dashboard for AI keys, provider order and quota usage</dd></div>
+      </dl>
+    </section>
+
+    <section id="overview">
+      <h2>System overview</h2>
+      <p>Three places do work. The browser does as much as it can, because that costs nothing and keeps files private. Vercel serves pages and a thin API. A worker container takes the jobs a browser can't do well. It only makes outbound connections, so it can run on your current machine with no open ports.</p>
+      <div class="diagram">
+<pre class="mermaid">
+flowchart LR
+  subgraph Device["Visitor's browser"]
+    UI["Tool pages (ar / en)"]
+    ENG["In-browser engine: pdf-lib, pdf.js, qpdf-wasm, jSquash, MediaPipe"]
+  end
+  subgraph Vercel["Vercel"]
+    WEB["Static tool pages (SSG)"]
+    API["Route handlers: /api/jobs, /v1 developer API"]
+  end
+  subgraph Managed["Managed services, free tiers"]
+    R2[("Cloudflare R2: files, 1 hour")]
+    RED[("Upstash Redis: queue, job state, rate limits")]
+    PG[("Neon Postgres: API accounts, keys, usage")]
+  end
+  subgraph Worker["Worker container"]
+    RUN["Job runner (Node.js)"]
+    GW["AI gateway"]
+    BIN["LibreOffice, Ghostscript, qpdf, OCRmyPDF, Chromium, PaddleOCR, rembg"]
+  end
+  AIP["AI providers: Groq, Cloudflare, Azure, Google, OCR.space, Gemini"]
+  PAY["Stripe or Paddle"]
+  UI --> WEB
+  UI --> ENG
+  UI -- "server tools" --> API
+  UI -- "upload and download" --> R2
+  API --> RED
+  API --> PG
+  RUN -- "take next job" --> RED
+  RUN <--> R2
+  RUN --> BIN
+  RUN --> GW
+  GW -- "free tiers first" --> AIP
+  GW -- "fallback" --> BIN
+  PAY -- "webhooks" --> API
+</pre>
+      </div>
+      <div class="lanes">
+        <div class="lane"><h4>Browser</h4><p>Renders the UI and runs 30 tools with WebAssembly and Canvas inside a Web Worker. Nothing is uploaded for these tools.</p></div>
+        <div class="lane"><h4>Vercel</h4><p>Pre-rendered tool pages for SEO, plus short API calls: create job, sign upload URLs, report status, authenticate API keys.</p></div>
+        <div class="lane"><h4>Worker</h4><p>Pulls jobs from Redis, reads inputs from R2, runs native tools in a locked-down container, writes results back, and deletes expired files.</p></div>
+      </div>
+      <p class="muted">Vercel isn't used for the heavy processing. Its Functions have a 4.5 MB request body limit, 1 vCPU on Hobby, and 4 CPU-hours a month included, and the Hobby plan is for non-commercial use only.</p>
+    </section>
+
+    <section id="flow">
+      <h2>How a job runs</h2>
+      <h3>Browser tool (for example, Merge PDF)</h3>
+      <p>The page lazy-loads the tool's engine into a Web Worker. Files are read with the File API, processed in memory, and saved with a Blob download. The only network traffic is loading the page and the engine code. Server tools and browser tools share the same upload component, so switching a tool between the two is a registry change, not a redesign.</p>
+      <h3>Server tool (for example, Compress PDF)</h3>
+      <div class="diagram">
+<pre class="mermaid">
+sequenceDiagram
+  participant B as Browser
+  participant V as Vercel API
+  participant R as Upstash Redis
+  participant S as Cloudflare R2
+  participant W as Worker
+  B->>V: POST /api/jobs (tool, file sizes, Turnstile token)
+  V->>R: check rate limit, create job record (expires in 1 h)
+  V-->>B: job id + signed upload URLs (10 min)
+  B->>S: PUT each file (max 25 MB)
+  B->>V: POST /api/jobs/{id}/start
+  V->>R: push job id onto queue
+  W->>R: BLMOVE job to processing list
+  W->>S: download inputs
+  W->>W: run tool with time and memory limits
+  W->>S: upload result
+  W->>R: status done, result key
+  B->>V: GET /api/jobs/{id} (poll every 1.5 s)
+  V-->>B: signed download URL (10 min)
+  Note over W,S: Sweeper deletes files older than 1 h every 5 min
+</pre>
+      </div>
+      <p>Polling is deliberate. At this traffic it costs a handful of function calls per job, and it avoids long-lived connections that serverless functions handle poorly. <code>BLMOVE</code> to a processing list means a worker crash doesn't lose jobs: on startup the worker re-queues anything left there.</p>
+    </section>
+
+    <section id="components">
+      <h2>Components</h2>
+
+      <h3>Web app on Vercel</h3>
+      <ul>
+        <li><b>Next.js App Router, TypeScript.</b> Tool pages are statically generated from the tool registry, so adding a tool adds its Arabic and English pages, sitemap entries and API endpoint in one place.</li>
+        <li><b>i18n with next-intl.</b> Arabic at <code>/merge-pdf</code>, English at <code>/en/merge-pdf</code>. <code>&lt;html dir&gt;</code> follows the locale.</li>
+        <li><b>Tailwind CSS with logical properties only</b> (<code>ms-*</code>, <code>pe-*</code>, <code>start-*</code>), so every component mirrors for RTL without separate styles.</li>
+        <li><b>Route handlers</b> for <code>/api/jobs/*</code> and the developer API under <code>/v1/*</code> (served at <code>api.[yourdomain]</code> through a rewrite).</li>
+      </ul>
+
+      <h3>In-browser engine</h3>
+      <ul>
+        <li><b>PDF:</b> pdf-lib (merge, split, rotate, crop, watermark, page numbers, sign), pdf.js (thumbnails, PDF to JPG, compare), qpdf compiled to WebAssembly (AES-256 protect and unlock).</li>
+        <li><b>Arabic text in PDFs:</b> harfbuzzjs shapes text before pdf-lib draws it. pdf-lib alone does no shaping or bidi, so Arabic would come out as disconnected, reversed letters.</li>
+        <li><b>Images:</b> jSquash codecs (MozJPEG, OxiPNG, WebP, AVIF) for compression, pica for high-quality resizing, libheif-js for HEIC input, Konva for the photo editor and meme generator. Canvas text shapes Arabic natively.</li>
+        <li><b>Face blur:</b> MediaPipe Face Detector (WASM), then a canvas blur.</li>
+        <li>Each engine is code-split per tool and runs in a Web Worker via Comlink, so the page stays responsive and ad scripts never touch file bytes on the main thread.</li>
+      </ul>
+
+      <h3>File storage and the 1-hour rule</h3>
+      <ul>
+        <li>Cloudflare R2 bucket, no public access. Uploads and downloads use signed URLs that expire in 10 minutes. The signature covers <code>Content-Length</code>, and the worker checks size and file type (magic bytes) again.</li>
+        <li>Keys are grouped by hour, <code>jobs/2026-09-12T19/{jobId}/…</code>, so the sweeper deletes whole hour prefixes instead of listing every object.</li>
+        <li>R2 lifecycle rules work in days, not hours. The worker's sweeper enforces the 1-hour promise; a 1-day lifecycle rule is only a backstop if the worker is down.</li>
+        <li>Result downloads set <code>Content-Disposition</code> with an RFC 5987 <code>filename*</code> so Arabic filenames survive.</li>
+        <li>"Delete now" on the result page removes the job's prefix immediately.</li>
+      </ul>
+
+      <h3>Queue and databases</h3>
+      <ul>
+        <li><b>Upstash Redis:</b> job queue (lists with <code>BLMOVE</code>), job state as hashes that expire after 1 hour, and per-IP rate limits via <code>@upstash/ratelimit</code>. Because job state expires, visitor job records vanish on the same schedule as their files.</li>
+        <li><b>Neon Postgres:</b> only for data that must last: developer accounts, hashed API keys, a usage ledger, credit balances, and payment webhook events. Drizzle ORM, with migrations kept in the repo.</li>
+        <li>Visitor jobs never touch Postgres, so it can scale to zero between API requests.</li>
+      </ul>
+
+      <h3>Worker</h3>
+      <ul>
+        <li>One Docker image: Node.js 22 job runner, plus LibreOffice, Ghostscript, qpdf, OCRmyPDF, Playwright Chromium, and a Python environment for pdf2docx, pdfplumber, PaddleOCR, rembg and ONNX Runtime. The self-hosted models are fallbacks behind the AI gateway.</li>
+        <li><b>Two job lanes on 4 cores:</b> a light lane (2 at a time: compress, conversions, protect, AI API calls) and a heavy lane (1 at a time: self-hosted OCR and background removal when the free APIs are exhausted), so a slow CPU model never blocks a quick conversion.</li>
+        <li>Each job runs in its own temp directory as a non-root user, with a hard timeout and memory cap. LibreOffice gets a fresh profile per job with macros disabled; Ghostscript runs with <code>-dSAFER</code>.</li>
+        <li>No inbound ports. It only needs outbound HTTPS to R2 and TLS to Upstash, which is why it can run on your current machine behind a home router.</li>
+        <li>The developer API needs every tool on the server, including the 30 browser tools. <code>packages/pdf-core</code> and <code>packages/image-core</code> run in Node too, so the worker reuses the same code.</li>
+      </ul>
+
+      <h3>AI gateway</h3>
+      <p>AI tools call free API tiers first and fall back to open-source models on the worker. The gateway lives in <code>packages/ai-gateway</code> and runs only on the worker. Provider keys are entered in the admin dashboard (below) and only the worker can decrypt them.</p>
+      <ul>
+        <li><b>Adapters by capability.</b> Each provider adapter declares what it can do: <code>ocr.ar</code>, <code>translate</code>, <code>summarize</code>, <code>background.remove</code>. Adding a provider is one adapter in code, then its key in the dashboard.</li>
+        <li><b>Quota tracking.</b> Usage counters per provider per minute, day and month in Redis. The gateway also reads the rate-limit headers each response returns, because several providers only show limits in their dashboards and change them without notice.</li>
+        <li><b>Failover.</b> A 429 or 5xx puts that provider on a cooldown. The next provider in the order is tried; when all are exhausted, the job goes to the self-hosted model or waits in the queue with a clear message.</li>
+        <li><b>One account per provider.</b> Opening several accounts with one provider to stack free quota breaks OpenRouter's terms outright and likely Google's, Groq's and Cerebras's. Load is balanced across different providers only.</li>
+        <li><b>Long documents.</b> Summaries are built chunk by chunk (summarize each section, then summarize the summaries), sized to each provider's token limits. Groq's free tier allows 8K tokens a minute, so long PDFs go to a provider with a larger allowance.</li>
+      </ul>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Capability</th><th>Order (free tiers)</th><th>Self-hosted fallback</th></tr></thead>
+          <tbody>
+            <tr><td>Arabic OCR</td><td>Azure Document Intelligence → Google Cloud Vision → OCR.space</td><td>PaddleOCR PP-OCRv5 Arabic</td></tr>
+            <tr><td>Translate</td><td>Azure Translator → Google Cloud Translation → Cloudflare m2m100 → Groq → Gemini (visitors outside Europe only)</td><td>Opus-MT (good Arabic → English, weak English → Arabic)</td></tr>
+            <tr><td>Summarize</td><td>Groq → Cloudflare Workers AI → Gemini (visitors outside Europe only)</td><td>None; queue and retry</td></tr>
+            <tr><td>Remove background</td><td>Cloudflare Images background removal</td><td>rembg with BiRefNet or ISNet</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Provider</th><th>Free allowance (Sept 2026)</th><th>Trains on data</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Groq</td><td class="num">30 req/min, 1K req/day, 200K tokens/day</td><td>No</td><td>Commercial use allowed</td></tr>
+            <tr><td>Cloudflare Workers AI</td><td class="num">10K neurons/day</td><td>No</td><td>LLMs, vision, m2m100 translation; same account as R2</td></tr>
+            <tr><td>Cloudflare Images</td><td class="num">5K transformations/month</td><td>No</td><td>Confirm background removal is included in the free plan</td></tr>
+            <tr><td>Azure Document Intelligence F0</td><td class="num">500 pages/month</td><td>No</td><td>Only the first 2 pages per request; Arabic print and handwriting</td></tr>
+            <tr><td>Azure Translator F0</td><td class="num">2M characters/month</td><td>No</td><td>Largest free translation allowance</td></tr>
+            <tr><td>Google Cloud Vision</td><td class="num">1,000 pages/month</td><td>No</td><td>Printed Arabic only</td></tr>
+            <tr><td>Google Cloud Translation</td><td class="num">about 500K characters/month</td><td>No</td><td>Via a $10 monthly credit</td></tr>
+            <tr><td>OCR.space</td><td class="num">25K requests/month</td><td>No</td><td>Commercial use allowed; 1 MB and 3 pages per request</td></tr>
+            <tr><td>Gemini (AI Studio free tier)</td><td class="num">Shown in dashboard</td><td>Yes, with human review</td><td>Not allowed for visitors in the EEA, UK or Switzerland</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="muted">Not used: GitHub Models (retired July 2026), Cohere and NVIDIA trials (no production use), Cerebras (30-day trial only), remove.bg (API moves to Leonardo.Ai on 1 December 2026), DeepL API Free (being phased out), AWS Textract (no Arabic), Hugging Face (tiny free credit).</p>
+      <h3>AI routing rules</h3>
+      <ul>
+        <li><b>Gemini is for visitors outside Europe only.</b> The job API records the visitor's country from Vercel's <code>x-vercel-ip-country</code> header. Visitors from the EU, Iceland, Liechtenstein, Norway, the UK and Switzerland never go to Gemini's free tier; a missing country counts as Europe.</li>
+        <li><b>Gemini goes last</b> in every order, so it only takes overflow.</li>
+        <li><b>OCR and PDF to Word never use Gemini's free tier</b>, because scans of IDs, contracts and invoices tend to go through them. Only Summarize and Translate may.</li>
+        <li><b>Developer API jobs never use free tiers.</b> They go to paid providers, paid for by the customer's credits.</li>
+        <li><b>Disclosure.</b> AI tool pages show one line naming the provider type before a file is sent, for example "Processed by Google Gemini; Google may review content to improve its services", and the privacy policy lists every AI provider.</li>
+      </ul>
+
+      <h3>Admin dashboard</h3>
+      <p>A private area at <code>/admin</code> where the owner manages AI providers without editing server files or redeploying.</p>
+      <ul>
+        <li><b>Sign-in:</b> one allow-listed owner account with a passkey, plus an authenticator app as backup. Every other visitor gets a 404. Admin routes are rate-limited and protected by Turnstile.</li>
+        <li><b>Provider cards:</b> each provider has a card showing:
+          <ul>
+            <li>the fields it needs (key, endpoint, region or account ID)</li>
+            <li>an on/off switch</li>
+            <li>status: working, cooling down, out of quota, or key rejected</li>
+            <li>usage today and this month against its free limit</li>
+            <li>a <b>Test</b> button that runs a tiny request through the worker</li>
+          </ul></li>
+        <li><b>Routing controls:</b> drag to reorder providers per capability, a "stop at % of free limit" safety margin, and the "allow visitors from Europe" flag, which is locked off for Gemini's free tier.</li>
+        <li><b>Keys can be written, never read back:</b>
+          <ul>
+            <li>The browser encrypts each key with the worker's public key (libsodium sealed box) before it is sent.</li>
+            <li>Postgres stores only that ciphertext, and only the worker holds the private key. Vercel, the database and the dashboard cannot decrypt stored keys.</li>
+            <li>The dashboard shows the last four characters. Replacing a key overwrites it.</li>
+          </ul></li>
+        <li><b>Propagation:</b> after a save, the worker picks up the change through a Redis notification within seconds, with no restart.</li>
+        <li><b>Audit log:</b> every change is recorded with time and IP.</li>
+      </ul>
+
+      <h3>Developer API and billing</h3>
+      <ul>
+        <li>REST under <code>/v1</code>, asynchronous like the website: create job, upload, start, poll or receive a webhook, download.</li>
+        <li>API keys look like <code>ak_live_…</code>. Only a SHA-256 hash and a short prefix are stored.</li>
+        <li><b>Prepaid credits</b> rather than monthly invoices: developers buy credit packs through Stripe Checkout (or Paddle), and each tool costs a set number of credits in the registry. No surprise bills and simpler failure handling.</li>
+        <li>An OpenAPI 3.1 spec generated from the same Zod schemas the handlers validate against, rendered as bilingual docs with Scalar.</li>
+        <li>API jobs get their own queue priority, so paying traffic isn't stuck behind free visitors.</li>
+      </ul>
+
+      <h3>Ads and consent</h3>
+      <ul>
+        <li>Google AdSense in fixed, reserved slots (no layout shift): a leaderboard on catalog pages, a sidebar on tool and result pages. No ads between the upload and the download button.</li>
+        <li>Ad scripts load after the tool UI is interactive. Visitors from the EEA, UK and Switzerland need a Google-certified consent banner; Google's own Privacy &amp; messaging tool covers this.</li>
+      </ul>
+    </section>
+
+    <section id="catalog">
+      <h2>Tool catalog</h2>
+      <p>Every tool, where it runs, what does the work, and the build phase it lands in. "Browser" tools also run on the worker for the developer API.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Tool</th><th>Runs</th><th>Engine</th><th>Phase</th></tr></thead>
+          <tbody>
+            <tr class="group"><td colspan="4">Organize PDF</td></tr>
+            <tr><td>Merge PDF <span class="ar" lang="ar">دمج PDF</span></td><td><span class="pill browser">Browser</span></td><td>pdf-lib</td><td class="num">P1</td></tr>
+            <tr><td>Split PDF</td><td><span class="pill browser">Browser</span></td><td>pdf-lib</td><td class="num">P1</td></tr>
+            <tr><td>Remove pages</td><td><span class="pill browser">Browser</span></td><td>pdf-lib</td><td class="num">P1</td></tr>
+            <tr><td>Extract pages</td><td><span class="pill browser">Browser</span></td><td>pdf-lib</td><td class="num">P1</td></tr>
+            <tr><td>Organize pages</td><td><span class="pill browser">Browser</span></td><td>pdf.js thumbnails + pdf-lib</td><td class="num">P1</td></tr>
+            <tr><td>Scan to PDF</td><td><span class="pill browser">Browser</span></td><td>Camera + OpenCV.js edge detection + pdf-lib</td><td class="num">P1</td></tr>
+            <tr class="group"><td colspan="4">Optimize PDF</td></tr>
+            <tr><td>Compress PDF</td><td><span class="pill server">Server</span></td><td>Ghostscript image downsampling + qpdf object streams</td><td class="num">P3</td></tr>
+            <tr><td>Repair PDF</td><td><span class="pill server">Server</span></td><td>qpdf, Ghostscript re-write as fallback</td><td class="num">P3</td></tr>
+            <tr><td>OCR PDF</td><td><span class="pill server">Server</span></td><td>AI gateway OCR, text layer built with OCRmyPDF</td><td class="num">P4</td></tr>
+            <tr class="group"><td colspan="4">Convert to PDF</td></tr>
+            <tr><td>JPG to PDF</td><td><span class="pill browser">Browser</span></td><td>pdf-lib</td><td class="num">P1</td></tr>
+            <tr><td>Word to PDF</td><td><span class="pill server">Server</span></td><td>LibreOffice headless</td><td class="num">P3</td></tr>
+            <tr><td>PowerPoint to PDF</td><td><span class="pill server">Server</span></td><td>LibreOffice headless</td><td class="num">P3</td></tr>
+            <tr><td>Excel to PDF</td><td><span class="pill server">Server</span></td><td>LibreOffice headless</td><td class="num">P3</td></tr>
+            <tr><td>HTML to PDF</td><td><span class="pill server">Server</span></td><td>Chromium (Playwright), network-restricted</td><td class="num">P3</td></tr>
+            <tr class="group"><td colspan="4">Convert from PDF</td></tr>
+            <tr><td>PDF to JPG</td><td><span class="pill browser">Browser</span></td><td>pdf.js render</td><td class="num">P1</td></tr>
+            <tr><td>PDF to Word</td><td><span class="pill server">Server</span></td><td>pdf2docx + Arabic text fix; OCR first for scans</td><td class="num">P4</td></tr>
+            <tr><td>PDF to PowerPoint</td><td><span class="pill server">Server</span></td><td>Page layout extraction + python-pptx</td><td class="num">P4</td></tr>
+            <tr><td>PDF to Excel</td><td><span class="pill server">Server</span></td><td>pdfplumber table detection + openpyxl</td><td class="num">P4</td></tr>
+            <tr><td>PDF to PDF/A</td><td><span class="pill server">Server</span></td><td>Ghostscript, validated with veraPDF</td><td class="num">P3</td></tr>
+            <tr class="group"><td colspan="4">Edit and protect PDF</td></tr>
+            <tr><td>Rotate PDF</td><td><span class="pill browser">Browser</span></td><td>pdf-lib</td><td class="num">P1</td></tr>
+            <tr><td>Add page numbers</td><td><span class="pill browser">Browser</span></td><td>pdf-lib + harfbuzzjs (Arabic-Indic or Western digits)</td><td class="num">P1</td></tr>
+            <tr><td>Add watermark</td><td><span class="pill browser">Browser</span></td><td>pdf-lib + harfbuzzjs</td><td class="num">P1</td></tr>
+            <tr><td>Crop PDF</td><td><span class="pill browser">Browser</span></td><td>pdf-lib crop box</td><td class="num">P1</td></tr>
+            <tr><td>Edit PDF</td><td><span class="pill browser">Browser</span></td><td>pdf.js + Konva overlay, flattened by pdf-lib</td><td class="num">P1</td></tr>
+            <tr><td>Sign PDF</td><td><span class="pill browser">Browser</span></td><td>Draw, type or upload a signature; pdf-lib</td><td class="num">P1</td></tr>
+            <tr><td>Unlock PDF</td><td><span class="pill browser">Browser</span></td><td>qpdf-wasm</td><td class="num">P1</td></tr>
+            <tr><td>Protect PDF</td><td><span class="pill browser">Browser</span></td><td>qpdf-wasm, AES-256</td><td class="num">P1</td></tr>
+            <tr><td>Redact PDF</td><td><span class="pill server">Server</span></td><td>True content removal (see licensing risk)</td><td class="num">P3</td></tr>
+            <tr><td>Compare PDF</td><td><span class="pill browser">Browser</span></td><td>pdf.js text diff + pixel overlay</td><td class="num">P1</td></tr>
+            <tr class="group"><td colspan="4">Images</td></tr>
+            <tr><td>Compress images</td><td><span class="pill browser">Browser</span></td><td>jSquash: MozJPEG, OxiPNG, WebP</td><td class="num">P2</td></tr>
+            <tr><td>Resize images</td><td><span class="pill browser">Browser</span></td><td>pica</td><td class="num">P2</td></tr>
+            <tr><td>Crop images</td><td><span class="pill browser">Browser</span></td><td>Canvas</td><td class="num">P2</td></tr>
+            <tr><td>Convert to JPG</td><td><span class="pill browser">Browser</span></td><td>libheif-js for HEIC, jSquash</td><td class="num">P2</td></tr>
+            <tr><td>Convert from JPG</td><td><span class="pill browser">Browser</span></td><td>jSquash, gif encoder</td><td class="num">P2</td></tr>
+            <tr><td>Photo editor</td><td><span class="pill browser">Browser</span></td><td>Konva</td><td class="num">P2</td></tr>
+            <tr><td>Watermark images</td><td><span class="pill browser">Browser</span></td><td>Canvas</td><td class="num">P2</td></tr>
+            <tr><td>Meme generator</td><td><span class="pill browser">Browser</span></td><td>Konva + bundled Arabic fonts</td><td class="num">P2</td></tr>
+            <tr><td>Rotate images</td><td><span class="pill browser">Browser</span></td><td>Canvas, EXIF-aware</td><td class="num">P2</td></tr>
+            <tr><td>HTML to image</td><td><span class="pill server">Server</span></td><td>Chromium (Playwright), network-restricted</td><td class="num">P3</td></tr>
+            <tr class="group"><td colspan="4">AI</td></tr>
+            <tr><td>Remove background</td><td><span class="pill server">Server</span></td><td>AI gateway: Cloudflare Images, then rembg with BiRefNet or ISNet</td><td class="num">P5</td></tr>
+            <tr><td>Upscale image</td><td><span class="pill browser">Browser</span></td><td>UpscalerJS (ESRGAN) in a Web Worker; Real-ESRGAN on the worker for the API</td><td class="num">P5</td></tr>
+            <tr><td>Blur faces</td><td><span class="pill browser">Browser</span></td><td>MediaPipe Face Detector</td><td class="num">P2</td></tr>
+            <tr><td>Summarize PDF</td><td><span class="pill server">Server</span></td><td>AI gateway: Groq, Cloudflare Workers AI, Gemini (outside Europe)</td><td class="num">P5</td></tr>
+            <tr><td>Translate PDF</td><td><span class="pill server">Server</span></td><td>AI gateway translation, text placed back into the original layout</td><td class="num">P5</td></tr>
+            <tr class="group"><td colspan="4">Arabic tools</td></tr>
+            <tr><td>Arabic text fix <span class="ar" lang="ar">إصلاح النص العربي</span></td><td><span class="pill server">Server</span></td><td>Custom normalizer (see below)</td><td class="num">P4</td></tr>
+            <tr><td>Hijri date stamp <span class="ar" lang="ar">ختم التاريخ الهجري</span></td><td><span class="pill browser">Browser</span></td><td><code>Intl.DateTimeFormat</code> Umm al-Qura + harfbuzzjs + pdf-lib</td><td class="num">P1</td></tr>
+            <tr><td>Arabic fonts <span class="ar" lang="ar">خطوط عربية</span></td><td><span class="pill browser">Browser</span></td><td>Bundled OFL fonts, subset on use</td><td class="num">P1</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="arabic">
+      <h2>Arabic and bilingual details</h2>
+      <h3>Text shaping</h3>
+      <p>Anything that writes Arabic into a PDF (page numbers, watermarks, signatures, Hijri stamps, edits) goes through one function in <code>packages/arabic</code>: bidi reordering, then HarfBuzz shaping with the chosen font, then glyph drawing with pdf-lib. Tests cover lam-alef ligatures, diacritics, mixed Arabic and Latin runs, and numbers inside Arabic sentences.</p>
+      <h3>Arabic text fix</h3>
+      <p>Many PDFs store Arabic as visual-order presentation forms (U+FB50–U+FEFF). Extracted as-is, the text comes out reversed and letter by letter. The fixer maps presentation forms back to base letters (NFKC), rebuilds logical order per line with the Unicode bidi algorithm, and repairs spacing between words. It runs automatically inside PDF to Word and is also offered as a standalone tool.</p>
+      <h3>Arabic OCR</h3>
+      <p>Before building P4, run a benchmark on 30 or more real scans (printed books, government forms, phone photos, mixed Arabic and English), measuring character error rate and seconds per page on this machine. Candidates: Azure Document Intelligence, Google Cloud Vision and OCR.space through the gateway, plus PaddleOCR PP-OCRv5 Arabic and Tesseract <code>ara</code> self-hosted. The results set the gateway's OCR order and confirm the fallback is good enough. Surya's model weights are only free below $5M revenue or funding, so it is left out.</p>
+      <h3>Dates, digits and fonts</h3>
+      <ul>
+        <li>Hijri dates use the browser's Umm al-Qura calendar (<code>ar-SA-u-ca-islamic-umalqura</code>), with a note that official dates can differ by a day.</li>
+        <li>Digits are a setting on every numbering tool: Arabic-Indic (١٢٣) or Western (123). The site UI default is still an open decision.</li>
+        <li>Bundled fonts are all OFL-licensed: Amiri and Noto Naskh Arabic (Naskh), Reem Kufi and Noto Kufi Arabic (Kufi), and Aref Ruqaa (Ruqaa). Good free Thuluth fonts are rare, so Thuluth is not offered at launch.</li>
+      </ul>
+      <h3>SEO</h3>
+      <ul>
+        <li>Latin slugs in both languages (<code>/merge-pdf</code>, <code>/en/merge-pdf</code>). Arabic slugs percent-encode into long, unreadable links when shared.</li>
+        <li><code>hreflang</code> pairs for <code>ar</code> and <code>en</code>, with Arabic as <code>x-default</code>. Each page has Arabic-first copy, step-by-step instructions, an FAQ, and <code>SoftwareApplication</code> structured data.</li>
+        <li>Sitemaps and Open Graph images are generated from the registry. Check that the OG image renderer shapes Arabic correctly; if not, pre-render the images at build time.</li>
+      </ul>
+    </section>
+
+    <section id="security">
+      <h2>Security and abuse</h2>
+      <ul>
+        <li><b>Server-side request forgery.</b> HTML to PDF and HTML to image make the worker fetch any URL, and the worker sits on your home network. Chromium runs in a separate container whose only way out is a proxy that blocks private, loopback and link-local addresses, including after redirects and DNS changes.</li>
+        <li><b>Hostile files.</b> Magic-byte checks, page and pixel caps (to stop decompression bombs), per-job timeouts and memory limits, LibreOffice macros off, Ghostscript <code>-dSAFER</code>, and no network access for the processing containers.</li>
+        <li><b>Free-tier abuse.</b> Cloudflare Turnstile (invisible) on server jobs, per-IP limits in Redis (for example, 20 server jobs an hour), and a visible queue position when the heavy lane is busy.</li>
+        <li><b>Secrets.</b> R2 and Redis credentials are scoped: Vercel can only sign URLs and write queue entries; the worker has a separate R2 token. AI provider keys are sealed to the worker&#39;s public key, so a leaked database or Vercel environment doesn&#39;t expose them. Developer API keys are hashed; webhooks are signature-verified.</li>
+        <li><b>Privacy wording.</b> "Never uploaded" is only claimed on browser tools, and the page badge comes from the registry, so the claim can't drift from the code.</li>
+      </ul>
+    </section>
+
+    <section id="repo">
+      <h2>Repository layout</h2>
+      <p>A pnpm + Turborepo monorepo. The tool registry is the centre: pages, navigation, sitemaps, badges, rate limits, API routes and credit prices all read from it.</p>
+<pre><code>alarabTools/
+├─ apps/
+│  ├─ web/          Next.js: tool pages, upload UI, /api/jobs, /v1 developer API
+│  └─ worker/       Node.js job runner, sweeper, Dockerfile with native tools
+├─ packages/
+│  ├─ tools/        registry: id, group, runtime, limits, credits, ar/en copy
+│  ├─ pdf-core/     pdf-lib + qpdf-wasm operations (browser and Node)
+│  ├─ image-core/   codecs, resize, canvas operations
+│  ├─ arabic/       shaping, bidi, text fix, digits, Hijri dates, fonts
+│  ├─ jobs/         Zod job schemas, Redis queue client, R2 helpers
+│  └─ ui/           design tokens and RTL-safe components
+├─ infra/           docker-compose, egress proxy, R2 lifecycle, env templates
+└─ docs/</code></pre>
+<pre><code>// packages/tools/src/merge-pdf.ts
+export const mergePdf = defineTool({
+  id: "merge-pdf",
+  group: "organize",
+  runtime: "browser",                 // "browser" | "server"
+  accepts: ["application/pdf"],
+  limits: { maxFiles: 50, maxBytes: 25 * MB },
+  api: { path: "/v1/pdf/merge", credits: 1 },
+  copy: {
+    ar: { name: "دمج PDF", summary: "اجمع عدة ملفات في ملف واحد بالترتيب الذي تريده." },
+    en: { name: "Merge PDF", summary: "Combine PDFs into one file, in the order you want." },
+  },
+});</code></pre>
+    </section>
+
+    <section id="cost">
+      <h2>Hosting and cost</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Stage</th><th>Setup</th><th>Monthly</th></tr></thead>
+          <tbody>
+            <tr><td>Building (now)</td><td>Vercel Hobby; worker in Docker on this machine; R2, Upstash and Neon free tiers</td><td class="num">$0 + domain</td></tr>
+            <tr><td>Launch, option A</td><td>Vercel Pro (1 seat) + worker on this machine + same free tiers</td><td class="num">$20 + usage beyond included credit</td></tr>
+            <tr><td>Launch, option B</td><td>One VPS (4 vCPU, 8 GB) running Next.js and the worker; R2 for files; Cloudflare in front</td><td class="num">about $8–15</td></tr>
+            <tr><td>Growth</td><td>Vercel Pro + one or more dedicated worker servers</td><td class="num">$40 and up</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout"><b>Recommendation:</b> build on option "now". Before turning on ads or the paid API, choose A or B. B fits the $20 budget and keeps the web app and worker on the same server; A keeps Vercel's global CDN but uses the whole budget. The code is the same either way. Next.js runs on Vercel or in Docker without changes, and the worker only ever talks to Redis and R2.</div>
+      <p class="muted">AI features cost nothing while they stay within free tiers. For developer API jobs on a paid provider, DeepSeek V4.1 Flash works out at roughly $0.01 for a 50-page summary; Mistral OCR is $4 per 1,000 pages.</p>
+      <p class="muted">Running the worker at home means results depend on that machine being on and on your upload bandwidth to R2. Free-tier limits change, so check each provider's current numbers before launch.</p>
+    </section>
+
+    <section id="roadmap">
+      <h2>Roadmap</h2>
+      <p>Phases run in order because each depends on the last. The public launch comes after P7, with every tool live. P0–P2 can go live earlier as a private beta on Vercel Hobby, since it's non-commercial while there are no ads.</p>
+      <ol class="phases">
+        <li><div><h3>Foundation</h3><p>Monorepo, tool registry, design tokens from the mockup, bilingual RTL layout, shared upload component, tool page template with SEO, analytics, CI, and a Playwright test that renders every tool page in both languages.</p><p class="exit">Done when: the home page and 47 placeholder tool pages build in Arabic and English with valid hreflang and sitemaps.</p></div></li>
+        <li><div><h3>Browser PDF tools</h3><p>The 17 browser PDF tools, plus the Hijri stamp and Arabic fonts. Builds <code>packages/arabic</code> shaping first, because six of these tools write Arabic text.</p><p class="exit">Done when: each tool passes fixture tests (encrypted, scanned, very large and right-to-left PDFs) in Chrome, Safari and Firefox, including iOS Safari memory limits.</p></div></li>
+        <li><div><h3>Browser image tools</h3><p>The 9 image tools and face blur, with HEIC input and batch processing.</p><p class="exit">Done when: a 25 MB photo batch processes on a mid-range Android phone without crashing the tab.</p></div></li>
+        <li><div><h3>Server pipeline</h3><p>R2, Upstash queue, job API, worker image, sweeper, egress proxy, Turnstile and rate limits. Then Compress, Repair, Office to PDF, HTML to PDF and image, PDF/A, and Redact.</p><p class="exit">Done when: files are provably gone after 60 minutes, killing the worker mid-job loses nothing, and the SSRF tests fail to reach the LAN.</p></div></li>
+        <li><div><h3>AI gateway, Arabic OCR and PDF to Office</h3><p>Admin dashboard for provider keys, then the AI gateway with quota tracking, failover and routing rules. OCR benchmark and provider order, then OCR PDF, PDF to Word, PowerPoint and Excel, and the Arabic text fix.</p><p class="exit">Done when: the chosen engine meets an agreed character error rate on the benchmark set, and Arabic PDF to Word output reads correctly in Word.</p></div></li>
+        <li><div><h3>AI tools</h3><p>Remove background, Summarize PDF and Translate PDF through the gateway, with provider disclosure lines; Upscale in the browser.</p><p class="exit">Done when: each tool keeps working with any single provider switched off, and Europe-located test requests never reach Gemini.</p></div></li>
+        <li><div><h3>Developer API and billing</h3><p>Developer sign-up, API keys, credits, Stripe or Paddle checkout and webhooks, OpenAPI docs in both languages, server versions of the browser tools.</p><p class="exit">Done when: an outside developer can buy credits and call three tools using only the docs.</p></div></li>
+        <li><div><h3>Ads, legal and launch hardening</h3><p>AdSense, consent banner, privacy policy and terms in both languages, load test at 10× expected traffic, error monitoring, choose hosting option A or B, go public.</p><p class="exit">Done when: Lighthouse performance stays above 90 on tool pages with ads loaded.</p></div></li>
+      </ol>
+      <p class="muted">After launch: Google Drive or Dropbox import if visitors ask for it.</p>
+    </section>
+
+    <section id="risks">
+      <h2>Risks and open decisions</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Risk</th><th>Level</th><th>Mitigation</th></tr></thead>
+          <tbody>
+            <tr><td>Arabic OCR quality falls short</td><td><span class="pill high">High</span></td><td>Benchmark before building P4; OCR is a headline feature, so ship only when it clears the agreed error rate.</td></tr>
+            <tr><td>SSRF from HTML tools on a home network</td><td><span class="pill high">High</span></td><td>Isolated Chromium container behind a deny-private-ranges proxy; tests in P3's exit criteria.</td></tr>
+            <tr><td>Open-source licences</td><td><span class="pill high">High</span></td><td>Ghostscript and PyMuPDF are AGPL, pdf2docx is GPL, some AI models restrict commercial use (BRIA RMBG, which is now rembg&#39;s default; NLLB-200; Surya weights). Get a licence review before launch, or swap in permissive options (qpdf, pdfcpu, rembg with ISNet).</td></tr>
+            <tr><td>Free AI quotas shrink or disappear</td><td><span class="pill med">Medium</span></td><td>Several providers per capability, limits read from response headers, self-hosted fallbacks, and a paid fallback for the developer API.</td></tr>
+            <tr><td>AI providers see visitors&#39; files</td><td><span class="pill med">Medium</span></td><td>Providers that don&#39;t train on data go first; Gemini is last, outside Europe only, and never used for OCR or PDF to Word; disclosure line on every AI tool page.</td></tr>
+            <tr><td>Arabic breaks in generated PDFs</td><td><span class="pill med">Medium</span></td><td>One shaping path through HarfBuzz for every tool, with ligature, diacritic and mixed-script tests.</td></tr>
+            <tr><td>4 CPU cores can't keep up</td><td><span class="pill med">Medium</span></td><td>Separate light and heavy lanes, input caps, visible queue; adding a second worker needs no code change.</td></tr>
+            <tr><td>Stripe unavailable in your country</td><td><span class="pill med">Medium</span></td><td>Stripe doesn't serve businesses in several Arab countries. Confirm early; Paddle as merchant of record is the fallback.</td></tr>
+            <tr><td>Vercel Hobby is non-commercial</td><td><span class="pill med">Medium</span></td><td>Choose hosting option A or B before ads or paid API go live.</td></tr>
+            <tr><td>Ad scripts and the privacy promise</td><td><span class="pill low">Low</span></td><td>File bytes stay inside Web Workers; ads load after the tool; claims come from the registry.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Still to decide</h3>
+      <ul>
+        <li>UI digits: Arabic-Indic (٢٣) or Western (23) by default.</li>
+        <li>Your domain, so URLs, <code>api.</code> subdomain and email sending can be set up.</li>
+        <li>Payment provider, after checking Stripe availability where your business is registered.</li>
+        <li>Launch hosting: option A (Vercel Pro) or option B (single VPS).</li>
+        <li>Paid AI provider for developer API jobs: DeepSeek (cheapest; data stored in China) or a provider hosted in the EU or US such as Mistral.</li>
+        <li>Homepage direction: grouped catalog (mockup) or search-first (alternative B).</li>
+      </ul>
+    </section>
+
+  </article>
+</div>

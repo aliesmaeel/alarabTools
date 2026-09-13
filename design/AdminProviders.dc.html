@@ -1,0 +1,195 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Reem+Kufi:wght@600;700&amp;display=swap">
+  <style>
+    body { margin: 0; background: #F4F5F8; }
+    a { color: #3346B8; text-decoration: none; } a:hover { color: #25338A; }
+    * { box-sizing: border-box; }
+  </style>
+</helmet>
+<div dir="ltr" lang="en" style="width: 1440px; min-height: 1880px; background: #F4F5F8; color: #161B2F; font-family: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif; display: grid; grid-template-columns: 240px minmax(0, 1fr);">
+
+  <!-- Sidebar -->
+  <aside style="background: #161B2F; color: #C9CEDD; padding-block: 24px; padding-inline: 16px; display: flex; flex-direction: column; gap: 28px;">
+    <div style="display: flex; align-items: center; gap: 10px; padding-inline: 8px;">
+      <div style="width: 32px; height: 32px; border-radius: 8px; background: #3346B8; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Reem Kufi', sans-serif; font-size: 19px; font-weight: 700; line-height: 1;">ع</div>
+      <div style="display: flex; flex-direction: column; line-height: 1.2;"><span style="font-family: 'Reem Kufi', sans-serif; font-size: 17px; font-weight: 600; color: #FFFFFF;">alarab<span style="color: #9AA8F5;">Tools</span></span><span style="font-size: 12px; color: #8A90A6;">Admin</span></div>
+    </div>
+    <nav style="display: flex; flex-direction: column; gap: 2px; font-size: 14px;">
+      <a href="#" style="height: 38px; padding-inline: 12px; display: flex; align-items: center; border-radius: 8px; color: #C9CEDD;">Overview</a>
+      <a href="#" style="height: 38px; padding-inline: 12px; display: flex; align-items: center; border-radius: 8px; background: #262C47; color: #FFFFFF; font-weight: 500;">AI providers</a>
+      <a href="#" style="height: 38px; padding-inline: 12px; display: flex; align-items: center; border-radius: 8px; color: #C9CEDD;">Routing</a>
+      <a href="#" style="height: 38px; padding-inline: 12px; display: flex; align-items: center; border-radius: 8px; color: #C9CEDD;">Jobs</a>
+      <a href="#" style="height: 38px; padding-inline: 12px; display: flex; align-items: center; border-radius: 8px; color: #C9CEDD;">Audit log</a>
+      <a href="#" style="height: 38px; padding-inline: 12px; display: flex; align-items: center; border-radius: 8px; color: #C9CEDD;">Settings</a>
+    </nav>
+    <div style="margin-block-start: auto; padding-inline: 12px; display: flex; flex-direction: column; gap: 4px; font-size: 13px;">
+      <span style="color: #8A90A6;">Signed in with passkey</span>
+      <a href="#" style="color: #C9CEDD;">Sign out</a>
+    </div>
+  </aside>
+
+  <main style="padding-inline: 40px; padding-block: 32px 48px; display: flex; flex-direction: column; gap: 24px;">
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px;">
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <h1 style="margin: 0; font-size: 28px; font-weight: 600; line-height: 1.25;">AI providers</h1>
+        <p style="margin: 0; font-size: 15px; color: #5C627A; max-width: 640px;">Keys are encrypted in your browser for the worker. You can replace a key at any time, but it can never be shown again.</p>
+      </div>
+      <a href="#" style="height: 40px; padding-inline: 16px; display: flex; align-items: center; border: 1px solid #D7DBE7; border-radius: 8px; background: #FFFFFF; color: #161B2F; font-size: 14px; font-weight: 500;">Test all providers</a>
+    </div>
+
+    <!-- Summary -->
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); background: #FFFFFF; border: 1px solid #E3E6EF; border-radius: 12px;">
+      <div style="padding: 16px 20px; display: flex; flex-direction: column; gap: 2px; border-inline-end: 1px solid #ECEEF4;"><span style="font-size: 13px; color: #5C627A;">Working</span><span style="font-size: 24px; font-weight: 600; color: #17735F;">4</span></div>
+      <div style="padding: 16px 20px; display: flex; flex-direction: column; gap: 2px; border-inline-end: 1px solid #ECEEF4;"><span style="font-size: 13px; color: #5C627A;">Needs attention</span><span style="font-size: 24px; font-weight: 600; color: #B42318;">3</span></div>
+      <div style="padding: 16px 20px; display: flex; flex-direction: column; gap: 2px; border-inline-end: 1px solid #ECEEF4;"><span style="font-size: 13px; color: #5C627A;">Not set up</span><span style="font-size: 24px; font-weight: 600; color: #5C627A;">1</span></div>
+      <div style="padding: 16px 20px; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 13px; color: #5C627A;">AI requests today</span><span style="font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums;">2,184 <span style="font-size: 14px; font-weight: 400; color: #5C627A;">· $0.00 paid</span></span></div>
+    </div>
+
+    <!-- Provider cards -->
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-items: start;">
+      <sc-for list="{{providers}}" as="p" hint-placeholder-count="8">
+        <section style="background: #FFFFFF; border: 1px solid #E3E6EF; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;">
+            <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+              <span style="font-size: 17px; font-weight: 600;">{{p.name}}</span>
+              <span style="font-size: 13px; color: #5C627A;">{{p.site}}</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; flex-shrink: 0;">
+              <span style="padding-block: 3px; padding-inline: 10px; border-radius: 999px; font-size: 12.5px; font-weight: 600; background: {{p.pillBg}}; color: {{p.pillFg}};">{{p.status}}</span>
+              <div style="width: 40px; height: 24px; border-radius: 999px; padding: 3px; display: flex; background: {{p.toggleBg}}; justify-content: {{p.toggleAlign}};"><div style="width: 18px; height: 18px; border-radius: 50%; background: #FFFFFF;"></div></div>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+            <sc-for list="{{p.caps}}" as="c" hint-placeholder-count="2">
+              <span style="padding-block: 2px; padding-inline: 8px; border-radius: 6px; background: #F0F2F7; color: #4A5068; font-size: 12.5px;">{{c}}</span>
+            </sc-for>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <sc-for list="{{p.fields}}" as="f" hint-placeholder-count="2">
+              <div style="display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 12px; font-size: 13.5px; align-items: baseline;">
+                <span style="color: #5C627A;">{{f.label}}</span>
+                <span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; color: #161B2F;">{{f.value}}</span>
+              </div>
+            </sc-for>
+          </div>
+
+          <sc-if value="{{p.hasMeters}}" hint-placeholder-val="{{true}}">
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              <sc-for list="{{p.meters}}" as="m" hint-placeholder-count="1">
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                  <div style="display: flex; justify-content: space-between; font-size: 13px;"><span style="color: #5C627A;">{{m.label}}</span><span style="font-variant-numeric: tabular-nums; font-weight: 500;">{{m.text}}</span></div>
+                  <div style="height: 8px; border-radius: 999px; background: #ECEEF4; position: relative; overflow: hidden;">
+                    <div style="height: 100%; border-radius: 999px; width: {{m.width}}; background: {{m.color}};"></div>
+                    <div style="position: absolute; top: 0; bottom: 0; left: 90%; width: 2px; background: #161B2F; opacity: 0.35;"></div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{p.hasNotice}}" hint-placeholder-val="{{false}}">
+            <div style="padding-block: 10px; padding-inline: 12px; border-radius: 8px; font-size: 13.5px; line-height: 1.5; background: {{p.noticeBg}}; color: {{p.noticeFg}};">{{p.notice}}</div>
+          </sc-if>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block-start: 4px; border-top: 1px solid #ECEEF4; padding-top: 14px;">
+            <span style="font-size: 12.5px; color: #5C627A;">{{p.lastTest}}</span>
+            <div style="display: flex; gap: 8px;">
+              <a href="#" style="height: 34px; padding-inline: 12px; display: flex; align-items: center; border: 1px solid #D7DBE7; border-radius: 8px; color: #161B2F; font-size: 13.5px; font-weight: 500;">Test</a>
+              <a href="#" style="height: 34px; padding-inline: 12px; display: flex; align-items: center; border-radius: 8px; font-size: 13.5px; font-weight: 500; background: {{p.keyBtnBg}}; color: {{p.keyBtnFg}}; border: 1px solid {{p.keyBtnBorder}};">{{p.keyBtn}}</a>
+            </div>
+          </div>
+        </section>
+      </sc-for>
+    </div>
+    <p style="margin: 0; font-size: 13px; color: #5C627A;">The dark tick on each bar is your safety margin: a provider is skipped once it reaches 90% of its free limit. Change it under Routing.</p>
+  </main>
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1440,"height":1880}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const S = {
+      working: { status: 'Working', pillBg: '#E1F2EE', pillFg: '#145C4C' },
+      cooling: { status: 'Cooling down', pillBg: '#FBEFD6', pillFg: '#7A4A04' },
+      quota: { status: 'Free limit reached', pillBg: '#FBEFD6', pillFg: '#7A4A04' },
+      rejected: { status: 'Key rejected', pillBg: '#FDECEA', pillFg: '#B42318' },
+      off: { status: 'Not set up', pillBg: '#F0F2F7', pillFg: '#5C627A' }
+    };
+    const meter = (label, used, limit, unit) => {
+      const pct = Math.min(100, Math.round((used / limit) * 100));
+      const color = pct >= 90 ? '#B42318' : pct >= 70 ? '#C27C0E' : '#17735F';
+      return { label, text: used.toLocaleString('en-US') + ' / ' + limit.toLocaleString('en-US') + ' ' + unit, width: pct + '%', color };
+    };
+    const card = (o) => {
+      const st = S[o.state];
+      const on = o.state !== 'off';
+      const notice = o.notice || null;
+      const tone = o.noticeTone === 'red' ? { noticeBg: '#FDECEA', noticeFg: '#8C1D13' } : o.noticeTone === 'amber' ? { noticeBg: '#FBEFD6', noticeFg: '#6B4304' } : { noticeBg: '#EEF0F6', noticeFg: '#3A405A' };
+      const primary = o.state === 'rejected' || o.state === 'off';
+      return Object.assign({}, st, tone, o, {
+        toggleBg: on ? '#3346B8' : '#D7DBE7',
+        toggleAlign: on ? 'flex-end' : 'flex-start',
+        hasMeters: !!(o.meters && o.meters.length),
+        hasNotice: !!notice,
+        keyBtn: o.state === 'off' ? 'Add key' : 'Replace key',
+        keyBtnBg: primary ? '#3346B8' : '#FFFFFF',
+        keyBtnFg: primary ? '#FFFFFF' : '#161B2F',
+        keyBtnBorder: primary ? '#3346B8' : '#D7DBE7'
+      });
+    };
+    return {
+      providers: [
+        card({ name: 'Groq', site: 'console.groq.com', state: 'working', caps: ['Summarize', 'Translate'],
+          fields: [{ label: 'API key', value: 'gsk_•••• 7f3a' }],
+          meters: [meter('Requests today', 612, 1000, 'req'), meter('Tokens today', 128400, 200000, 'tokens')],
+          lastTest: 'Tested 4 min ago · 212 ms' }),
+        card({ name: 'Cloudflare', site: 'Workers AI and Images', state: 'working', caps: ['Summarize', 'Translate', 'Remove background'],
+          fields: [{ label: 'Account ID', value: '•••• b29e' }, { label: 'API token', value: '•••• 41c0' }],
+          meters: [meter('Neurons today', 6140, 10000, 'neurons'), meter('Images this month', 1210, 5000, 'images')],
+          lastTest: 'Tested 4 min ago · 388 ms' }),
+        card({ name: 'Azure Translator', site: 'Free tier F0 · West Europe', state: 'working', caps: ['Translate'],
+          fields: [{ label: 'Key', value: '•••• e8d2' }, { label: 'Region', value: 'westeurope' }],
+          meters: [meter('Characters this month', 812000, 2000000, 'chars')],
+          lastTest: 'Tested 4 min ago · 145 ms' }),
+        card({ name: 'Azure Document Intelligence', site: 'Free tier F0', state: 'quota', caps: ['Arabic OCR'],
+          fields: [{ label: 'Endpoint', value: 'https://alarab-ocr.cognitiveservices…' }, { label: 'Key', value: '•••• 03aa' }],
+          meters: [meter('Pages this month', 452, 500, 'pages')],
+          notice: 'Skipped until 1 October: reached your 90% safety margin. OCR is going to Google Cloud Vision next.', noticeTone: 'amber',
+          lastTest: 'Tested 4 min ago · 530 ms' }),
+        card({ name: 'Google Cloud', site: 'Vision and Translation APIs', state: 'rejected', caps: ['Arabic OCR', 'Translate'],
+          fields: [{ label: 'API key', value: 'AIza•••• 9c1d' }],
+          meters: [meter('Vision pages this month', 318, 1000, 'pages'), meter('Translation chars this month', 96000, 500000, 'chars')],
+          notice: 'Test failed at 14:02: "API key not valid." The key may have been deleted or restricted in Google Cloud. Replace it to resume.', noticeTone: 'red',
+          lastTest: 'Last success yesterday 22:41' }),
+        card({ name: 'OCR.space', site: 'Free API', state: 'cooling', caps: ['Arabic OCR'],
+          fields: [{ label: 'API key', value: 'K8•••• 55b7' }],
+          meters: [meter('Requests this month', 3902, 25000, 'req')],
+          notice: 'Rate-limited by OCR.space (HTTP 429). Trying again in 3 minutes.', noticeTone: 'amber',
+          lastTest: 'Tested 12 min ago · 1.9 s' }),
+        card({ name: 'Gemini', site: 'Google AI Studio free tier', state: 'working', caps: ['Summarize', 'Translate'],
+          fields: [{ label: 'API key', value: 'AIza•••• 2b8e' }, { label: 'Visitors', value: 'Outside Europe only (locked)' }],
+          meters: [meter('Requests today', 88, 500, 'req')],
+          notice: 'Free-tier content may be reviewed by Google. Never used for OCR, PDF to Word or developer API jobs.', noticeTone: 'grey',
+          lastTest: 'Tested 4 min ago · 640 ms' }),
+        card({ name: 'Mistral', site: 'Optional backup', state: 'off', caps: ['Summarize', 'Translate'],
+          fields: [{ label: 'API key', value: 'Not added' }],
+          meters: [],
+          notice: 'Before adding a key, turn off training on your data in Mistral’s admin settings.', noticeTone: 'grey',
+          lastTest: 'Never tested' })
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+/* Design tokens from the mockup. Light only for now; a dark theme can redefine these. */
+:root {
+  --ground: #f4f5f8;
+  --surface: #ffffff;
+  --ink: #161b2f;
+  --ink-2: #5c627a;
+  --ink-3: #8a90a6;
+  --line: #e3e6ef;
+  --line-2: #d7dbe7;
+  --lapis: #3346b8;
+  --lapis-deep: #25338a;
+  --lapis-soft: #e9ecfa;
+  --teal: #17735f;
+  --teal-deep: #145c4c;
+  --teal-soft: #e1f2ee;
+  --saffron: #8f5606;
+  --saffron-deep: #7a4a04;
+  --saffron-soft: #fbefd6;
+  --plum: #74409a;
+  --plum-soft: #f1e8f7;
+  --red: #b42318;
+}
+
+@theme inline {
+  --color-ground: var(--ground);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+  --color-lapis: var(--lapis);
+  --color-lapis-deep: var(--lapis-deep);
+  --color-lapis-soft: var(--lapis-soft);
+  --color-teal: var(--teal);
+  --color-teal-deep: var(--teal-deep);
+  --color-teal-soft: var(--teal-soft);
+  --color-saffron: var(--saffron);
+  --color-saffron-deep: var(--saffron-deep);
+  --color-saffron-soft: var(--saffron-soft);
+  --color-plum: var(--plum);
+  --color-plum-soft: var(--plum-soft);
+  --color-red: var(--red);
+  --font-sans: var(--font-body), "Segoe UI", Tahoma, system-ui, sans-serif;
+  --font-display: var(--font-display), var(--font-body), sans-serif;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Arabic reads better with a touch more leading. */
+:lang(ar) {
+  line-height: 1.75;
+}
+
+:focus-visible {
+  outline: 2px solid var(--lapis);
+  outline-offset: 2px;
+}

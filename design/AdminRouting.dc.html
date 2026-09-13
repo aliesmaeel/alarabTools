@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Reem+Kufi:wght@600;700&amp;display=swap">
+  <style>
+    body { margin: 0; background: #F4F5F8; }
+    a { color: #3346B8; text-decoration: none; } a:hover { color: #25338A; }
+    * { box-sizing: border-box; }
+  </style>
+</helmet>
+<div dir="ltr" lang="en" style="width: 1440px; height: 1100px; background: #F4F5F8; color: #161B2F; font-family: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif; display: grid; grid-template-columns: 240px minmax(0, 1fr);">
+
+  <aside style="background: #161B2F; color: #C9CEDD; padding-block: 24px; padding-inline: 16px; display: flex; flex-direction: column; gap: 28px;">
+    <div style="display: flex; align-items: center; gap: 10px; padding-inline: 8px;">
+      <div style="width: 32px; height: 32px; border-radius: 8px; background: #3346B8; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Reem Kufi', sans-serif; font-size: 19px; font-weight: 700; line-height: 1;">ع</div>
+      <div style="display: flex; flex-direction: column; line-height: 1.2;"><span style="font-family: 'Reem Kufi', sans-serif; font-size: 17px; font-weight: 600; color: #FFFFFF;">alarab<span style="color: #9AA8F5;">Tools</span></span><span style="font-size: 12px; color: #8A90A6;">Admin</span></div>
+    </div>
+    <nav style="display: flex; flex-direction: column; gap: 2px; font-size: 14px;">
+      <a href="#" style="height: 38px; padding-inline: 12px; display: flex; align-items: center; border-radius: 8px; color: #C9CEDD;">Overview</a>
+      <a href="#" style="height: 38px; padding-inline: 12px; display: flex; align-items: center; border-radius: 8px; color: #C9CEDD;">AI providers</a>
+      <a href="#" style="height: 38px; padding-inline: 12px; display: flex; align-items: center; border-radius: 8px; background: #262C47; color: #FFFFFF; font-weight: 500;">Routing</a>
+      <a href="#" style="height: 38px; padding-inline: 12px; display: flex; align-items: center; border-radius: 8px; color: #C9CEDD;">Jobs</a>
+      <a href="#" style="height: 38px; padding-inline: 12px; display: flex; align-items: center; border-radius: 8px; color: #C9CEDD;">Audit log</a>
+      <a href="#" style="height: 38px; padding-inline: 12px; display: flex; align-items: center; border-radius: 8px; color: #C9CEDD;">Settings</a>
+    </nav>
+    <div style="margin-block-start: auto; padding-inline: 12px; display: flex; flex-direction: column; gap: 4px; font-size: 13px;">
+      <span style="color: #8A90A6;">Signed in with passkey</span>
+      <a href="#" style="color: #C9CEDD;">Sign out</a>
+    </div>
+  </aside>
+
+  <main style="padding-inline: 40px; padding-block: 32px 40px; display: flex; flex-direction: column; gap: 24px;">
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px;">
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <h1 style="margin: 0; font-size: 28px; font-weight: 600; line-height: 1.25;">Routing</h1>
+        <p style="margin: 0; font-size: 15px; color: #5C627A; max-width: 680px;">Drag providers to set the order each AI tool tries them in. The self-hosted fallback always runs last.</p>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <a href="#" style="height: 40px; padding-inline: 16px; display: flex; align-items: center; border: 1px solid #D7DBE7; border-radius: 8px; background: #FFFFFF; color: #161B2F; font-size: 14px; font-weight: 500;">Discard</a>
+        <a href="#" style="height: 40px; padding-inline: 16px; display: flex; align-items: center; border-radius: 8px; background: #3346B8; color: #FFFFFF; font-size: 14px; font-weight: 600;">Save order</a>
+      </div>
+    </div>
+
+    <!-- Capability columns -->
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; align-items: start;">
+      <sc-for list="{{columns}}" as="col" hint-placeholder-count="4">
+        <section style="background: #FFFFFF; border: 1px solid #E3E6EF; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; flex-direction: column; gap: 2px; padding-block-end: 4px;">
+            <span style="font-size: 15px; font-weight: 600;">{{col.title}}</span>
+            <span style="font-size: 12.5px; color: #5C627A;">{{col.tools}}</span>
+          </div>
+          <sc-for list="{{col.rows}}" as="r" hint-placeholder-count="3">
+            <div style="min-height: 48px; padding-block: 6px; padding-inline: 10px; display: flex; align-items: center; gap: 10px; border-radius: 8px; border: 1px solid {{r.border}}; background: {{r.bg}}; box-shadow: {{r.shadow}};">
+              <svg viewBox="0 0 12 18" width="10" height="16" style="flex-shrink: 0; fill: #A3A9BD;"><circle cx="3" cy="3" r="1.5"></circle><circle cx="9" cy="3" r="1.5"></circle><circle cx="3" cy="9" r="1.5"></circle><circle cx="9" cy="9" r="1.5"></circle><circle cx="3" cy="15" r="1.5"></circle><circle cx="9" cy="15" r="1.5"></circle></svg>
+              <span style="width: 20px; font-size: 13px; font-weight: 600; color: #5C627A; font-variant-numeric: tabular-nums;">{{r.n}}</span>
+              <span style="flex-grow: 1; min-width: 0; font-size: 14px; font-weight: 500; line-height: 1.3;">{{r.name}}</span>
+              <span style="width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: {{r.dot}};"></span>
+            </div>
+          </sc-for>
+          <div style="height: 44px; padding-inline: 10px; display: flex; align-items: center; gap: 10px; border-radius: 8px; border: 1px dashed #C9CEDD; color: #5C627A; font-size: 13px;">
+            <svg viewBox="0 0 24 24" width="16" height="16" style="flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>
+            <span>Last: {{col.fallback}}</span>
+          </div>
+        </section>
+      </sc-for>
+    </div>
+    <div style="display: flex; gap: 20px; font-size: 13px; color: #5C627A;">
+      <span style="display: flex; align-items: center; gap: 6px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #17735F;"></span>Working</span>
+      <span style="display: flex; align-items: center; gap: 6px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #C27C0E;"></span>Cooling down or at safety margin</span>
+      <span style="display: flex; align-items: center; gap: 6px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #B42318;"></span>Key rejected</span>
+    </div>
+
+    <!-- Rules -->
+    <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 16px; align-items: start;">
+      <section style="background: #FFFFFF; border: 1px solid #E3E6EF; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <span style="font-size: 15px; font-weight: 600;">Safety margin</span>
+          <span style="font-size: 13.5px; color: #5C627A;">Skip a free provider once it has used this much of its limit, so a burst of traffic never turns into a bill.</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <div style="flex-grow: 1; height: 6px; border-radius: 999px; background: #ECEEF4; position: relative;">
+            <div style="width: 90%; height: 100%; border-radius: 999px; background: #3346B8;"></div>
+            <div style="position: absolute; top: -7px; left: calc(90% - 10px); width: 20px; height: 20px; border-radius: 50%; background: #FFFFFF; border: 2px solid #3346B8; box-shadow: 0 2px 6px rgba(22, 27, 47, 0.2);"></div>
+          </div>
+          <span style="width: 64px; height: 36px; display: flex; align-items: center; justify-content: center; border: 1px solid #D7DBE7; border-radius: 8px; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">90%</span>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block-start: 12px; border-top: 1px solid #ECEEF4;">
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-size: 14px; font-weight: 500;">When every provider is unavailable</span>
+            <span style="font-size: 13px; color: #5C627A;">Visitors see a queue position and an estimated wait.</span>
+          </div>
+          <span style="height: 36px; padding-inline: 12px; display: flex; align-items: center; gap: 8px; border: 1px solid #D7DBE7; border-radius: 8px; font-size: 14px; white-space: nowrap;">Use self-hosted, then queue
+            <svg viewBox="0 0 24 24" width="16" height="16" style="fill: none; stroke: #5C627A; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M6 9l6 6 6-6"></path></svg></span>
+        </div>
+      </section>
+
+      <section style="background: #FFFFFF; border: 1px solid #E3E6EF; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <span style="font-size: 15px; font-weight: 600;">Locked rules</span>
+          <span style="font-size: 13.5px; color: #5C627A;">Set by provider terms and your privacy promise. They can only be changed in code.</span>
+        </div>
+        <sc-for list="{{rules}}" as="rule" hint-placeholder-count="3">
+          <div style="display: flex; gap: 12px; align-items: flex-start; padding-block: 10px; border-top: 1px solid #ECEEF4;">
+            <svg viewBox="0 0 24 24" width="18" height="18" style="flex-shrink: 0; margin-top: 2px; fill: none; stroke: #5C627A; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 14px; font-weight: 500;">{{rule.title}}</span>
+              <span style="font-size: 13px; color: #5C627A; line-height: 1.5;">{{rule.why}}</span>
+            </div>
+          </div>
+        </sc-for>
+      </section>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dot = { ok: '#17735F', warn: '#C27C0E', bad: '#B42318' };
+    const row = (n, name, s, dragging) => ({
+      n, name, dot: dot[s],
+      bg: dragging ? '#F5F7FE' : '#FFFFFF',
+      border: dragging ? '#3346B8' : '#E3E6EF',
+      shadow: dragging ? '0 8px 18px -8px rgba(51, 70, 184, 0.45)' : 'none'
+    });
+    return {
+      columns: [
+        { title: 'Arabic OCR', tools: 'OCR PDF · PDF to Word', fallback: 'PaddleOCR (self-hosted)',
+          rows: [row('1', 'Azure Document Intelligence', 'warn'), row('2', 'Google Cloud Vision', 'bad'), row('3', 'OCR.space', 'warn')] },
+        { title: 'Translate', tools: 'Translate PDF', fallback: 'Opus-MT (self-hosted)',
+          rows: [row('1', 'Azure Translator', 'ok'), row('2', 'Cloudflare m2m100', 'ok', true), row('3', 'Google Cloud Translation', 'bad'), row('4', 'Groq', 'ok'), row('5', 'Gemini', 'ok')] },
+        { title: 'Summarize', tools: 'Summarize PDF', fallback: 'Queue and retry',
+          rows: [row('1', 'Groq', 'ok'), row('2', 'Cloudflare Workers AI', 'ok'), row('3', 'Gemini', 'ok')] },
+        { title: 'Remove background', tools: 'Remove background', fallback: 'rembg BiRefNet (self-hosted)',
+          rows: [row('1', 'Cloudflare Images', 'ok')] }
+      ],
+      rules: [
+        { title: 'Visitors in the EU, EEA, UK and Switzerland never reach Gemini’s free tier', why: 'Google’s terms don’t allow its unpaid tier to serve these regions. Visitors with an unknown country are treated as European.' },
+        { title: 'OCR PDF and PDF to Word never use Gemini’s free tier', why: 'Scans of IDs, contracts and invoices go through these tools, and free-tier content may be reviewed by Google.' },
+        { title: 'Developer API jobs never use free tiers', why: 'Paying customers go to paid providers, charged to their credits.' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
