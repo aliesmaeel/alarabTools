@@ -80,3 +80,42 @@ function FixOptions({ value, onChange }: OptionsProps<FixO>) {
   );
 }
 export const fixArabicText: ToolModule<FixO> = { defaults: { reverseLtrRuns: false }, Options: FixOptions, zipName: "fixed.zip" };
+
+// ---------- Summarize ----------
+type SummO = { language: "ar" | "en"; length: "short" | "medium" | "long" };
+function SummarizeOptions({ value, onChange }: OptionsProps<SummO>) {
+  const t = useTranslations("options.summarize");
+  return (
+    <div className="flex flex-col gap-4">
+      <RadioGroup name="sum-lang" value={value.language} onChange={(language) => onChange({ ...value, language })} options={[{ value: "ar", label: t("ar") }, { value: "en", label: t("en") }]} />
+      <div className="flex flex-col gap-1.5">
+        <span className="text-sm font-medium">{t("length")}</span>
+        <RadioGroup name="sum-len" value={value.length} onChange={(length) => onChange({ ...value, length })} options={[{ value: "short", label: t("short") }, { value: "medium", label: t("medium") }, { value: "long", label: t("long") }]} />
+      </div>
+    </div>
+  );
+}
+export const summarizePdf: ToolModule<SummO> = { defaults: { language: "ar", length: "medium" }, Options: SummarizeOptions, zipName: "summary.zip" };
+
+// ---------- Translate ----------
+type TransO = { to: "ar" | "en" };
+function TranslateOptions({ value, onChange }: OptionsProps<TransO>) {
+  const t = useTranslations("options.translate");
+  return (
+    <RadioGroup name="tr-to" value={value.to} onChange={(to) => onChange({ to })} options={[{ value: "ar", label: t("toAr"), hint: t("toArHint") }, { value: "en", label: t("toEn"), hint: t("toEnHint") }]} />
+  );
+}
+export const translatePdf: ToolModule<TransO> = { defaults: { to: "ar" }, Options: TranslateOptions, zipName: "translation.zip" };
+
+// ---------- Remove background ----------
+type BgO = { model: "isnet-general-use" | "u2net_human_seg"; alphaMatting: boolean };
+function BgOptions({ value, onChange }: OptionsProps<BgO>) {
+  const t = useTranslations("options.removeBg");
+  return (
+    <div className="flex flex-col gap-4">
+      <RadioGroup name="bg-model" value={value.model} onChange={(model) => onChange({ ...value, model })} options={[{ value: "isnet-general-use", label: t("general"), hint: t("generalHint") }, { value: "u2net_human_seg", label: t("people"), hint: t("peopleHint") }]} />
+      <Checkbox checked={value.alphaMatting} onChange={(alphaMatting) => onChange({ ...value, alphaMatting })} label={t("matting")} />
+    </div>
+  );
+}
+export const removeBackground: ToolModule<BgO> = { defaults: { model: "isnet-general-use", alphaMatting: false }, Options: BgOptions, zipName: "no-background.zip" };

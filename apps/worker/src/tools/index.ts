@@ -30,6 +30,9 @@ export async function loadTool(id: string): Promise<ServerTool | null> {
     case "pdf-to-excel": return (await import("./from-pdf")).pdfToExcel;
     case "pdf-to-powerpoint": return (await import("./from-pdf")).pdfToPowerpoint;
     case "fix-arabic-text": return (await import("./from-pdf")).fixArabicText;
+    case "summarize-pdf": return (await import("./ai-text")).summarizePdf;
+    case "translate-pdf": return (await import("./ai-text")).translatePdf;
+    case "remove-background": return (await import("./background")).removeBackground;
     default: return null;
   }
 }

@@ -81,7 +81,7 @@ export function ToolRunner({ tool, what }: { tool: ToolDef; what: string }) {
       setNeedPassword(true);
       setPhase({ kind: "configure" });
     } else {
-      setPhase({ kind: "error", message: result.message === "no-pages" ? to("needPages") : result.message === "png-unsupported" ? t("pngUnsupported") : result.message === "undecodable" ? t("undecodable") : result.message === "not-configured" ? t("comingSoon") : result.message === "too-large" ? t("tooLarge") : result.message === "rate-limited" ? t("rateLimited") : result.message === "timeout" ? t("timeout") : result.message === "bad-url" ? t("badUrl") : result.message === "no-provider" ? t("noProvider") : result.message === "no-text" ? t("noText") : result.message === "unrepairable" ? t("unrepairable") : t("failed") });
+      setPhase({ kind: "error", message: result.message === "no-pages" ? to("needPages") : result.message === "png-unsupported" ? t("pngUnsupported") : result.message === "undecodable" ? t("undecodable") : result.message === "not-configured" ? t("comingSoon") : result.message === "too-large" ? t("tooLarge") : result.message === "rate-limited" ? t("rateLimited") : result.message === "timeout" ? t("timeout") : result.message === "bad-url" ? t("badUrl") : result.message === "no-provider" ? t("noProvider") : result.message === "no-text" ? t("noText") : result.message === "unrepairable" ? t("unrepairable") : result.message === "image-too-large" ? t("imageTooLarge") : t("failed") });
     }
   }
 

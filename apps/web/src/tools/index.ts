@@ -50,6 +50,10 @@ export const IMPLEMENTED = new Set([
   "pdf-to-excel",
   "pdf-to-powerpoint",
   "fix-arabic-text",
+  "summarize-pdf",
+  "translate-pdf",
+  "remove-background",
+  "upscale-image",
 ]);
 
 /** Tools that run in the image worker (WASM codecs) instead of the PDF worker. */
@@ -101,6 +105,10 @@ export async function loadToolModule(id: string): Promise<ToolModule | null> {
     case "pdf-to-excel": return erase((await import("./server-options")).pdfToExcel);
     case "pdf-to-powerpoint": return erase((await import("./server-options")).pdfToPowerpoint);
     case "fix-arabic-text": return erase((await import("./server-options")).fixArabicText);
+    case "summarize-pdf": return erase((await import("./server-options")).summarizePdf);
+    case "translate-pdf": return erase((await import("./server-options")).translatePdf);
+    case "remove-background": return erase((await import("./server-options")).removeBackground);
+    case "upscale-image": return erase((await import("./upscale")).upscaleImage);
     default: return null;
   }
 }

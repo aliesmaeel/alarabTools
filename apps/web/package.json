@@ -13,8 +13,10 @@
     "prebuild": "node scripts/copy-assets.mjs"
   },
   "dependencies": {
+    "@alarab/ai": "workspace:*",
     "@alarab/arabic": "workspace:*",
     "@alarab/image-core": "workspace:*",
+    "@alarab/jobs": "workspace:*",
     "@alarab/pdf-core": "workspace:*",
     "@alarab/tools": "workspace:*",
     "@jsquash/jpeg": "^1.6.0",
@@ -29,21 +31,22 @@
     "next-intl": "^4.14.4",
     "pdfjs-dist": "^6.3.289",
     "react": "19.2.8",
-    "react-dom": "19.2.8",
-    "@alarab/jobs": "workspace:*",
-    "@alarab/ai": "workspace:*"
+    "react-dom": "19.2.8"
   },
   "devDependencies": {
     "@cantoo/pdf-lib": "^2.11.0",
     "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
+    "@tensorflow/tfjs": "4.22.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@upscalerjs/esrgan-slim": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.3.5",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "upscaler": "1.0.0"
   },
   "packageManager": "pnpm@10.18.3"
 }

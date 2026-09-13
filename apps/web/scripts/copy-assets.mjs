@@ -46,4 +46,16 @@ mkdirSync(join(codecsDst, "mediapipe"), { recursive: true });
 copyFileSync(join(mp, "vision_bundle.mjs"), join(codecsDst, "mediapipe", "vision_bundle.mjs"));
 cpSync(join(mp, "wasm"), join(codecsDst, "mediapipe", "wasm"), { recursive: true });
 
-console.log(`assets copied: pdf.js worker, fonts, codecs (${CODECS.join(", ")}, heif, mediapipe)`);
+// Upscaler (TensorFlow.js + UpscalerJS + ESRGAN-slim models), loaded on the main thread by the upscale tool.
+const up = join(codecsDst, "upscaler");
+mkdirSync(join(up, "models"), { recursive: true });
+copyFileSync(join(dirname(require.resolve("@tensorflow/tfjs/package.json")), "dist", "tf.min.js"), join(up, "tf.min.js"));
+// These two packages hide package.json behind "exports"; the workspace symlinks are the stable way in.
+copyFileSync(join(root, "node_modules", "upscaler", "dist", "browser", "umd", "upscaler.min.js"), join(up, "upscaler.min.js"));
+const esrgan = join(root, "node_modules", "@upscalerjs", "esrgan-slim");
+for (const x of ["x2", "x4"]) {
+  copyFileSync(join(esrgan, "dist", "umd", "models", "esrgan-slim", "src", x, "index.min.js"), join(up, `esrgan-${x}.min.js`));
+  cpSync(join(esrgan, "models", x), join(up, "models", x), { recursive: true });
+}
+
+console.log(`assets copied: pdf.js worker, fonts, codecs (${CODECS.join(", ")}, heif, mediapipe, upscaler)`);

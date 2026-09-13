@@ -111,7 +111,8 @@
     "aiNote": "This tool sends the file's content to an AI provider (never Gemini for scans in Europe); see the privacy policy for the list.",
     "noProvider": "No AI provider is available right now. Please try again later.",
     "noText": "This PDF has no text to extract. Run OCR on it first.",
-    "unrepairable": "The file could not be repaired."
+    "unrepairable": "The file could not be repaired.",
+    "imageTooLarge": "This image is too large for the chosen scale. Resize it first or pick 2×."
   },
   "options": {
     "needPages": "Enter the page numbers first.",
@@ -466,6 +467,35 @@
     "fixArabic": {
       "reverseRuns": "Numbers and Latin words are reversed inside Arabic lines",
       "hint": "Left unticked, the tool decides per line. Disconnected letters and reversed words are always repaired."
+    },
+    "summarize": {
+      "ar": "Summary in Arabic",
+      "en": "Summary in English",
+      "length": "Length",
+      "short": "Short",
+      "medium": "Medium",
+      "long": "Detailed"
+    },
+    "translate": {
+      "toAr": "Into Arabic",
+      "toArHint": "From English (or any language the provider supports)",
+      "toEn": "Into English",
+      "toEnHint": "From Arabic"
+    },
+    "removeBg": {
+      "general": "Products and objects",
+      "generalHint": "General model, works for most photos",
+      "people": "People",
+      "peopleHint": "Tuned for portraits and full-body shots",
+      "matting": "Refine edges (slower; helps with hair)"
+    },
+    "upscale": {
+      "x2": "2× (recommended)",
+      "x2Hint": "Up to about 1.2 megapixels in",
+      "x4": "4×",
+      "x4Hint": "Up to about 0.4 megapixels in; slower",
+      "same": "Same format as the original",
+      "hint": "Runs on your device with an open-source model (ESRGAN); the first run downloads about 1 MB."
     }
   }
 }

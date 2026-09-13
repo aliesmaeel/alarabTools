@@ -84,10 +84,21 @@ async function main() {
   setInterval(sweep, 10 * 60 * 1000);
   log("worker ready", { WORK_DIR, storage: process.env.S3_BUCKET ? "s3" : "local" });
   let stopping = false;
-  process.on("SIGTERM", () => { stopping = true; });
-  process.on("SIGINT", () => { stopping = true; });
+  // Stop taking jobs at once: closing the blocking connection aborts the pending BLMOVE, so a job
+  // never lands on a worker that is about to exit (an older build would run it with stale code).
+  const stop = () => { stopping = true; conn.disconnect(); };
+  process.on("SIGTERM", stop);
+  process.on("SIGINT", stop);
   while (!stopping) {
-    const id = await takeJob(conn, 25);
+    let id: string | null = null;
+    try {
+      id = await takeJob(conn, 25);
+    } catch (e) {
+      if (stopping) break;
+      log("queue error", e instanceof Error ? e.message : e);
+      await new Promise((r) => setTimeout(r, 2000));
+      continue;
+    }
     if (!id) continue;
     const job = await getJob(id);
     if (job && job.state === "queued") await process1(job);
