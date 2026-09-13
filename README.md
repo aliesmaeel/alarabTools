@@ -64,6 +64,10 @@ Copy `apps/web/.env.example` to `apps/web/.env.local`. Set `NEXT_PUBLIC_SITE_URL
 
 Production: `docker compose up --build` gives Redis + MinIO + the worker image (`apps/worker/Dockerfile`, based on the Playwright image with LibreOffice, Ghostscript, qpdf, poppler and Arabic fonts). On Vercel set `REDIS_URL` (Upstash, `rediss://`) and the `S3_*` variables for R2; the worker gets the same variables wherever it runs. It needs no inbound ports.
 
+## Deploying
+
+See `docs/DEPLOY.md`: web app on Vercel (root directory `apps/web`), Upstash Redis and Cloudflare R2, and the worker as a Docker container on any Linux host. Business details for the legal pages go in `apps/web/src/content/legal.ts`.
+
 ## Admin dashboard
 
 `/admin` is the owner's area. It needs `ADMIN_PASSWORD`, `ADMIN_SECRET` (signs the 12-hour session cookie), `KEYS_SECRET` (encrypts provider keys at rest; the worker needs the same value) and `REDIS_URL`. Signed-out visitors get a 404 for every admin page; the sign-in form is at `/admin` and is rate-limited to 5 attempts per 15 minutes per IP. Provider keys are written through the dashboard and never shown again (only the last four characters). Set `AI_MOCK=1` to expose a mock provider for tests.

@@ -9,10 +9,10 @@ test("admin: sign in, add a mock key, test it, reorder routing", async ({ page }
   expect(res?.status()).toBe(404);
 
   await page.goto("/admin");
-  await page.getByLabel("Password").fill("wrong");
+  await page.getByLabel("Password", { exact: true }).fill("wrong");
   await page.getByRole("button", { name: "Sign in" }).click();
   await expect(page.getByText("Wrong password.")).toBeVisible();
-  await page.getByLabel("Password").fill("local-admin-pass");
+  await page.getByLabel("Password", { exact: true }).fill("local-admin-pass");
   await page.getByRole("button", { name: "Sign in" }).click();
   await expect(page).toHaveURL(/\/admin\/providers/);
   await expect(page.getByRole("heading", { name: "AI providers" })).toBeVisible();

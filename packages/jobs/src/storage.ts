@@ -177,6 +177,7 @@ let instance: Storage | null = null;
 export function storage(): Storage {
   if (!instance) {
     if (process.env.S3_BUCKET) instance = new S3Storage(process.env.S3_BUCKET);
+    else if (process.env.VERCEL) throw new Error("Server tools on Vercel need R2: set S3_BUCKET, S3_ENDPOINT, S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY");
     // Same-origin relative URLs: the browser talks to whichever host serves the app, so dev ports don't matter.
     else instance = new LocalStorage(process.env.JOBS_DIR ?? join(process.env.HOME ?? "/tmp", "alarab-jobs"), "");
   }
