@@ -28,7 +28,9 @@ export interface ToolDef {
   id: string;
   group: ToolGroup;
   runtime: Runtime;
-  /** Accepted MIME types. */
+  /** What the visitor provides. "files" (default) or "text" typed into the page. */
+  input?: "files" | "text";
+  /** Accepted MIME types (for "files" input). */
   accepts: readonly string[];
   limits: { maxFiles: number; maxBytes: number };
   /** Developer API mapping; credits charged per job. */

@@ -18,6 +18,7 @@ export const IMPLEMENTED = new Set([
   "add-page-numbers",
   "add-watermark",
   "hijri-date-stamp",
+  "arabic-fonts",
 ]);
 
 // Lazy so a tool page only ships its own form.
@@ -35,6 +36,7 @@ export async function loadToolModule(id: string): Promise<ToolModule | null> {
     case "add-page-numbers": return erase((await import("./text-options")).addPageNumbers);
     case "add-watermark": return erase((await import("./text-options")).addWatermark);
     case "hijri-date-stamp": return erase((await import("./text-options")).hijriDateStamp);
+    case "arabic-fonts": return erase((await import("./text-options")).arabicFonts);
     default: return null;
   }
 }

@@ -5,11 +5,12 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./stamp": "./src/stamp.ts"
+    "./stamp": "./src/stamp.ts",
+    "./document": "./src/document.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "tsx src/index.test.ts && tsx src/stamp.test.ts"
+    "test": "tsx src/index.test.ts && tsx src/stamp.test.ts && tsx src/document.test.ts"
   },
   "dependencies": {
     "@alarab/arabic": "workspace:*",

@@ -13,6 +13,7 @@ type Input = {
   group: ToolGroup;
   runtime: Runtime;
   accepts?: readonly string[];
+  input?: "text";
   maxFiles?: number;
   credits?: number;
   phase: ToolDef["phase"];
@@ -28,6 +29,7 @@ function def(t: Input): ToolDef {
     id: t.id,
     group: t.group,
     runtime: t.runtime,
+    input: t.input ?? "files",
     accepts: t.accepts ?? PDF,
     limits: { maxFiles: t.maxFiles ?? 1, maxBytes: 25 * MB },
     api: { path: `/v1/${apiGroup}/${t.id.replace(/-(pdf|image|images)$/, "")}`, credits: t.credits ?? 1 },
@@ -193,7 +195,7 @@ export const TOOLS: readonly ToolDef[] = [
   def({ id: "hijri-date-stamp", group: "arabic", runtime: "browser", maxFiles: 20, phase: 1,
     ar: ["ختم التاريخ الهجري", "أضف التاريخ الهجري بتقويم أم القرى مع الميلادي إلى صفحاتك."],
     en: ["Hijri date stamp", "Stamp pages with the Hijri (Umm al-Qura) and Gregorian dates."] }),
-  def({ id: "arabic-fonts", group: "arabic", runtime: "browser", phase: 1,
-    ar: ["خطوط عربية", "نسخ وكوفي ورقعة للعلامات المائية وترقيم الصفحات والتوقيع."],
-    en: ["Arabic fonts", "Naskh, Kufi and Ruqaa for watermarks, page numbers and signatures."] }),
+  def({ id: "arabic-fonts", group: "arabic", runtime: "browser", input: "text", accepts: ["text/plain"], phase: 1,
+    ar: ["خطوط عربية", "اكتب نصًا، اختر خط نسخ أو كوفي أو رقعة، ونزّله PDF أو صورة PNG."],
+    en: ["Arabic fonts", "Type text, pick a Naskh, Kufi or Ruqaa font, and download it as PDF or PNG."] }),
 ];

@@ -61,7 +61,9 @@
       "pdf": "PDF",
       "image": "image",
       "file": "file"
-    }
+    },
+    "step1Text": "Type your text and pick a font, size and colour.",
+    "step2Text": "The file is created right in your browser."
   },
   "footer": {
     "rights": "© {year} alarabTools",
@@ -92,7 +94,11 @@
     "failed": "The file could not be processed. Check that it isn't damaged and try again.",
     "passwordNeeded": "This file is password protected. Enter the password to continue:",
     "browserNote": "Processed on your device; nothing is uploaded.",
-    "serverNote": "Uploaded over an encrypted connection and deleted after 1 hour."
+    "serverNote": "Uploaded over an encrypted connection and deleted after 1 hour.",
+    "again": "Another text",
+    "workingShort": "Working…",
+    "privacyNoteText": "Created in your browser.",
+    "pngUnsupported": "Your browser can't create a PNG here. Try PDF or a newer browser."
   },
   "options": {
     "needPages": "Enter the page numbers first.",
@@ -182,7 +188,12 @@
       "center": "Centred on the page",
       "tile": "Repeated across the page",
       "corner": "In a corner",
-      "rotate": "Angle in degrees"
+      "rotate": "Angle in degrees",
+      "kindText": "Text",
+      "kindImage": "Image or logo",
+      "image": "Image",
+      "imageHint": "PNG, JPG or WebP; a PNG with a transparent background works best",
+      "width": "Image width, % of page"
     },
     "hijri": {
       "date": "Date",
@@ -197,6 +208,19 @@
       "prefix": "Text before the date (optional)",
       "prefixPlaceholder": "e.g. Date:",
       "firstPageOnly": "First page only"
+    },
+    "needImage": "Choose a logo image.",
+    "arabicText": {
+      "text": "Text",
+      "placeholder": "Type here…",
+      "align": "Alignment",
+      "alignStart": "Start",
+      "alignCenter": "Centre",
+      "alignEnd": "End",
+      "pageSize": "Page size",
+      "fit": "Fit to text",
+      "format": "Format",
+      "png": "PNG with transparent background"
     }
   }
 }

@@ -113,14 +113,26 @@ export const addPageNumbers: ToolModule<PageNumbersO> = {
 };
 
 // ---------- Watermark ----------
-type WatermarkO = { text: string; font: FontId; size: number; color: string; opacity: number; layout: "center" | "tile" | "corner"; position: Position; rotate: number; pages: string };
+type WatermarkO = { kind: "text" | "image"; text: string; image: File | null; widthPercent: number; font: FontId; size: number; color: string; opacity: number; layout: "center" | "tile" | "corner"; position: Position; rotate: number; pages: string };
 function WatermarkOptions({ value, onChange, pageCount }: OptionsProps<WatermarkO>) {
   const t = useTranslations("options");
   return (
     <div className="flex flex-col gap-4">
-      <Field label={t("watermark.text")}>
-        {(id) => <textarea id={id} rows={2} value={value.text} onChange={(e) => onChange({ ...value, text: e.target.value })} className={`${inputCls} h-auto py-2`} placeholder={t("watermark.placeholder")} />}
-      </Field>
+      <RadioGroup name="wm-kind" value={value.kind} onChange={(kind) => onChange({ ...value, kind })} options={[{ value: "text", label: t("watermark.kindText") }, { value: "image", label: t("watermark.kindImage") }]} />
+      {value.kind === "text" ? (
+        <Field label={t("watermark.text")}>
+          {(id) => <textarea id={id} rows={2} value={value.text} onChange={(e) => onChange({ ...value, text: e.target.value })} className={`${inputCls} h-auto py-2`} placeholder={t("watermark.placeholder")} />}
+        </Field>
+      ) : (
+        <>
+          <Field label={t("watermark.image")} hint={value.image ? value.image.name : t("watermark.imageHint")}>
+            {(id) => <input id={id} type="file" accept="image/png,image/jpeg,image/webp" onChange={(e) => onChange({ ...value, image: e.target.files?.[0] ?? null })} className="block w-full text-sm file:me-3 file:rounded-md file:border-0 file:bg-lapis-soft file:px-3 file:py-2 file:font-medium file:text-lapis" />}
+          </Field>
+          <Field label={t("watermark.width")}>
+            {(id) => <TextInput id={id} type="number" min={5} max={100} step={5} value={value.widthPercent} onChange={(e) => onChange({ ...value, widthPercent: Number(e.target.value) })} />}
+          </Field>
+        </>
+      )}
       <div className="flex flex-col gap-1.5">
         <span className="text-sm font-medium">{t("watermark.layout")}</span>
         <RadioGroup
@@ -135,15 +147,17 @@ function WatermarkOptions({ value, onChange, pageCount }: OptionsProps<Watermark
         />
       </div>
       {value.layout === "corner" && <PositionPicker value={value.position} onChange={(position) => onChange({ ...value, position })} allowCenter={false} />}
-      <FontSelect value={value.font} onChange={(font) => onChange({ ...value, font })} />
-      <SizeAndColor value={value} onChange={onChange} />
+      {value.kind === "text" && <FontSelect value={value.font} onChange={(font) => onChange({ ...value, font })} />}
+      {value.kind === "text" && <SizeAndColor value={value} onChange={onChange} />}
       <div className="grid grid-cols-2 gap-3">
         <Field label={t("opacity")}>
           {(id) => <TextInput id={id} type="number" min={5} max={100} step={5} value={value.opacity} onChange={(e) => onChange({ ...value, opacity: Number(e.target.value) })} />}
         </Field>
-        <Field label={t("watermark.rotate")}>
-          {(id) => <TextInput id={id} type="number" min={-90} max={90} step={15} value={value.rotate} onChange={(e) => onChange({ ...value, rotate: Number(e.target.value) })} />}
-        </Field>
+        {value.kind === "text" && (
+          <Field label={t("watermark.rotate")}>
+            {(id) => <TextInput id={id} type="number" min={-90} max={90} step={15} value={value.rotate} onChange={(e) => onChange({ ...value, rotate: Number(e.target.value) })} />}
+          </Field>
+        )}
       </div>
       <Field label={t("pagesOptional")} hint={t("pagesExample", { count: pageCount ?? 10 })}>
         {(id) => <TextInput id={id} dir="ltr" value={value.pages} placeholder={t("rotate.allPages")} onChange={(e) => onChange({ ...value, pages: e.target.value })} />}
@@ -152,9 +166,9 @@ function WatermarkOptions({ value, onChange, pageCount }: OptionsProps<Watermark
   );
 }
 export const addWatermark: ToolModule<WatermarkO> = {
-  defaults: { text: "", font: "amiri-bold", size: 48, color: "#b42318", opacity: 25, layout: "center", position: "top-right", rotate: 45, pages: "" },
+  defaults: { kind: "text", text: "", image: null, widthPercent: 30, font: "amiri-bold", size: 48, color: "#b42318", opacity: 25, layout: "center", position: "top-right", rotate: 45, pages: "" },
   Options: WatermarkOptions,
-  validate: (o) => (o.text.trim() ? null : "needText"),
+  validate: (o) => (o.kind === "image" ? (o.image ? null : "needImage") : o.text.trim() ? null : "needText"),
   zipName: "watermarked.zip",
 };
 
@@ -212,6 +226,39 @@ export const hijriDateStamp: ToolModule<HijriO> = {
   Options: HijriOptions,
   validate: (o) => (/^\d{4}-\d{2}-\d{2}$/.test(o.date) ? null : "needDate"),
   zipName: "stamped.zip",
+};
+
+// ---------- Arabic fonts: typed text to PDF/PNG ----------
+type ArabicTextO = { text: string; font: FontId; size: number; color: string; align: "start" | "center" | "end"; pageSize: "a4" | "a5" | "fit"; format: "pdf" | "png" };
+function ArabicTextOptions({ value, onChange }: OptionsProps<ArabicTextO>) {
+  const t = useTranslations("options");
+  return (
+    <div className="flex flex-col gap-4">
+      <Field label={t("arabicText.text")}>
+        {(id) => <textarea id={id} rows={5} value={value.text} onChange={(e) => onChange({ ...value, text: e.target.value })} className={`${inputCls} h-auto py-2 text-lg leading-relaxed`} placeholder={t("arabicText.placeholder")} />}
+      </Field>
+      <FontSelect value={value.font} onChange={(font) => onChange({ ...value, font })} />
+      <SizeAndColor value={value} onChange={onChange} />
+      <div className="flex flex-col gap-1.5">
+        <span className="text-sm font-medium">{t("arabicText.align")}</span>
+        <RadioGroup name="align" value={value.align} onChange={(align) => onChange({ ...value, align })} options={[{ value: "start", label: t("arabicText.alignStart") }, { value: "center", label: t("arabicText.alignCenter") }, { value: "end", label: t("arabicText.alignEnd") }]} />
+      </div>
+      <div className="flex flex-col gap-1.5">
+        <span className="text-sm font-medium">{t("arabicText.pageSize")}</span>
+        <RadioGroup name="page-size" value={value.pageSize} onChange={(pageSize) => onChange({ ...value, pageSize })} options={[{ value: "fit", label: t("arabicText.fit") }, { value: "a4", label: "A4" }, { value: "a5", label: "A5" }]} />
+      </div>
+      <div className="flex flex-col gap-1.5">
+        <span className="text-sm font-medium">{t("arabicText.format")}</span>
+        <RadioGroup name="format" value={value.format} onChange={(format) => onChange({ ...value, format })} options={[{ value: "pdf", label: "PDF" }, { value: "png", label: t("arabicText.png") }]} />
+      </div>
+    </div>
+  );
+}
+export const arabicFonts: ToolModule<ArabicTextO> = {
+  defaults: { text: "", font: "amiri", size: 36, color: "#161b2f", align: "start", pageSize: "fit", format: "pdf" },
+  Options: ArabicTextOptions,
+  validate: (o) => (o.text.trim() ? null : "needText"),
+  noFiles: true,
 };
 
 export { ALL_POSITIONS };

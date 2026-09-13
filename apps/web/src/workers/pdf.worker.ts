@@ -2,6 +2,7 @@
 import * as Comlink from "comlink";
 import * as pdf from "@alarab/pdf-core";
 import * as stamp from "@alarab/pdf-core/stamp";
+import { textDocument } from "@alarab/pdf-core/document";
 import { defaultDigits, fontInfo, formatGregorian, formatHijri, type DigitSystem } from "@alarab/arabic";
 
 const fontCache = new Map<string, Promise<Uint8Array>>();
@@ -17,6 +18,39 @@ function loadFont(id: string): Promise<Uint8Array> {
     fontCache.set(file, p);
   }
   return p;
+}
+
+/** Render text to a transparent PNG with the bundled font, via canvas (the browser shapes Arabic itself). */
+async function textToPng(text: string, fontId: string, size: number, color: string, align: string): Promise<Uint8Array> {
+  const fonts = (self as unknown as { fonts?: FontFaceSet }).fonts;
+  if (!fonts) throw new Error("png-unsupported");
+  const family = `alarab-${fontId}`;
+  if (![...fonts].some((f) => f.family === family)) {
+    const bytes = await loadFont(fontId);
+    const face = new FontFace(family, bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer);
+    await face.load();
+    fonts.add(face);
+  }
+  const lines = text.split(/\r?\n/);
+  const scale = 2;
+  const lh = size * 1.6;
+  const pad = size;
+  const probe = new OffscreenCanvas(8, 8).getContext("2d")!;
+  probe.font = `${size}px "${family}"`;
+  const rtl = /[\u0600-\u06FF]/.test(text);
+  const width = Math.max(...lines.map((l) => probe.measureText(l).width), size);
+  const canvas = new OffscreenCanvas(Math.ceil((width + 2 * pad) * scale), Math.ceil((lh * lines.length + 2 * pad) * scale));
+  const ctx = canvas.getContext("2d")!;
+  ctx.scale(scale, scale);
+  ctx.font = `${size}px "${family}"`;
+  ctx.fillStyle = color;
+  ctx.textBaseline = "top";
+  ctx.direction = rtl ? "rtl" : "ltr";
+  const x = align === "center" ? width / 2 + pad : (align === "start") === rtl ? width + pad : pad;
+  ctx.textAlign = align === "center" ? "center" : (align === "start") === rtl ? "right" : "left";
+  lines.forEach((line, i) => ctx.fillText(line, x, pad + i * lh + (lh - size) / 2));
+  const blob = await canvas.convertToBlob({ type: "image/png" });
+  return new Uint8Array(await blob.arrayBuffer());
 }
 
 function pagesOf(o: Record<string, unknown>, n: number): number[] | undefined {
@@ -151,15 +185,19 @@ async function dispatch(toolId: string, files: File[], o: Record<string, unknown
       return [{ name: `${base(first.name)}-numbered.pdf`, bytes: out, mime: PDF }];
     }
     case "add-watermark": {
-      const style = { fontBytes: await loadFont(String(o.font)), size: Number(o.size) || 48, color: stamp.hexToRgb(String(o.color)), opacity: (Number(o.opacity) || 25) / 100 };
+      const layout = String(o.layout);
+      const opacity = (Number(o.opacity) || 25) / 100;
+      const position = layout === "corner" ? (o.position as stamp.Position) : "center";
+      const isImage = o.kind === "image" && o.image instanceof File;
+      const image = isImage ? await toEmbeddable(o.image as File) : null;
+      const style = isImage ? null : { fontBytes: await loadFont(String(o.font)), size: Number(o.size) || 48, color: stamp.hexToRgb(String(o.color)), opacity };
       const outs: Output[] = [];
       for (let i = 0; i < files.length; i++) {
         const bytes = await bytesOf(files[i]);
-        const layout = String(o.layout);
-        const out = await stamp.stampText(bytes, {
-          text: String(o.text), style, tile: layout === "tile", rotate: layout === "corner" ? 0 : Number(o.rotate) || 0,
-          position: layout === "corner" ? (o.position as stamp.Position) : "center", margin: 24, pages: pagesOf(o, await pdf.pageCount(bytes)),
-        });
+        const pages = pagesOf(o, await pdf.pageCount(bytes));
+        const out = image
+          ? await stamp.stampImage(bytes, { image, position, margin: 24, widthRatio: Math.min(1, Math.max(0.05, (Number(o.widthPercent) || 30) / 100)), opacity, tile: layout === "tile", pages })
+          : await stamp.stampText(bytes, { text: String(o.text), style: style!, tile: layout === "tile", rotate: layout === "corner" ? 0 : Number(o.rotate) || 0, position, margin: 24, pages });
         outs.push({ name: `${base(files[i].name)}-watermarked.pdf`, bytes: out, mime: PDF });
         onProgress(i + 1, files.length);
       }
@@ -185,6 +223,18 @@ async function dispatch(toolId: string, files: File[], o: Record<string, unknown
         onProgress(i + 1, files.length);
       }
       return outs;
+    }
+    case "arabic-fonts": {
+      const text = String(o.text ?? "");
+      const align = String(o.align ?? "start");
+      if (o.format === "png") {
+        return [{ name: "arabic-text.png", bytes: await textToPng(text, String(o.font), Number(o.size) || 36, String(o.color), align), mime: "image/png" }];
+      }
+      const bytes = await textDocument({
+        text, fontBytes: await loadFont(String(o.font)), size: Number(o.size) || 36, color: stamp.hexToRgb(String(o.color)),
+        align: align as "start" | "center" | "end", pageSize: (o.pageSize as "a4" | "a5" | "fit") ?? "fit", margin: o.pageSize === "fit" ? 24 : 56,
+      });
+      return [{ name: "arabic-text.pdf", bytes, mime: PDF }];
     }
     default:
       throw new Error(`Tool ${toolId} is not implemented`);

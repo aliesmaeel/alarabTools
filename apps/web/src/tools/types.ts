@@ -17,6 +17,8 @@ export type ToolModule<O extends Options = Options> = {
   Options?: ComponentType<OptionsProps<O>>;
   /** Return a message key under "options" when the options are not ready to run. */
   validate?: (o: O) => string | null;
+  /** Tool takes typed input instead of files; the runner opens on the options panel. */
+  noFiles?: boolean;
   /** Whether files can be reordered (merge). */
   reorder?: boolean;
   /** ZIP name when there are several outputs. */

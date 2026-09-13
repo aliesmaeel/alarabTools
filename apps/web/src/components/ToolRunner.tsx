@@ -33,6 +33,7 @@ export function ToolRunner({ tool, what }: { tool: ToolDef; what: string }) {
     loadToolModule(tool.id).then((m) => {
       setMod(m);
       if (m) setOptions(m.defaults);
+      if (m?.noFiles) setPhase({ kind: "configure" });
     });
   }, [tool.id]);
 
@@ -75,15 +76,15 @@ export function ToolRunner({ tool, what }: { tool: ToolDef; what: string }) {
       setNeedPassword(true);
       setPhase({ kind: "configure" });
     } else {
-      setPhase({ kind: "error", message: result.message === "no-pages" ? to("needPages") : t("failed") });
+      setPhase({ kind: "error", message: result.message === "no-pages" ? to("needPages") : result.message === "png-unsupported" ? t("pngUnsupported") : t("failed") });
     }
   }
 
   const validation = mod?.validate?.(options) ?? null;
-  const canRun = files.length > 0 && !validation && (!needPassword || !!options.password);
+  const canRun = (files.length > 0 || !!mod?.noFiles) && !validation && (!needPassword || !!options.password);
   const OptionsForm = mod?.Options;
 
-  if (phase.kind === "pick" || mod === null) {
+  if ((phase.kind === "pick" && !mod?.noFiles) || mod === null) {
     return <Dropzone accepts={tool.accepts} maxFiles={tool.limits.maxFiles} maxBytes={tool.limits.maxBytes} what={what} onFiles={mod === null ? undefined : onFiles} />;
   }
   if (!mod) {
@@ -107,11 +108,26 @@ export function ToolRunner({ tool, what }: { tool: ToolDef; what: string }) {
             <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden className="fill-none stroke-current stroke-2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" /></svg>
             {t("download")}
           </button>
-          <button type="button" onClick={() => { setFiles([]); setPhase({ kind: "pick" }); }} className="inline-flex h-14 items-center rounded-[10px] border border-line-2 px-6 text-base font-medium hover:border-ink-3">
-            {t("startOver")}
+          <button type="button" onClick={() => { setFiles([]); setPhase({ kind: mod.noFiles ? "configure" : "pick" }); }} className="inline-flex h-14 items-center rounded-[10px] border border-line-2 px-6 text-base font-medium hover:border-ink-3">
+            {mod.noFiles ? t("again") : t("startOver")}
           </button>
         </div>
-        <p className="text-sm text-ink-2">{t("privacyNote")}</p>
+        <p className="text-sm text-ink-2">{mod.noFiles ? t("privacyNoteText") : t("privacyNote")}</p>
+      </section>
+    );
+  }
+
+  const errorBox = phase.kind === "error" ? <p role="alert" className="rounded-lg bg-[#fdecea] px-4 py-3 text-sm text-red">{phase.message}</p> : null;
+
+  if (mod.noFiles) {
+    return (
+      <section className="flex max-w-[760px] flex-col gap-5 rounded-2xl border border-line bg-surface p-5 sm:p-6">
+        {OptionsForm && <OptionsForm value={options} onChange={setOptions} pageCount={null} fileCount={0} />}
+        {errorBox}
+        {validation && <span className="text-xs text-ink-2">{to(validation)}</span>}
+        <button type="button" data-testid="run" disabled={!canRun || phase.kind === "running"} onClick={runTool} className="inline-flex h-14 items-center justify-center rounded-[10px] bg-lapis px-8 text-lg font-semibold text-white hover:bg-lapis-deep disabled:cursor-not-allowed disabled:opacity-40 sm:self-start">
+          {phase.kind === "running" ? t("workingShort") : t("run", { name: tool.copy[locale as "ar" | "en"].name })}
+        </button>
       </section>
     );
   }
@@ -146,7 +162,7 @@ export function ToolRunner({ tool, what }: { tool: ToolDef; what: string }) {
             </li>
           ))}
         </ul>
-        {phase.kind === "error" && <p role="alert" className="rounded-lg bg-[#fdecea] px-4 py-3 text-sm text-red">{phase.message}</p>}
+        {errorBox}
       </div>
 
       <aside className="flex flex-col gap-5 rounded-2xl border border-line bg-surface p-5">

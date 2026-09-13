@@ -38,14 +38,15 @@ Copy `apps/web/.env.example` to `apps/web/.env.local`. Set `NEXT_PUBLIC_SITE_URL
 - The privacy badge ("On your device" / "On our servers") comes from the tool's `runtime` field; never hard-code it.
 - UI strings live in `apps/web/messages/{ar,en}.json`. Tool names and summaries live in the registry.
 - Digits: Arabic-Indic (١٢٣) by default on the Arabic site, Western (123) on English; tools that print numbers offer both (`defaultDigits` in `@alarab/arabic`).
+- Tools with `input: "text"` in the registry (Arabic fonts) skip the drop zone; their module sets `noFiles: true`.
 - Any text drawn into a PDF goes through `drawText` in `@alarab/arabic`, which splits bidi runs so Arabic joins and reads right-to-left. Never call `page.drawText` with Arabic directly.
 - Fonts are in `packages/arabic/fonts` (source of truth) and copied to `apps/web/public/fonts`.
 
 ## Status
 
 - P0 Foundation: done (registry, bilingual site, tool page template with SEO metadata and JSON-LD, sitemap, smoke test, CI).
-- P1 Browser PDF tools: in progress. Working: merge, split, remove pages, extract pages, rotate, crop, protect, unlock, JPG to PDF, page numbers, watermark, Hijri date stamp.
-  Remaining: organize (thumbnails), PDF to JPG, compare, scan to PDF, sign, edit, Arabic fonts.
+- P1 Browser PDF tools: in progress. Working (13): merge, split, remove pages, extract pages, rotate, crop, protect, unlock, JPG to PDF, page numbers, watermark (text or logo), Hijri date stamp, Arabic fonts (text to PDF/PNG).
+  Remaining: organize (thumbnails), PDF to JPG, compare, scan to PDF, sign, edit.
 
 ## How a browser tool works
 
