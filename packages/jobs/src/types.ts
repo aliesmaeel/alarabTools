@@ -30,6 +30,8 @@ export type JobRecord = {
   finishedAt?: number;
   /** Where the job came from: the site or a developer API key id. */
   source: "web" | "api";
+  /** Visitor region at creation, for the AI routing rules; unknown counts as Europe. */
+  region: "eu" | "other";
 };
 
 /** Seconds a job record and its files live. */

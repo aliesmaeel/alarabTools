@@ -25,6 +25,11 @@ export async function loadTool(id: string): Promise<ServerTool | null> {
     case "html-to-pdf": return (await import("./html")).htmlToPdf;
     case "html-to-image": return (await import("./html")).htmlToImage;
     case "redact-pdf": return (await import("./redact")).redactPdf;
+    case "ocr-pdf": return (await import("./ocr")).ocrPdf;
+    case "pdf-to-word": return (await import("./from-pdf")).pdfToWord;
+    case "pdf-to-excel": return (await import("./from-pdf")).pdfToExcel;
+    case "pdf-to-powerpoint": return (await import("./from-pdf")).pdfToPowerpoint;
+    case "fix-arabic-text": return (await import("./from-pdf")).fixArabicText;
     default: return null;
   }
 }

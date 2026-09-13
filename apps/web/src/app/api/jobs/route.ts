@@ -1,5 +1,6 @@
 import { getTool } from "@alarab/tools";
 import { createJob, hourPrefix, inputKey, newJobId, rateLimit, storage, type JobFile } from "@alarab/jobs";
+import { regionOf } from "@alarab/ai";
 import { clientIp, fail, json, serverToolsEnabled } from "../_lib";
 
 export const runtime = "nodejs";
@@ -35,7 +36,7 @@ export async function POST(req: Request) {
   const prefix = hourPrefix();
   const st = storage();
   const jobFiles: JobFile[] = files.map((f, i) => ({ key: inputKey(prefix, id, i, f.name!), name: f.name!, size: f.size!, type: f.type ?? "" }));
-  await createJob({ id, tool: tool.id, locale: body.locale === "en" ? "en" : "ar", files: jobFiles, options, state: "created", progress: 0, createdAt: Date.now(), source: "web" });
+  await createJob({ id, tool: tool.id, locale: body.locale === "en" ? "en" : "ar", files: jobFiles, options, state: "created", progress: 0, createdAt: Date.now(), source: "web", region: regionOf(req.headers.get("x-vercel-ip-country") ?? req.headers.get("cf-ipcountry")) });
   const uploads = await Promise.all(jobFiles.map((f) => st.putUrl(f.key, f.size, f.type)));
   return json({ id, uploads });
 }

@@ -61,4 +61,20 @@ const kufi = await ar.embedFont(doc2, new Uint8Array(readFileSync(new URL("../fo
 ar.drawText(doc2.addPage(), "ختم التاريخ", { font: kufi, size: 30, x: 20, y: 20 });
 await doc2.save();
 
+// Arabic text fixes
+{
+  const r = ar.fixArabicText("\uFEFB\uFEB4\uFEE0\uFE8E\uFEE1 \u202Bعليكم\u202C");
+  assert(!/[\uFB50-\uFDFF\uFE70-\uFEFF\u202B\u202C]/.test(r.text), "presentation forms and bidi marks removed");
+  assert(r.report.presentationForms && r.report.bidiMarks, "report flags");
+  // A line stored visually: each word reversed and word order flipped.
+  const visual = "ةكرشلا ريدم ىلإ باتكلا اذه"; // "هذا الكتاب إلى مدير الشركة" reversed
+  eq(ar.fixArabicText(visual).text, "هذا الكتاب إلى مدير الشركة", "visual line restored");
+  eq(ar.fixArabicText("هذا الكتاب إلى مدير الشركة").text, "هذا الكتاب إلى مدير الشركة", "logical line untouched");
+  // LibreOffice-style flipped numbers inside Arabic lines.
+  eq(ar.fixArabicText("عام 6202 ميلادي").text, "عام 2026 ميلادي", "flipped year");
+  eq(ar.fixArabicText("التاريخ: ١٠/٤٠/٨٤٤١").text, "التاريخ: ١٤٤٨/٠٤/٠١", "flipped arabic-indic date");
+  eq(ar.fixArabicText("عام 2026 ميلادي").text, "عام 2026 ميلادي", "correct year untouched");
+  eq(ar.fixArabicText("من 01 3 egaP", { reverseLtrRuns: true }).text, "من 10 3 Page", "forced run reversal");
+  eq(ar.fixArabicText("Page 3 of 10").text, "Page 3 of 10", "latin lines untouched");
+}
 console.log("arabic ok");

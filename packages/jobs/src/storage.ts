@@ -177,7 +177,8 @@ let instance: Storage | null = null;
 export function storage(): Storage {
   if (!instance) {
     if (process.env.S3_BUCKET) instance = new S3Storage(process.env.S3_BUCKET);
-    else instance = new LocalStorage(process.env.JOBS_DIR ?? join(process.env.HOME ?? "/tmp", "alarab-jobs"), process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000");
+    // Same-origin relative URLs: the browser talks to whichever host serves the app, so dev ports don't matter.
+    else instance = new LocalStorage(process.env.JOBS_DIR ?? join(process.env.HOME ?? "/tmp", "alarab-jobs"), "");
   }
   return instance;
 }

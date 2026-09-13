@@ -107,7 +107,11 @@
     "tooLarge": "The file is larger than the limit.",
     "rateLimited": "Too many jobs from your connection in the last hour. Please try again later.",
     "timeout": "This took too long and was stopped. Try a smaller file.",
-    "badUrl": "Enter a valid public web address (https://…)."
+    "badUrl": "Enter a valid public web address (https://…).",
+    "aiNote": "This tool sends the file's content to an AI provider (never Gemini for scans in Europe); see the privacy policy for the list.",
+    "noProvider": "No AI provider is available right now. Please try again later.",
+    "noText": "This PDF has no text to extract. Run OCR on it first.",
+    "unrepairable": "The file could not be repaired."
   },
   "options": {
     "needPages": "Enter the page numbers first.",
@@ -453,6 +457,15 @@
       "remove": "Remove"
     },
     "needUrl": "Enter a valid web page address.",
-    "needBoxes": "Mark at least one area to remove."
+    "needBoxes": "Mark at least one area to remove.",
+    "ocr": {
+      "both": "Arabic and English",
+      "ar": "Arabic only",
+      "en": "English only"
+    },
+    "fixArabic": {
+      "reverseRuns": "Numbers and Latin words are reversed inside Arabic lines",
+      "hint": "Left unticked, the tool decides per line. Disconnected letters and reversed words are always repaired."
+    }
   }
 }

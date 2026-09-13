@@ -108,6 +108,12 @@ importers:
 
   apps/worker:
     dependencies:
+      '@alarab/ai':
+        specifier: workspace:*
+        version: link:../../packages/ai
+      '@alarab/arabic':
+        specifier: workspace:*
+        version: link:../../packages/arabic
       '@alarab/jobs':
         specifier: workspace:*
         version: link:../../packages/jobs

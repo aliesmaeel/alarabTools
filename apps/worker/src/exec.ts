@@ -34,4 +34,5 @@ export const BIN = {
   qpdf: process.env.QPDF_BIN || "qpdf",
   soffice: process.env.SOFFICE_BIN || "libreoffice",
   pdftoppm: process.env.PDFTOPPM_BIN || "pdftoppm",
+  pdftotext: process.env.PDFTOTEXT_BIN || "pdftotext",
 };

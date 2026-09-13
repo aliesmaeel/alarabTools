@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import type { OptionsProps, ToolModule } from "./types";
-import { Field, RadioGroup, TextInput } from "./fields";
+import { Checkbox, Field, RadioGroup, TextInput } from "./fields";
 
 // ---------- Compress PDF (Ghostscript presets) ----------
 type CompressO = { level: "screen" | "ebook" | "printer" };
@@ -52,3 +52,31 @@ export function validUrl(u: string): boolean {
 const urlTool: ToolModule<UrlO> = { defaults: { url: "" }, Options: UrlOptions, noFiles: true, validate: (o) => (validUrl(o.url) ? null : "needUrl") };
 export const htmlToPdf = urlTool;
 export const htmlToImage = urlTool;
+
+// ---------- OCR ----------
+type OcrO = { language: "both" | "ar" | "en" };
+function OcrOptions({ value, onChange }: OptionsProps<OcrO>) {
+  const t = useTranslations("options.ocr");
+  return (
+    <RadioGroup name="ocr-lang" value={value.language} onChange={(language) => onChange({ language })} options={[{ value: "both", label: t("both") }, { value: "ar", label: t("ar") }, { value: "en", label: t("en") }]} />
+  );
+}
+export const ocrPdf: ToolModule<OcrO> = { defaults: { language: "both" }, Options: OcrOptions, zipName: "ocr.zip" };
+
+// ---------- PDF to Office ----------
+export const pdfToWord = plain("word.zip");
+export const pdfToExcel = plain("excel.zip");
+export const pdfToPowerpoint = plain("powerpoint.zip");
+
+// ---------- Fix Arabic text ----------
+type FixO = { reverseLtrRuns: boolean };
+function FixOptions({ value, onChange }: OptionsProps<FixO>) {
+  const t = useTranslations("options.fixArabic");
+  return (
+    <div className="flex flex-col gap-3">
+      <Checkbox checked={value.reverseLtrRuns} onChange={(reverseLtrRuns) => onChange({ reverseLtrRuns })} label={t("reverseRuns")} />
+      <span className="text-xs text-ink-2">{t("hint")}</span>
+    </div>
+  );
+}
+export const fixArabicText: ToolModule<FixO> = { defaults: { reverseLtrRuns: false }, Options: FixOptions, zipName: "fixed.zip" };

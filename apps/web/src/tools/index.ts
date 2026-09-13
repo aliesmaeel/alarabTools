@@ -45,6 +45,11 @@ export const IMPLEMENTED = new Set([
   "html-to-pdf",
   "html-to-image",
   "redact-pdf",
+  "ocr-pdf",
+  "pdf-to-word",
+  "pdf-to-excel",
+  "pdf-to-powerpoint",
+  "fix-arabic-text",
 ]);
 
 /** Tools that run in the image worker (WASM codecs) instead of the PDF worker. */
@@ -91,6 +96,11 @@ export async function loadToolModule(id: string): Promise<ToolModule | null> {
     case "html-to-pdf": return erase((await import("./server-options")).htmlToPdf);
     case "html-to-image": return erase((await import("./server-options")).htmlToImage);
     case "redact-pdf": return erase((await import("./redact")).redactPdf);
+    case "ocr-pdf": return erase((await import("./server-options")).ocrPdf);
+    case "pdf-to-word": return erase((await import("./server-options")).pdfToWord);
+    case "pdf-to-excel": return erase((await import("./server-options")).pdfToExcel);
+    case "pdf-to-powerpoint": return erase((await import("./server-options")).pdfToPowerpoint);
+    case "fix-arabic-text": return erase((await import("./server-options")).fixArabicText);
     default: return null;
   }
 }
