@@ -86,7 +86,7 @@ export function ToolRunner({ tool, what }: { tool: ToolDef; what: string }) {
   const OptionsForm = mod?.Options;
 
   if ((phase.kind === "pick" && !mod?.noFiles) || mod === null) {
-    return <Dropzone accepts={tool.accepts} maxFiles={tool.limits.maxFiles} maxBytes={tool.limits.maxBytes} what={what} onFiles={mod === null ? undefined : onFiles} />;
+    return <Dropzone accepts={tool.accepts} maxFiles={tool.limits.maxFiles} maxBytes={tool.limits.maxBytes} what={what} onFiles={mod === null ? undefined : onFiles} camera={mod?.camera} />;
   }
   if (!mod) {
     return <div className="min-h-[260px] rounded-2xl border-2 border-dashed border-line-2 bg-surface" aria-busy="true" />;
@@ -134,7 +134,7 @@ export function ToolRunner({ tool, what }: { tool: ToolDef; what: string }) {
   }
 
   return (
-    <section className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
+    <section className={`grid items-start gap-6 ${mod.noRun ? "" : "lg:grid-cols-[minmax(0,1fr)_340px]"}`}>
       <div className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-5">
         <div className="flex items-center justify-between">
           <span className="text-sm font-semibold">{t("fileCount", { count: files.length })}</span>
@@ -170,6 +170,7 @@ export function ToolRunner({ tool, what }: { tool: ToolDef; what: string }) {
         {errorBox}
       </div>
 
+      {!mod.noRun && (
       <aside className="flex flex-col gap-5 rounded-2xl border border-line bg-surface p-5">
         {OptionsForm && <OptionsForm value={options} onChange={setOptions} pageCount={pageCount} fileCount={files.length} />}
         {needPassword && (
@@ -195,6 +196,7 @@ export function ToolRunner({ tool, what }: { tool: ToolDef; what: string }) {
         )}
         <span className="text-xs text-ink-2">{tool.runtime === "browser" ? t("browserNote") : t("serverNote")}</span>
       </aside>
+      )}
     </section>
   );
 }

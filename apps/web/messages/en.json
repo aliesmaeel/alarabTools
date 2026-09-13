@@ -63,7 +63,8 @@
       "file": "file"
     },
     "step1Text": "Type your text and pick a font, size and colour.",
-    "step2Text": "The file is created right in your browser."
+    "step2Text": "The file is created right in your browser.",
+    "takePhoto": "Take a photo"
   },
   "footer": {
     "rights": "© {year} alarabTools",
@@ -259,6 +260,31 @@
       "pageOf": "Page {n} of {total}",
       "placeHint": "Click on the page to place the signature, or drag it to move.",
       "placedAlt": "Placed signature"
+    },
+    "scan": {
+      "enhance": "Enhancement",
+      "none": "None",
+      "gray": "Grayscale, higher contrast",
+      "bw": "Black and white (document)",
+      "pageSize": "Page size",
+      "a4": "A4",
+      "fit": "Image size"
+    },
+    "compare": {
+      "needTwo": "Choose two files to compare.",
+      "loading": "Loading both files…",
+      "pageOf": "Page {n} of {total}",
+      "prev": "Previous",
+      "next": "Next",
+      "fileA": "First file",
+      "fileB": "Second file",
+      "diff": "Differences",
+      "changed": "{pct}% of the page differs",
+      "same": "The pages are identical",
+      "missing": "This page doesn't exist in the other file",
+      "checkAll": "Check all pages",
+      "changedPages": "Pages that differ: {list}",
+      "noChanges": "No differences on any page."
     }
   }
 }

@@ -11,6 +11,8 @@ type Props = {
   what: string;
   /** Called when the tool has real processing. Until then, files are just listed. */
   onFiles?: (files: File[]) => void;
+  /** Show a camera button on touch devices. */
+  camera?: boolean;
 };
 
 function formatBytes(n: number, locale: string) {
@@ -21,7 +23,7 @@ function formatBytes(n: number, locale: string) {
   return locale === "ar" ? `${nf.format(kb)} ك.ب` : `${nf.format(kb)} KB`;
 }
 
-export function Dropzone({ accepts, maxFiles, maxBytes, what, onFiles }: Props) {
+export function Dropzone({ accepts, maxFiles, maxBytes, what, onFiles, camera }: Props) {
   const t = useTranslations("tool");
   const locale = useLocale();
   const inputId = useId();
@@ -86,6 +88,13 @@ export function Dropzone({ accepts, maxFiles, maxBytes, what, onFiles }: Props) 
             onChange={(e) => e.target.files && accept(e.target.files)}
           />
         </label>
+        {camera && (
+          <label className="hidden h-12 cursor-pointer items-center gap-2 rounded-[10px] border border-line-2 bg-surface px-5 text-base font-medium [@media(pointer:coarse)]:inline-flex">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden className="fill-none stroke-current stroke-[1.8]" strokeLinecap="round" strokeLinejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z" /><circle cx="12" cy="13" r="3.5" /></svg>
+            {t("takePhoto")}
+            <input type="file" className="sr-only" accept="image/*" capture="environment" onChange={(e) => e.target.files && accept(e.target.files)} />
+          </label>
+        )}
         {error && <span role="alert" className="text-sm font-medium text-red">{error}</span>}
       </div>
 

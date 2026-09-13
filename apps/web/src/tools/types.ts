@@ -30,6 +30,10 @@ export type ToolModule<O extends Options = Options> = {
   validate?: (o: O) => string | null;
   /** Tool takes typed input instead of files; the runner opens on the options panel. */
   noFiles?: boolean;
+  /** Offer a "take photo" button (mobile camera) in the drop zone. */
+  camera?: boolean;
+  /** The Workspace IS the result (compare): no run button, no download. */
+  noRun?: boolean;
   /** Whether files can be reordered (merge). */
   reorder?: boolean;
   /** ZIP name when there are several outputs. */

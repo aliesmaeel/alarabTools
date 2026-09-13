@@ -22,6 +22,8 @@ export const IMPLEMENTED = new Set([
   "organize-pdf",
   "pdf-to-jpg",
   "sign-pdf",
+  "scan-to-pdf",
+  "compare-pdf",
 ]);
 
 // Lazy so a tool page only ships its own form.
@@ -43,6 +45,8 @@ export async function loadToolModule(id: string): Promise<ToolModule | null> {
     case "organize-pdf": return erase((await import("./organize")).organizePdf);
     case "pdf-to-jpg": return erase((await import("./pdf-to-jpg")).pdfToJpg);
     case "sign-pdf": return erase((await import("./sign")).signPdf);
+    case "scan-to-pdf": return erase((await import("./scan")).scanToPdf);
+    case "compare-pdf": return erase((await import("./compare")).comparePdf);
     default: return null;
   }
 }

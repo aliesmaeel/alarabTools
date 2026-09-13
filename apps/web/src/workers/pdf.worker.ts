@@ -78,6 +78,65 @@ async function toEmbeddable(file: File): Promise<pdf.ImageInput> {
   return { bytes: new Uint8Array(await blob.arrayBuffer()), type: "image/png" };
 }
 
+type Enhance = "none" | "gray" | "bw";
+/** Photo of a document -> cleaned page image. Downscales to 2000px, optional grayscale or black & white. */
+async function scanImage(file: File, enhance: Enhance): Promise<pdf.ImageInput> {
+  const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
+  const scale = Math.min(1, 2000 / Math.max(bitmap.width, bitmap.height));
+  const w = Math.round(bitmap.width * scale);
+  const h = Math.round(bitmap.height * scale);
+  const canvas = new OffscreenCanvas(w, h);
+  const ctx = canvas.getContext("2d", { willReadFrequently: enhance !== "none" })!;
+  ctx.drawImage(bitmap, 0, 0, w, h);
+  bitmap.close();
+  if (enhance !== "none") {
+    const img = ctx.getImageData(0, 0, w, h);
+    const d = img.data;
+    const gray = new Uint8ClampedArray(w * h);
+    let lo = 255, hi = 0;
+    for (let i = 0, j = 0; i < d.length; i += 4, j++) {
+      const g = (d[i] * 299 + d[i + 1] * 587 + d[i + 2] * 114) / 1000;
+      gray[j] = g;
+      if (g < lo) lo = g;
+      if (g > hi) hi = g;
+    }
+    // Stretch contrast between the 2nd and 98th percentile-ish bounds.
+    const range = Math.max(1, hi - lo);
+    if (enhance === "bw") {
+      // Adaptive threshold: compare each pixel with the mean of a 32px block (integral image).
+      const block = 32;
+      const integral = new Float64Array((w + 1) * (h + 1));
+      for (let y = 1; y <= h; y++) {
+        let row = 0;
+        for (let x = 1; x <= w; x++) {
+          row += gray[(y - 1) * w + (x - 1)];
+          integral[y * (w + 1) + x] = integral[(y - 1) * (w + 1) + x] + row;
+        }
+      }
+      for (let y = 0; y < h; y++) {
+        const y0 = Math.max(0, y - block), y1 = Math.min(h, y + block);
+        for (let x = 0; x < w; x++) {
+          const x0 = Math.max(0, x - block), x1 = Math.min(w, x + block);
+          const area = (y1 - y0) * (x1 - x0);
+          const sum = integral[y1 * (w + 1) + x1] - integral[y0 * (w + 1) + x1] - integral[y1 * (w + 1) + x0] + integral[y0 * (w + 1) + x0];
+          const v = gray[y * w + x] < (sum / area) * 0.85 ? 0 : 255;
+          const i = (y * w + x) * 4;
+          d[i] = d[i + 1] = d[i + 2] = v;
+        }
+      }
+    } else {
+      for (let i = 0, j = 0; i < d.length; i += 4, j++) {
+        const v = ((gray[j] - lo) / range) * 255;
+        d[i] = d[i + 1] = d[i + 2] = v;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+  const type = enhance === "bw" ? "image/png" : "image/jpeg";
+  const blob = await canvas.convertToBlob({ type, quality: 0.85 });
+  return { bytes: new Uint8Array(await blob.arrayBuffer()), type };
+}
+
 const api = {
   async pageCount(file: File): Promise<number | null> {
     try {
@@ -231,6 +290,16 @@ async function dispatch(toolId: string, files: File[], o: Record<string, unknown
       const rotations: Record<number, number> = {};
       for (const p of kept) if (p.rotation) rotations[p.index] = p.rotation;
       return [{ name: `${base(first.name)}-organized.pdf`, bytes: await pdf.organize(await bytesOf(first), kept.map((p) => p.index), rotations), mime: PDF }];
+    }
+    case "scan-to-pdf": {
+      const images: pdf.ImageInput[] = [];
+      for (let i = 0; i < files.length; i++) {
+        images.push(await scanImage(files[i], (o.enhance as Enhance) ?? "gray"));
+        onProgress(i + 1, files.length + 1);
+      }
+      const bytes = await pdf.imagesToPdf(images, { pageSize: o.pageSize === "fit" ? "fit" : "a4", margin: 0 });
+      onProgress(files.length + 1, files.length + 1);
+      return [{ name: "scan.pdf", bytes, mime: PDF }];
     }
     case "sign-pdf": {
       const sig = o.sig as Uint8Array | null;
