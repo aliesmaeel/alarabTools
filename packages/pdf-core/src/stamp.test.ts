@@ -38,3 +38,19 @@ const withImage = await stamp.stampImage(src, { image: { bytes: png, type: "imag
 assert((await PDFDocument.load(withImage)).getPageCount() === 3, "image stamp");
 
 console.log("stamp ok");
+
+// placeImages: unrotated page, 20% wide at (10%, 80%) from the top-left
+{
+  const out = await PDFDocument.load(await stamp.placeImages(src, { bytes: png, type: "image/png" }, [{ page: 0, x: 0.1, y: 0.8, w: 0.2 }]));
+  const ops = out.getPage(0).node.Contents()?.toString() ?? "";
+  assert(out.getPageCount() === 3, "placeImages keeps pages");
+  assert(ops.length > 0, "placement drew something");
+}
+// rotated page still accepts a placement
+{
+  const rot = await PDFDocument.load(src);
+  rot.getPage(0).setRotation({ type: "degrees", angle: 90 } as never);
+  const out = await PDFDocument.load(await stamp.placeImages(await rot.save(), { bytes: png, type: "image/png" }, [{ page: 0, x: 0.5, y: 0.5, w: 0.3 }, { page: 1, x: 0, y: 0, w: 0.5 }]));
+  assert(out.getPage(0).getRotation().angle === 90, "rotation preserved");
+}
+console.log("placeImages ok");

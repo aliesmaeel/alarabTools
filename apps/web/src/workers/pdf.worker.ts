@@ -232,6 +232,15 @@ async function dispatch(toolId: string, files: File[], o: Record<string, unknown
       for (const p of kept) if (p.rotation) rotations[p.index] = p.rotation;
       return [{ name: `${base(first.name)}-organized.pdf`, bytes: await pdf.organize(await bytesOf(first), kept.map((p) => p.index), rotations), mime: PDF }];
     }
+    case "sign-pdf": {
+      const sig = o.sig as Uint8Array | null;
+      if (!sig) throw new Error("no-signature");
+      const bytes = await bytesOf(first);
+      const n = await pdf.pageCount(bytes);
+      const pages = o.allPages ? Array.from({ length: n }, (_, i) => i) : [Math.min(Number(o.page) || 0, n - 1)];
+      const placements = pages.map((page) => ({ page, x: Number(o.x) || 0, y: Number(o.y) || 0, w: Number(o.w) || 0.3 }));
+      return [{ name: `${base(first.name)}-signed.pdf`, bytes: await stamp.placeImages(bytes, { bytes: sig, type: "image/png" }, placements), mime: PDF }];
+    }
     case "arabic-fonts": {
       const text = String(o.text ?? "");
       const align = String(o.align ?? "start");

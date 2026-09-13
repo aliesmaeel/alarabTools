@@ -138,3 +138,44 @@ export async function stampImage(bytes: Uint8Array, o: ImageStampOptions): Promi
 }
 
 export { PDFDocument };
+
+export type Placement = {
+  /** 0-based page index. */
+  page: number;
+  /** Position of the image's top-left corner as fractions of the DISPLAYED page (0..1, y downward). */
+  x: number;
+  y: number;
+  /** Image width as a fraction of the displayed page width. */
+  w: number;
+};
+
+/**
+ * Draw one image at absolute positions chosen on a preview. Coordinates are in display space
+ * (what pdf.js renders, i.e. after the page's /Rotate), so they are mapped back to PDF space.
+ */
+export async function placeImages(bytes: Uint8Array, image: ImageStampOptions["image"], placements: Placement[]): Promise<Uint8Array> {
+  const doc = await load(bytes);
+  const img = image.type === "image/png" ? await doc.embedPng(image.bytes) : await doc.embedJpg(image.bytes);
+  const ratio = img.height / img.width;
+  for (const p of placements) {
+    const page = doc.getPage(p.page);
+    const { width: W, height: H } = page.getSize();
+    const r = ((page.getRotation().angle % 360) + 360) % 360;
+    const rotated = r === 90 || r === 270;
+    const dW = rotated ? H : W; // displayed size
+    const dH = rotated ? W : H;
+    const dw = p.w * dW;
+    const dh = dw * ratio;
+    // Display-space bottom-left corner of the image (top-left origin, y down).
+    const dx = p.x * dW;
+    const dy = p.y * dH + dh;
+    // Map to PDF space (bottom-left origin) and rotate the image with the page.
+    let x: number, y: number;
+    if (r === 90) [x, y] = [dy, dx];
+    else if (r === 180) [x, y] = [W - dx, dy];
+    else if (r === 270) [x, y] = [W - dy, H - dx];
+    else [x, y] = [dx, H - dy];
+    page.drawImage(img, { x, y, width: dw, height: dh, rotate: { type: "degrees", angle: r } as never });
+  }
+  return doc.save({ useObjectStreams: true });
+}

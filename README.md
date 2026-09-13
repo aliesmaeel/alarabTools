@@ -45,8 +45,8 @@ Copy `apps/web/.env.example` to `apps/web/.env.local`. Set `NEXT_PUBLIC_SITE_URL
 ## Status
 
 - P0 Foundation: done (registry, bilingual site, tool page template with SEO metadata and JSON-LD, sitemap, smoke test, CI).
-- P1 Browser PDF tools: in progress. Working (15): merge, split, remove pages, extract pages, organize, rotate, crop, protect, unlock, JPG to PDF, PDF to JPG, page numbers, watermark (text or logo), Hijri date stamp, Arabic fonts (text to PDF/PNG).
-  Remaining: compare, scan to PDF, sign, edit.
+- P1 Browser PDF tools: in progress. Working (16): merge, split, remove pages, extract pages, organize, rotate, crop, protect, unlock, sign, JPG to PDF, PDF to JPG, page numbers, watermark (text or logo), Hijri date stamp, Arabic fonts (text to PDF/PNG).
+  Remaining: compare, scan to PDF, edit.
 
 ## How a browser tool works
 

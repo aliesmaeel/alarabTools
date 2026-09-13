@@ -21,6 +21,7 @@ export const IMPLEMENTED = new Set([
   "arabic-fonts",
   "organize-pdf",
   "pdf-to-jpg",
+  "sign-pdf",
 ]);
 
 // Lazy so a tool page only ships its own form.
@@ -41,6 +42,7 @@ export async function loadToolModule(id: string): Promise<ToolModule | null> {
     case "arabic-fonts": return erase((await import("./text-options")).arabicFonts);
     case "organize-pdf": return erase((await import("./organize")).organizePdf);
     case "pdf-to-jpg": return erase((await import("./pdf-to-jpg")).pdfToJpg);
+    case "sign-pdf": return erase((await import("./sign")).signPdf);
     default: return null;
   }
 }

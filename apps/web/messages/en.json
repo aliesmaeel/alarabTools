@@ -240,6 +240,25 @@
       "dpi72": "Normal (72 dpi)",
       "dpi150": "Good (150 dpi)",
       "dpi300": "Print (300 dpi)"
+    },
+    "needSignature": "Draw, type or upload your signature first.",
+    "sign": {
+      "draw": "Draw",
+      "type": "Type",
+      "upload": "Upload image",
+      "padLabel": "Signature drawing pad",
+      "padHint": "Draw your signature with the mouse or your finger",
+      "clear": "Clear",
+      "typePlaceholder": "Type your name",
+      "font": "Font",
+      "previewAlt": "Signature preview",
+      "size": "Size",
+      "allPages": "Place the signature on every page",
+      "prev": "Previous",
+      "next": "Next",
+      "pageOf": "Page {n} of {total}",
+      "placeHint": "Click on the page to place the signature, or drag it to move.",
+      "placedAlt": "Placed signature"
     }
   }
 }
