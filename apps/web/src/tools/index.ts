@@ -54,6 +54,7 @@ export const IMPLEMENTED = new Set([
   "translate-pdf",
   "remove-background",
   "upscale-image",
+  "markdown-editor",
 ]);
 
 /** Tools that run in the image worker (WASM codecs) instead of the PDF worker. */
@@ -109,6 +110,7 @@ export async function loadToolModule(id: string): Promise<ToolModule | null> {
     case "translate-pdf": return erase((await import("./server-options")).translatePdf);
     case "remove-background": return erase((await import("./server-options")).removeBackground);
     case "upscale-image": return erase((await import("./upscale")).upscaleImage);
+    case "markdown-editor": return erase((await import("./markdown-editor")).markdownEditor);
     default: return null;
   }
 }

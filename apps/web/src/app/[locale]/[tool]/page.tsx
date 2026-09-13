@@ -48,7 +48,9 @@ export default async function ToolPage({ params }: PageProps<"/[locale]/[tool]">
     { q: t("tool.faqFreeQ"), a: t("tool.faqFreeA", { maxMb }) },
     { q: t("tool.faqPrivacyQ"), a: t(isBrowser ? "tool.faqPrivacyBrowser" : "tool.faqPrivacyServer") },
   ];
-  const steps = tool.input === "text"
+  const steps = t.has(`toolSteps.${tool.id}.s1`)
+    ? [t(`toolSteps.${tool.id}.s1`), t(`toolSteps.${tool.id}.s2`), t(`toolSteps.${tool.id}.s3`)]
+    : tool.input === "text"
     ? [t("tool.step1Text"), t("tool.step2Text"), t("tool.step3")]
     : [t("tool.step1"), t(isBrowser ? "tool.step2Browser" : "tool.step2Server"), t("tool.step3")];
 

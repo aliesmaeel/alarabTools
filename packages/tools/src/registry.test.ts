@@ -7,8 +7,8 @@ function assert(cond: unknown, msg: string): asserts cond {
 
 const ids = TOOLS.map((t) => t.id);
 assert(new Set(ids).size === ids.length, "tool ids must be unique");
-assert(counts.total === 47, `expected 47 tools, got ${counts.total}`);
-assert(counts.browser === 30, `expected 30 browser tools, got ${counts.browser}`);
+assert(counts.total === 48, `expected 48 tools, got ${counts.total}`);
+assert(counts.browser === 31, `expected 31 browser tools, got ${counts.browser}`);
 assert(counts.server === 17, `expected 17 server tools, got ${counts.server}`);
 
 for (const t of TOOLS) {

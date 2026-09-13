@@ -36,7 +36,8 @@ export async function runAndDownload(page: Page): Promise<Download> {
   await expect(runButton).toBeEnabled();
   await runButton.click();
   const downloadButton = page.getByRole("button", { name: /Download result|تنزيل النتيجة/ });
-  await expect(downloadButton).toBeVisible({ timeout: 30_000 });
+  // Server jobs can wait behind others in the queue and LibreOffice cold-starts slowly.
+  await expect(downloadButton).toBeVisible({ timeout: process.env.SERVER_TOOLS ? 120_000 : 30_000 });
   const [download] = await Promise.all([page.waitForEvent("download"), downloadButton.click()]);
   return download;
 }

@@ -1,6 +1,6 @@
 # alarabTools
 
-Arabic-first (RTL) + English PDF and image tools, in the style of iLovePDF and iLoveIMG. 47 tools: 30 run in the browser, 17 on a worker.
+Arabic-first (RTL) + English PDF and image tools, in the style of iLovePDF and iLoveIMG. 48 tools: 31 run in the browser, 17 on a worker.
 
 Plans and decisions live in [docs/](docs/): the architecture document, the accounts to create, and the design mockups in [design/](design/).
 
@@ -47,13 +47,27 @@ Copy `apps/web/.env.example` to `apps/web/.env.local`. Set `NEXT_PUBLIC_SITE_URL
 
 ## Status
 
+48 tools, all implemented. Server and AI tools need Redis, storage and the worker (see Deploying); AI tools also need provider keys in the admin dashboard.
+
 - P0 Foundation: done (registry, bilingual site, tool page template with SEO metadata and JSON-LD, sitemap, smoke test, CI).
 - P1 Browser PDF tools: done (19): merge, split, remove pages, extract pages, organize, scan to PDF, rotate, crop, protect, unlock, sign, compare, JPG to PDF, PDF to JPG, page numbers, watermark (text or logo), Hijri date stamp, Arabic fonts (text to PDF/PNG), edit PDF (text, images, drawing, shapes, highlight, whiteout).
-- P5 AI tools: in progress. Summarize PDF (chunked, then a summary of summaries) and translate PDF (page by page) through the gateway, DOCX + TXT out; remove background with a self-hosted rembg (REMBG_BIN); upscale image 2×/4× in the browser (UpscalerJS ESRGAN-slim on TensorFlow.js served from public/codecs/upscaler).
-- P4 AI gateway and admin dashboard: in progress. Done: gateway (Groq, Cloudflare Workers AI, Azure Document Intelligence and Translator, Google Vision and Translation, OCR.space, Gemini, Mistral; mock provider for tests), /admin dashboard (password sign-in, provider cards with key entry, test button and usage meters, routing order and safety margin, audit log). Tools: OCR PDF (searchable PDF with an invisible text layer plus .txt), PDF to Word (LibreOffice import for text PDFs, OCR for scans, Arabic fixer on the result), PDF to Excel (layout columns to cells), PDF to PowerPoint (Impress import), fix Arabic text (.txt, .docx, PDF). Self-hosted OCR fallback and the P5 tools remain.
-- P3 Server pipeline: in progress. Working (9): compress PDF, repair PDF, PDF to PDF/A, Word/Excel/PowerPoint to PDF, HTML to PDF, HTML to image, redact PDF (true redaction: marked pages are rasterised).
-  Files are deleted after one hour by the worker's sweeper; uploads and downloads go straight to storage with signed URLs (10 minutes).
-- P2 Browser image tools: done (10): compress, resize, convert to JPG, convert from JPG (PNG/WebP), rotate/flip, crop, watermark (text or logo), meme generator, blur faces, photo editor (presets, adjustments, Arabic text, stickers, frames). HEIC/HEIF input works in every image tool (libheif). Upscale is P5.
+- P2 Browser image tools: done (10): compress, resize, convert to JPG, convert from JPG (PNG/WebP), rotate/flip, crop, watermark (text or logo), meme generator, blur faces, photo editor (presets, adjustments, Arabic text, stickers, frames). HEIC/HEIF input works in every image tool (libheif).
+- Markdown editor (browser): open or drop a .md file, formatting toolbar, live preview with per-line Arabic direction, draft kept in the browser; export PDF (print dialog), Word (DOCX written in the browser), HTML and .md.
+- P3 Server pipeline: done (9 tools): compress PDF, repair PDF, PDF to PDF/A, Word/Excel/PowerPoint to PDF, HTML to PDF, HTML to image, redact PDF (true redaction: marked pages are rasterised). Files are deleted after one hour by the worker's sweeper; uploads and downloads go straight to storage with signed URLs (10 minutes).
+- P4 AI gateway and admin dashboard: done. Gateway (Groq, Cloudflare Workers AI, Azure Document Intelligence and Translator, Google Vision and Translation, OCR.space, Gemini, Mistral; mock provider for tests) and /admin (password sign-in, provider cards with key entry, test button and usage meters, routing order and safety margin, audit log). Tools: OCR PDF (searchable PDF with an invisible text layer plus .txt), PDF to Word (LibreOffice import for text PDFs, OCR for scans, Arabic fixer on the result), PDF to Excel, PDF to PowerPoint, fix Arabic text. Remaining: self-hosted OCR fallback.
+- P5 AI tools: done. Summarize PDF (chunked, then a summary of summaries), translate PDF (page by page), remove background (self-hosted rembg), upscale image 2x/4x in the browser (ESRGAN-slim on TensorFlow.js).
+- P6 Developer API and billing: not started. Payments: Stripe.
+- P7 Launch: not started. Legal pages wait for `apps/web/src/content/legal.ts`; hosting, domain and the paid AI provider for API jobs are open decisions.
+
+## Future plans
+
+Requested 13 September 2026, not scheduled yet. Each needs a short design pass before building.
+
+1. **URL shortener.** Short links on our own short domain, with click counts. Needs persistent storage (Redis for redirects, Postgres for owners and stats), a redirect route that stays fast, and abuse controls: Google Safe Browsing check on every destination, rate limits, a report link, and blocking of known phishing hosts. Open questions: anonymous links or only for signed-in users, and link expiry.
+2. **Video format conversion** (MP4, MOV, WebM, MKV, AVI, animated GIF). ffmpeg on the worker for anything over a few MB; ffmpeg.wasm or WebCodecs in the browser for short clips. Decide the encoder licence first: the common H.264 encoder (libx264) is GPL, and H.264/HEVC carry patent pools; VP9/AV1 and remuxing without re-encoding avoid both. The 25 MB limit may need raising for video.
+3. **MP3 to MP4 and MP4 to MP3.** Extract audio from a video (MP4, MOV, WebM to MP3, M4A, WAV), and turn audio into a video with a still image or waveform (for sharing on platforms that only accept video). Same ffmpeg path as item 2; LAME for MP3 is LGPL.
+4. **Stamp maker** (design and add a stamp). Build a round, oval or rectangular stamp with Arabic and English text on a curve, a centre line, date and optional logo, in one ink colour with an optional worn texture; export transparent PNG and SVG; place it on PDFs with the existing signature placement. Runs in the browser. Add a notice that imitating government or third-party official seals is the user's legal responsibility.
+5. **Download from Instagram, Facebook, TikTok and YouTube.** Needs a decision before any work. The terms of all four platforms prohibit downloading outside their own features, Google AdSense does not allow ads on pages that enable downloading YouTube content, and such sites attract copyright takedown notices, which also puts the Vercel account at risk. Because ads are a planned revenue source, this conflicts with the business model. Safer variants to consider: downloads only through official APIs for the user's own content, or leaving it out.
 
 ## Running the server tools locally
 

@@ -1,4 +1,5 @@
 import type { ComponentType } from "react";
+import type { ToolDef } from "@alarab/tools";
 import type { RunResult } from "@/workers/pdf.worker";
 
 export type Options = Record<string, unknown>;
@@ -36,6 +37,8 @@ export type ToolModule<O extends Options = Options> = {
   camera?: boolean;
   /** The Workspace IS the result (compare): no run button, no download. */
   noRun?: boolean;
+  /** Replaces the whole runner (drop zone, options, run button) with a self-contained tool UI (Markdown editor). */
+  Standalone?: ComponentType<{ tool: ToolDef }>;
   /** Whether files can be reordered (merge). */
   reorder?: boolean;
   /** ZIP name when there are several outputs. */

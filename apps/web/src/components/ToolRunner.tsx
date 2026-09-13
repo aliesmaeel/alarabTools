@@ -89,6 +89,8 @@ export function ToolRunner({ tool, what }: { tool: ToolDef; what: string }) {
   const canRun = (files.length > 0 || !!mod?.noFiles) && !validation && (!needPassword || !!options.password);
   const OptionsForm = mod?.Options;
 
+  if (mod?.Standalone) return <mod.Standalone tool={tool} />;
+
   if ((phase.kind === "pick" && !mod?.noFiles) || mod === null) {
     return <Dropzone accepts={tool.accepts} maxFiles={tool.limits.maxFiles} maxBytes={tool.limits.maxBytes} what={what} onFiles={mod === null ? undefined : onFiles} camera={mod?.camera} />;
   }

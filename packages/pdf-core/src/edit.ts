@@ -67,7 +67,7 @@ export async function applyEdits(bytes: Bytes, edits: Edit[], fontBytes: Record<
         const font = await fontFor(e.font);
         const size = e.size * g.dW;
         const lines = e.text.split(/\r?\n/);
-        const rtl = /[֐-ࣿ]/.test(e.text);
+        const rtl = /[\u0590-\u08FF]/.test(e.text);
         lines.forEach((line, i) => {
           if (!line.trim()) return;
           const fy = e.y + (size * (BASELINE + LINE_HEIGHT * i)) / g.dH;

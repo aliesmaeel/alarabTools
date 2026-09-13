@@ -497,5 +497,60 @@
       "same": "Same format as the original",
       "hint": "Runs on your device with an open-source model (ESRGAN); the first run downloads about 1 MB."
     }
+  },
+  "markdown": {
+    "open": "Open .md file",
+    "untitled": "Untitled document",
+    "write": "Write",
+    "preview": "Preview",
+    "format": "Formatting",
+    "snippet": {
+      "heading": "Heading",
+      "bold": "Bold",
+      "italic": "Italic",
+      "link": "Link",
+      "bullets": "Bulleted list",
+      "numbers": "Numbered list",
+      "quote": "Quote",
+      "code": "Code",
+      "table": "Table"
+    },
+    "dir": {
+      "auto": "Text direction: automatic",
+      "rtl": "Text direction: right to left",
+      "ltr": "Text direction: left to right"
+    },
+    "copyMd": "Copy Markdown",
+    "copyHtml": "Copy HTML",
+    "copied": "Copied",
+    "copyFailed": "Copy is blocked in this browser",
+    "sample": "Load the example",
+    "clear": "Clear",
+    "clearConfirm": "Clear the editor? Your draft in this browser will be replaced.",
+    "editorLabel": "Markdown source",
+    "placeholder": "Type or paste Markdown, or drop a .md file here",
+    "stats": "{chars} characters · {words} words · {lines} lines",
+    "draftSaved": "Draft saved in this browser",
+    "view": {
+      "preview": "Preview",
+      "html": "HTML"
+    },
+    "full": "Full screen",
+    "exitFull": "Exit full screen",
+    "empty": "The preview appears here as you type.",
+    "privacy": "Runs in your browser; nothing is uploaded",
+    "dropHint": "Drop a .md file anywhere on the editor",
+    "dropHere": "Drop the Markdown file to open it",
+    "opened": "Opened {name}",
+    "tooBig": "This file is larger than 5 MB. Open a smaller Markdown file.",
+    "notMarkdown": "That doesn't look like a Markdown or text file. Choose a .md, .markdown or .txt file.",
+    "printHint": "In the print dialog, choose “Save as PDF”"
+  },
+  "toolSteps": {
+    "markdown-editor": {
+      "s1": "Open a .md file, drop it on the editor, or start typing.",
+      "s2": "Edit with the toolbar and check the live preview; Arabic lines read right to left.",
+      "s3": "Export to PDF, Word or HTML, or download the .md file."
+    }
   }
 }

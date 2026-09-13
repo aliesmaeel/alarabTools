@@ -19,7 +19,7 @@ export type PlaceOptions = {
 
 export type TextStyle = { text: string; family: string; size: number; color: string };
 
-const RTL = /[֐-ࣿ]/;
+const RTL = /[\u0590-\u08FF]/;
 
 function toCanvas(img: ImageData): [OffscreenCanvas, OffscreenCanvasRenderingContext2D] {
   const canvas = new OffscreenCanvas(img.width, img.height);
