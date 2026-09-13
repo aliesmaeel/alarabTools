@@ -1,6 +1,8 @@
 /// <reference lib="webworker" />
 import * as Comlink from "comlink";
 import * as img from "@alarab/image-core";
+import * as stamp from "@alarab/image-core/stamp";
+import { ensureFontFace } from "./fonts";
 import type { Output, RunResult, ProgressFn } from "./pdf.worker";
 
 function base(name: string) {
@@ -49,6 +51,35 @@ async function processOne(toolId: string, file: File, o: Record<string, unknown>
       const format: img.Format = srcFormat ?? "png";
       const bytes = await img.encode(cropped, format, { quality: 92 });
       return { name: `${base(file.name)}-cropped.${img.EXT[format]}`, bytes, mime: img.MIME[format] };
+    }
+    case "watermark-image": {
+      const placeOpts: stamp.PlaceOptions = {
+        opacity: (Number(o.opacity) || 40) / 100,
+        rotate: o.kind === "image" ? 0 : Number(o.rotate) || 0,
+        layout: (o.layout as stamp.Layout) ?? "center",
+        position: (o.position as stamp.Position) ?? "bottom-right",
+        margin: (source.width * (Number(o.margin) || 3)) / 100,
+      };
+      let out: ImageData;
+      if (o.kind === "image") {
+        const overlay = await img.decode(o.image as File);
+        out = await stamp.stampImage(source, overlay, Number(o.widthPercent) || 30, placeOpts);
+      } else {
+        const family = await ensureFontFace(String(o.font));
+        const size = (source.width * (Number(o.sizePercent) || 8)) / 100;
+        out = stamp.stampText(source, { text: String(o.text), family, size, color: String(o.color) }, placeOpts);
+      }
+      const format: img.Format = srcFormat ?? "png";
+      const bytes = await img.encode(out, format, { quality: 92 });
+      return { name: `${base(file.name)}-watermarked.${img.EXT[format]}`, bytes, mime: img.MIME[format] };
+    }
+    case "meme-generator": {
+      const family = await ensureFontFace(String(o.font));
+      const size = (source.width * (Number(o.sizePercent) || 9)) / 100;
+      const out = stamp.memeCaptions(source, { top: String(o.top ?? ""), bottom: String(o.bottom ?? ""), family, size, color: String(o.color), stroke: String(o.stroke) });
+      const format: img.Format = srcFormat === "jpeg" ? "jpeg" : "png";
+      const bytes = await img.encode(out, format, { quality: 92 });
+      return { name: `${base(file.name)}-meme.${img.EXT[format]}`, bytes, mime: img.MIME[format] };
     }
     default:
       throw new Error(`Tool ${toolId} is not implemented`);

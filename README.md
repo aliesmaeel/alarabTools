@@ -48,8 +48,8 @@ Copy `apps/web/.env.example` to `apps/web/.env.local`. Set `NEXT_PUBLIC_SITE_URL
 - P0 Foundation: done (registry, bilingual site, tool page template with SEO metadata and JSON-LD, sitemap, smoke test, CI).
 - P1 Browser PDF tools: in progress. Working (18): merge, split, remove pages, extract pages, organize, scan to PDF, rotate, crop, protect, unlock, sign, compare, JPG to PDF, PDF to JPG, page numbers, watermark (text or logo), Hijri date stamp, Arabic fonts (text to PDF/PNG).
   Remaining: edit PDF (planned after the image tools; it is the largest).
-- P2 Browser image tools: in progress. Working (6): compress, resize, convert to JPG, convert from JPG (PNG/WebP), rotate/flip, crop.
-  Remaining: photo editor, image watermark, meme generator, blur faces, HEIC input, upscale.
+- P2 Browser image tools: in progress. Working (8): compress, resize, convert to JPG, convert from JPG (PNG/WebP), rotate/flip, crop, watermark (text or logo), meme generator.
+  Remaining: photo editor, blur faces, HEIC input, upscale.
 
 ## How a browser tool works
 

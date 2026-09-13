@@ -3,34 +3,13 @@ import * as Comlink from "comlink";
 import * as pdf from "@alarab/pdf-core";
 import * as stamp from "@alarab/pdf-core/stamp";
 import { textDocument } from "@alarab/pdf-core/document";
-import { defaultDigits, fontInfo, formatGregorian, formatHijri, type DigitSystem } from "@alarab/arabic";
+import { defaultDigits, formatGregorian, formatHijri, type DigitSystem } from "@alarab/arabic";
 
-const fontCache = new Map<string, Promise<Uint8Array>>();
-/** Bundled fonts are served from /fonts; fetched once per worker. */
-function loadFont(id: string): Promise<Uint8Array> {
-  const file = fontInfo(id).file;
-  let p = fontCache.get(file);
-  if (!p) {
-    p = fetch(new URL(`/fonts/${encodeURIComponent(file)}`, self.location.origin)).then(async (r) => {
-      if (!r.ok) throw new Error(`font ${file}: ${r.status}`);
-      return new Uint8Array(await r.arrayBuffer());
-    });
-    fontCache.set(file, p);
-  }
-  return p;
-}
+import { ensureFontFace, loadFont } from "./fonts";
 
 /** Render text to a transparent PNG with the bundled font, via canvas (the browser shapes Arabic itself). */
 async function textToPng(text: string, fontId: string, size: number, color: string, align: string): Promise<Uint8Array> {
-  const fonts = (self as unknown as { fonts?: FontFaceSet }).fonts;
-  if (!fonts) throw new Error("png-unsupported");
-  const family = `alarab-${fontId}`;
-  if (![...fonts].some((f) => f.family === family)) {
-    const bytes = await loadFont(fontId);
-    const face = new FontFace(family, bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer);
-    await face.load();
-    fonts.add(face);
-  }
+  const family = await ensureFontFace(fontId);
   const lines = text.split(/\r?\n/);
   const scale = 2;
   const lh = size * 1.6;

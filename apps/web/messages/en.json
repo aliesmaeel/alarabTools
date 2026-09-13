@@ -324,6 +324,23 @@
       "aspect": "Aspect ratio",
       "free": "Free",
       "hint": "Drag the frame to move it, or drag a corner to resize."
-    }
+    },
+    "watermarkImage": {
+      "sizePercent": "Text size, % of image width",
+      "widthPercent": "Logo width, % of image",
+      "margin": "Distance from edge, % of width",
+      "center": "Centred on the image",
+      "tile": "Repeated across the image",
+      "corner": "In a corner"
+    },
+    "meme": {
+      "top": "Top text",
+      "bottom": "Bottom text",
+      "topPlaceholder": "e.g. when the deploy works",
+      "bottomPlaceholder": "e.g. on the first try",
+      "sizePercent": "Text size, % of image width",
+      "stroke": "Outline colour"
+    },
+    "needCaption": "Enter a top or bottom caption."
   }
 }

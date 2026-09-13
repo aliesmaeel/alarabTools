@@ -30,10 +30,12 @@ export const IMPLEMENTED = new Set([
   "convert-from-jpg",
   "rotate-image",
   "crop-image",
+  "watermark-image",
+  "meme-generator",
 ]);
 
 /** Tools that run in the image worker (WASM codecs) instead of the PDF worker. */
-export const IMAGE_TOOLS = new Set(["compress-image", "resize-image", "convert-to-jpg", "convert-from-jpg", "rotate-image", "crop-image"]);
+export const IMAGE_TOOLS = new Set(["compress-image", "resize-image", "convert-to-jpg", "convert-from-jpg", "rotate-image", "crop-image", "watermark-image", "meme-generator"]);
 
 // Lazy so a tool page only ships its own form.
 export async function loadToolModule(id: string): Promise<ToolModule | null> {
@@ -62,6 +64,8 @@ export async function loadToolModule(id: string): Promise<ToolModule | null> {
     case "convert-from-jpg": return erase((await import("./image-options")).convertFromJpg);
     case "rotate-image": return erase((await import("./image-options")).rotateImage);
     case "crop-image": return erase((await import("./crop-image")).cropImage);
+    case "watermark-image": return erase((await import("./image-text")).watermarkImage);
+    case "meme-generator": return erase((await import("./image-text")).memeGenerator);
     default: return null;
   }
 }

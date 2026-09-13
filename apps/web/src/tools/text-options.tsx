@@ -261,4 +261,5 @@ export const arabicFonts: ToolModule<ArabicTextO> = {
   noFiles: true,
 };
 
-export { ALL_POSITIONS };
+export { ALL_POSITIONS, PositionPicker, FontSelect };
+export type { Position };
