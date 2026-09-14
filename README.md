@@ -1,6 +1,6 @@
 # alarabTools
 
-Arabic-first (RTL) + English PDF and image tools, in the style of iLovePDF and iLoveIMG. 48 tools: 31 run in the browser, 17 on a worker.
+Arabic-first (RTL) + English PDF and image tools, in the style of iLovePDF and iLoveIMG. 49 working tools: 32 run in the browser, 17 on a worker. Five more (video, audio, links) have pages and option forms but no engine yet; they are marked "Coming soon".
 
 Plans and decisions live in [docs/](docs/): the architecture document, the accounts to create, and the design mockups in [design/](design/).
 
@@ -37,6 +37,7 @@ Copy `apps/web/.env.example` to `apps/web/.env.local`. Set `NEXT_PUBLIC_SITE_URL
 
 - URLs: Arabic is the default locale with no prefix (`/merge-pdf`); English is `/en/merge-pdf`. Slugs are Latin in both languages.
 - Add a tool by adding one entry to `packages/tools/src/registry.ts`. Its pages, cards, sitemap entries and privacy badge appear automatically. The registry test enforces the counts.
+- A tool with `status: "planned"` in the registry gets its page and form (module in `apps/web/src/tools/planned.tsx`) but `ToolRunner` refuses to run it, the card and page show a "Coming soon" badge, it is left out of the sitemap and the page is `noindex`. To launch one: build the engine, move its module out of `planned.tsx`, and drop the status.
 - Use Tailwind logical utilities only (`ps-`, `pe-`, `ms-`, `me-`, `start-`, `end-`) so layouts mirror correctly in RTL.
 - The privacy badge ("On your device" / "On our servers") comes from the tool's `runtime` field; never hard-code it.
 - UI strings live in `apps/web/messages/{ar,en}.json`. Tool names and summaries live in the registry.
@@ -47,12 +48,13 @@ Copy `apps/web/.env.example` to `apps/web/.env.local`. Set `NEXT_PUBLIC_SITE_URL
 
 ## Status
 
-48 tools, all implemented. Server and AI tools need Redis, storage and the worker (see Deploying); AI tools also need provider keys in the admin dashboard.
+49 tools, all implemented. Server and AI tools need Redis, storage and the worker (see Deploying); AI tools also need provider keys in the admin dashboard.
 
 - P0 Foundation: done (registry, bilingual site, tool page template with SEO metadata and JSON-LD, sitemap, smoke test, CI).
 - P1 Browser PDF tools: done (19): merge, split, remove pages, extract pages, organize, scan to PDF, rotate, crop, protect, unlock, sign, compare, JPG to PDF, PDF to JPG, page numbers, watermark (text or logo), Hijri date stamp, Arabic fonts (text to PDF/PNG), edit PDF (text, images, drawing, shapes, highlight, whiteout).
 - P2 Browser image tools: done (10): compress, resize, convert to JPG, convert from JPG (PNG/WebP), rotate/flip, crop, watermark (text or logo), meme generator, blur faces, photo editor (presets, adjustments, Arabic text, stickers, frames). HEIC/HEIF input works in every image tool (libheif).
 - Markdown editor (browser): open or drop a .md file, formatting toolbar, live preview with per-line Arabic direction, draft kept in the browser; export PDF (print dialog), Word (DOCX written in the browser), HTML and .md.
+- Stamp maker (browser, Arabic tools group): round, oval or rectangular stamp with curved top and bottom text, a centre line, a date (Hijri or Gregorian) and an optional logo, in one ink colour with a worn-texture slider. Built as SVG (`src/lib/stamp.ts`; curved Arabic uses `textPath`, so the browser shapes it), exported as transparent PNG (rasterised from the SVG with the font embedded) or SVG, and placed on a PDF with the same `PagePlacer` component as Sign PDF. The design is kept in the browser between visits. The page carries a notice that imitating official seals is the visitor's legal responsibility.
 - P3 Server pipeline: done (9 tools): compress PDF, repair PDF, PDF to PDF/A, Word/Excel/PowerPoint to PDF, HTML to PDF, HTML to image, redact PDF (true redaction: marked pages are rasterised). Files are deleted after one hour by the worker's sweeper; uploads and downloads go straight to storage with signed URLs (10 minutes).
 - P4 AI gateway and admin dashboard: done. Gateway (Groq, Cloudflare Workers AI, Azure Document Intelligence and Translator, Google Vision and Translation, OCR.space, Gemini, Mistral; mock provider for tests) and /admin (password sign-in, provider cards with key entry, test button and usage meters, routing order and safety margin, audit log). Tools: OCR PDF (searchable PDF with an invisible text layer plus .txt), PDF to Word (LibreOffice import for text PDFs, OCR for scans, Arabic fixer on the result), PDF to Excel, PDF to PowerPoint, fix Arabic text. Remaining: self-hosted OCR fallback.
 - P5 AI tools: done. Summarize PDF (chunked, then a summary of summaries), translate PDF (page by page), remove background (self-hosted rembg), upscale image 2x/4x in the browser (ESRGAN-slim on TensorFlow.js).
@@ -61,12 +63,12 @@ Copy `apps/web/.env.example` to `apps/web/.env.local`. Set `NEXT_PUBLIC_SITE_URL
 
 ## Future plans
 
-Requested 13 September 2026, not scheduled yet. Each needs a short design pass before building.
+Requested 13 September 2026. Item 4 (stamp maker) was built on 14 September 2026. Items 1, 2, 3 and 5 have their pages and option forms since 14 September 2026 (`convert-video`, `video-to-audio`, `audio-to-video`, `shorten-url`, `social-download`, groups "Video and audio" and "Links and downloads") so the UI can be reviewed; the engines are not built and the decisions below are still open.
 
 1. **URL shortener.** Short links on our own short domain, with click counts. Needs persistent storage (Redis for redirects, Postgres for owners and stats), a redirect route that stays fast, and abuse controls: Google Safe Browsing check on every destination, rate limits, a report link, and blocking of known phishing hosts. Open questions: anonymous links or only for signed-in users, and link expiry.
 2. **Video format conversion** (MP4, MOV, WebM, MKV, AVI, animated GIF). ffmpeg on the worker for anything over a few MB; ffmpeg.wasm or WebCodecs in the browser for short clips. Decide the encoder licence first: the common H.264 encoder (libx264) is GPL, and H.264/HEVC carry patent pools; VP9/AV1 and remuxing without re-encoding avoid both. The 25 MB limit may need raising for video.
 3. **MP3 to MP4 and MP4 to MP3.** Extract audio from a video (MP4, MOV, WebM to MP3, M4A, WAV), and turn audio into a video with a still image or waveform (for sharing on platforms that only accept video). Same ffmpeg path as item 2; LAME for MP3 is LGPL.
-4. **Stamp maker** (design and add a stamp). Build a round, oval or rectangular stamp with Arabic and English text on a curve, a centre line, date and optional logo, in one ink colour with an optional worn texture; export transparent PNG and SVG; place it on PDFs with the existing signature placement. Runs in the browser. Add a notice that imitating government or third-party official seals is the user's legal responsibility.
+4. **Stamp maker**: done (see Status). Possible follow-ups: more shapes (triangle, shield), a second ink colour, and a "stamp on image" path for JPG/PNG documents.
 5. **Download from Instagram, Facebook, TikTok and YouTube.** Needs a decision before any work. The terms of all four platforms prohibit downloading outside their own features, Google AdSense does not allow ads on pages that enable downloading YouTube content, and such sites attract copyright takedown notices, which also puts the Vercel account at risk. Because ads are a planned revenue source, this conflicts with the business model. Safer variants to consider: downloads only through official APIs for the user's own content, or leaving it out.
 
 ## Running the server tools locally
@@ -104,4 +106,4 @@ Image tools run in a second worker (`src/workers/image.worker.ts`) on `@alarab/i
 
 Checking Arabic output: render PDFs with poppler (`pdftoppm -png file.pdf out`), not LibreOffice. LibreOffice re-runs its own bidi layout on import and hides glyph-order bugs; poppler draws the glyphs exactly as the PDF places them.
 
-Tools that need page previews use pdf.js on the main thread (`src/lib/pdfjs.ts`; its worker is copied to `public/` by `scripts/copy-assets.mjs`). A tool module can provide a `Workspace` component (page thumbnails, placement UI) and/or `runOnMain` to run with canvas instead of the PDF worker.
+Tools that need page previews use pdf.js on the main thread (`src/lib/pdfjs.ts`; its worker is copied to `public/` by `scripts/copy-assets.mjs`). A tool module can provide a `Workspace` component (page thumbnails, placement UI) and/or `runOnMain` to run with canvas instead of the PDF worker. `src/components/PagePlacer.tsx` is the shared click-or-drag placement of one image on a page (Sign PDF, stamp maker); the worker's `sign-pdf`/`stamp-maker` case maps its fractions to PDF space, including rotated pages.

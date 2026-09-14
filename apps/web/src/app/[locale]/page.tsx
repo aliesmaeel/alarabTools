@@ -20,7 +20,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
             {t("home.title")}
           </h1>
           <p className="max-w-[620px] text-lg leading-relaxed text-ink-2">
-            {t("home.lede", { count: nf.format(counts.total) })}
+            {t("home.lede", { count: nf.format(counts.ready) })}
           </p>
           <div className="flex flex-wrap items-center gap-2 text-sm">
             <span className="me-1 text-ink-2">{t("home.popular")}</span>

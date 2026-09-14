@@ -9,6 +9,8 @@ const TONE: Record<ToolGroup, string> = {
   image: "bg-teal-soft text-teal",
   ai: "bg-plum-soft text-plum",
   arabic: "bg-saffron-soft text-saffron",
+  media: "bg-plum-soft text-plum",
+  web: "bg-teal-soft text-teal",
 };
 
 function Glyph({ group }: { group: ToolGroup }) {
@@ -27,6 +29,10 @@ function Glyph({ group }: { group: ToolGroup }) {
       return (<><rect x="3" y="4" width="18" height="16" rx="2" /><circle cx="9" cy="10" r="2" /><path d="M21 16l-5-5-9 9" /></>);
     case "ai":
       return (<><path d="M11 3l1.8 5.2L18 10l-5.2 1.8L11 17l-1.8-5.2L4 10l5.2-1.8z" /><path d="M18.5 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z" /></>);
+    case "media":
+      return (<><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M10 9l5 3-5 3z" /></>);
+    case "web":
+      return (<><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1" /><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" /></>);
     case "arabic":
       return null;
   }

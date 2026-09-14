@@ -55,6 +55,7 @@ export const IMPLEMENTED = new Set([
   "remove-background",
   "upscale-image",
   "markdown-editor",
+  "stamp-maker",
 ]);
 
 /** Tools that run in the image worker (WASM codecs) instead of the PDF worker. */
@@ -111,6 +112,13 @@ export async function loadToolModule(id: string): Promise<ToolModule | null> {
     case "remove-background": return erase((await import("./server-options")).removeBackground);
     case "upscale-image": return erase((await import("./upscale")).upscaleImage);
     case "markdown-editor": return erase((await import("./markdown-editor")).markdownEditor);
+    case "stamp-maker": return erase((await import("./stamp-maker")).stampMaker);
+    // Planned tools: forms only; ToolRunner refuses to run them.
+    case "shorten-url": return erase((await import("./planned")).shortenUrl);
+    case "convert-video": return erase((await import("./planned")).convertVideo);
+    case "video-to-audio": return erase((await import("./planned")).videoToAudio);
+    case "audio-to-video": return erase((await import("./planned")).audioToVideo);
+    case "social-download": return erase((await import("./planned")).socialDownload);
     default: return null;
   }
 }

@@ -10,6 +10,8 @@ export const GROUPS = [
   "image",
   "ai",
   "arabic",
+  "media",
+  "web",
 ] as const;
 export type ToolGroup = (typeof GROUPS)[number];
 
@@ -35,7 +37,12 @@ export interface ToolDef {
   limits: { maxFiles: number; maxBytes: number };
   /** Developer API mapping; credits charged per job. */
   api: { path: string; credits: number };
-  /** Build phase from the roadmap (P1–P5). */
-  phase: 1 | 2 | 3 | 4 | 5;
+  /** Build phase from the roadmap (P1–P5); 6 is the "future plans" list in the README. */
+  phase: 1 | 2 | 3 | 4 | 5 | 6;
+  /**
+   * "planned": the page and its options form exist so the UI can be reviewed, but nothing runs yet.
+   * Planned tools show a "coming soon" badge, stay out of the sitemap and are not indexed.
+   */
+  status?: "planned";
   copy: Record<Locale, ToolCopy>;
 }

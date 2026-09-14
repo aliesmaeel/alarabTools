@@ -2,6 +2,7 @@ import type { Locale, ToolDef } from "@alarab/tools";
 import { Link } from "@/i18n/navigation";
 import { ToolIcon } from "./ToolIcon";
 import { RuntimeBadge } from "./RuntimeBadge";
+import { PlannedBadge } from "./PlannedBadge";
 
 export function ToolCard({ tool, locale }: { tool: ToolDef; locale: Locale }) {
   const copy = tool.copy[locale];
@@ -12,7 +13,7 @@ export function ToolCard({ tool, locale }: { tool: ToolDef; locale: Locale }) {
     >
       <div className="flex items-center justify-between gap-2">
         <ToolIcon group={tool.group} />
-        <RuntimeBadge runtime={tool.runtime} />
+        {tool.status === "planned" ? <PlannedBadge /> : <RuntimeBadge runtime={tool.runtime} />}
       </div>
       <span className="text-base font-semibold">{copy.name}</span>
       <span className="text-[13px] leading-relaxed text-ink-2">{copy.summary}</span>

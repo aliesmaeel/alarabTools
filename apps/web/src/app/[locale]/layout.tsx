@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return {
     metadataBase: new URL(SITE_URL),
     title: { default: t("metaTitle"), template: `%s | ${SITE_NAME}` },
-    description: t("metaDescription", { count: counts.total }),
+    description: t("metaDescription", { count: counts.ready }),
     alternates: alternates("/"),
     openGraph: { siteName: SITE_NAME, type: "website", locale: locale === "ar" ? "ar_AR" : "en_US" },
   };

@@ -33,4 +33,7 @@ export const counts = {
   total: TOOLS.length,
   browser: TOOLS.filter((t) => t.runtime === "browser").length,
   server: TOOLS.filter((t) => t.runtime === "server").length,
+  planned: TOOLS.filter((t) => t.status === "planned").length,
+  /** Tools that actually run; what the home page advertises. */
+  ready: TOOLS.filter((t) => t.status !== "planned").length,
 };

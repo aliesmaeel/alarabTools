@@ -10,6 +10,7 @@ export async function Header() {
     { href: "/#image", label: t("images") },
     { href: "/#ai", label: t("ai") },
     { href: "/#arabic", label: t("arabic") },
+    { href: "/#media", label: t("media") },
   ] as const;
 
   return (

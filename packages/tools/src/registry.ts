@@ -6,6 +6,8 @@ const PDF = ["application/pdf"] as const;
 const IMAGES = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/heic", "image/heif", "image/avif", "image/bmp", "image/tiff"] as const;
 const OFFICE_WORD = ["application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.oasis.opendocument.text"] as const;
 const OFFICE_PPT = ["application/vnd.ms-powerpoint", "application/vnd.openxmlformats-officedocument.presentationml.presentation", "application/vnd.oasis.opendocument.presentation"] as const;
+const VIDEO = ["video/mp4", "video/quicktime", "video/webm", "video/x-matroska", "video/x-msvideo", "video/3gpp", "image/gif"] as const;
+const AUDIO = ["audio/mpeg", "audio/mp4", "audio/x-m4a", "audio/aac", "audio/wav", "audio/x-wav", "audio/ogg", "audio/flac", "audio/webm"] as const;
 const OFFICE_XLS = ["application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.oasis.opendocument.spreadsheet"] as const;
 
 type Input = {
@@ -15,8 +17,11 @@ type Input = {
   accepts?: readonly string[];
   input?: "text";
   maxFiles?: number;
+  /** Per-file limit in MB (default 25). */
+  maxMb?: number;
   credits?: number;
   phase: ToolDef["phase"];
+  status?: ToolDef["status"];
   ar: [name: string, summary: string];
   en: [name: string, summary: string];
 };
@@ -24,16 +29,17 @@ type Input = {
 function def(t: Input): ToolDef {
   const [arName, arSummary] = t.ar;
   const [enName, enSummary] = t.en;
-  const apiGroup = t.group === "image" || (t.group === "ai" && t.id !== "summarize-pdf" && t.id !== "translate-pdf") ? "image" : "pdf";
+  const apiGroup = t.group === "media" || t.group === "web" ? t.group : t.group === "image" || (t.group === "ai" && t.id !== "summarize-pdf" && t.id !== "translate-pdf") ? "image" : "pdf";
   return {
     id: t.id,
     group: t.group,
     runtime: t.runtime,
     input: t.input ?? "files",
     accepts: t.accepts ?? PDF,
-    limits: { maxFiles: t.maxFiles ?? 1, maxBytes: 25 * MB },
+    limits: { maxFiles: t.maxFiles ?? 1, maxBytes: (t.maxMb ?? 25) * MB },
     api: { path: `/v1/${apiGroup}/${t.id.replace(/-(pdf|image|images)$/, "")}`, credits: t.credits ?? 1 },
     phase: t.phase,
+    ...(t.status ? { status: t.status } : {}),
     copy: {
       ar: { name: arName, summary: arSummary },
       en: { name: enName, summary: enSummary },
@@ -201,4 +207,26 @@ export const TOOLS: readonly ToolDef[] = [
   def({ id: "arabic-fonts", group: "arabic", runtime: "browser", input: "text", accepts: ["text/plain"], phase: 1,
     ar: ["خطوط عربية", "اكتب نصًا، اختر خط نسخ أو كوفي أو رقعة، ونزّله PDF أو صورة PNG."],
     en: ["Arabic fonts", "Type text, pick a Naskh, Kufi or Ruqaa font, and download it as PDF or PNG."] }),
+  def({ id: "stamp-maker", group: "arabic", runtime: "browser", input: "text", accepts: ["image/png", "application/pdf"], phase: 1,
+    ar: ["صانع الأختام", "صمّم ختمًا دائريًا أو بيضاويًا أو مستطيلًا بنص عربي وإنجليزي، ونزّله PNG أو SVG أو ضعه على PDF."],
+    en: ["Stamp maker", "Design a round, oval or rectangular stamp with Arabic and English text; download it as PNG or SVG, or place it on a PDF."] }),
+
+  // Video and audio (future plans: pages and forms only, nothing runs yet)
+  def({ id: "convert-video", group: "media", runtime: "server", accepts: VIDEO, maxFiles: 5, maxMb: 500, credits: 4, phase: 6, status: "planned",
+    ar: ["تحويل الفيديو", "حوّل بين MP4 وMOV وWebM وMKV وAVI وGIF المتحرك، مع ضبط الجودة والدقة."],
+    en: ["Convert video", "Convert between MP4, MOV, WebM, MKV, AVI and animated GIF, with quality and size options."] }),
+  def({ id: "video-to-audio", group: "media", runtime: "server", accepts: VIDEO, maxFiles: 10, maxMb: 500, credits: 2, phase: 6, status: "planned",
+    ar: ["MP4 إلى MP3", "استخرج الصوت من أي فيديو بصيغة MP3 أو M4A أو WAV، مع قص جزء محدد إن أردت."],
+    en: ["MP4 to MP3", "Extract the audio from any video as MP3, M4A or WAV, and trim it if you like."] }),
+  def({ id: "audio-to-video", group: "media", runtime: "server", accepts: AUDIO, maxFiles: 10, maxMb: 100, credits: 2, phase: 6, status: "planned",
+    ar: ["MP3 إلى MP4", "حوّل ملفًا صوتيًا إلى فيديو بصورة ثابتة أو موجة صوتية، لنشره على المنصات التي تقبل الفيديو فقط."],
+    en: ["MP3 to MP4", "Turn an audio file into a video with a still image or a waveform, for platforms that only accept video."] }),
+
+  // Links and downloads (future plans)
+  def({ id: "shorten-url", group: "web", runtime: "server", input: "text", accepts: ["text/plain"], phase: 6, status: "planned",
+    ar: ["اختصار الروابط", "رابط قصير على نطاقنا مع عدّاد نقرات، ومدة صلاحية واسم مخصص اختياريَّين."],
+    en: ["URL shortener", "A short link on our own domain with a click counter, an optional custom name and expiry."] }),
+  def({ id: "social-download", group: "web", runtime: "server", input: "text", accepts: ["text/plain"], phase: 6, status: "planned",
+    ar: ["تنزيل من مواقع التواصل", "نزّل مقاطعك الخاصة من إنستغرام وفيسبوك وتيك توك ويوتيوب بالجودة التي تختارها."],
+    en: ["Download from social media", "Download your own videos from Instagram, Facebook, TikTok and YouTube in the quality you choose."] }),
 ];

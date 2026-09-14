@@ -3,7 +3,8 @@ import { LOCALES, TOOLS } from "@alarab/tools";
 import { localizedUrl } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const paths = ["/", ...TOOLS.map((t) => `/${t.id}`)];
+  // Planned tools have pages for review but are noindex until they run.
+  const paths = ["/", ...TOOLS.filter((t) => t.status !== "planned").map((t) => `/${t.id}`)];
   return paths.flatMap((path) =>
     LOCALES.map((locale) => ({
       url: localizedUrl(locale, path),

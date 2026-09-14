@@ -63,6 +63,11 @@ export function ToolRunner({ tool, what }: { tool: ToolDef; what: string }) {
 
   async function runTool() {
     if (!mod) return;
+    if (tool.status === "planned") {
+      // The form exists for review; there is no engine behind it yet.
+      setPhase({ kind: "error", message: t("plannedRun") });
+      return;
+    }
     setPhase({ kind: "running", done: 0, total: 1 });
     // Progress travels on its own message channel, so a late update can land after the result; ignore those.
     let finished = false;
@@ -126,10 +131,12 @@ export function ToolRunner({ tool, what }: { tool: ToolDef; what: string }) {
   }
 
   const errorBox = phase.kind === "error" ? <p role="alert" className="rounded-lg bg-[#fdecea] px-4 py-3 text-sm text-red">{phase.message}</p> : null;
+  const plannedNote = tool.status === "planned" ? <p data-testid="planned-note" className="rounded-lg bg-saffron-soft px-4 py-3 text-sm text-saffron-deep">{t("plannedNote")}</p> : null;
 
   if (mod.noFiles) {
     return (
       <section className="flex max-w-[760px] flex-col gap-5 rounded-2xl border border-line bg-surface p-5 sm:p-6">
+        {plannedNote}
         {OptionsForm && <OptionsForm value={options} onChange={setOptions} pageCount={null} fileCount={0} />}
         {errorBox}
         {validation && <span className="text-xs text-ink-2">{to(validation)}</span>}
@@ -179,6 +186,7 @@ export function ToolRunner({ tool, what }: { tool: ToolDef; what: string }) {
 
       {!mod.noRun && (
       <aside className="flex flex-col gap-5 rounded-2xl border border-line bg-surface p-5">
+        {plannedNote}
         {OptionsForm && <OptionsForm value={options} onChange={setOptions} pageCount={pageCount} fileCount={files.length} />}
         {needPassword && (
           <div className="flex flex-col gap-1.5 rounded-lg bg-saffron-soft p-3">

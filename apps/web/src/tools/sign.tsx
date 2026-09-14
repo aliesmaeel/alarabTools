@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } f
 import { useLocale, useTranslations } from "next-intl";
 import { FONTS, type FontId } from "@alarab/arabic";
 import type { ToolModule, WorkspaceProps } from "./types";
-import { openPdf, renderPage } from "@/lib/pdfjs";
+import { PagePlacer } from "@/components/PagePlacer";
 import { trimAndExport, typedSignature, uploadedSignature, type SignatureImage } from "@/lib/signature";
 import { Checkbox, TextInput, inputCls } from "./fields";
 
@@ -92,29 +92,6 @@ function Workspace({ files, value, onChange }: WorkspaceProps<O>) {
   const [tab, setTab] = useState<Tab>("draw");
   const [typed, setTyped] = useState("");
   const [font, setFont] = useState<FontId>("aref-ruqaa");
-  const [pageCount, setPageCount] = useState(0);
-  const [preview, setPreview] = useState<string | null>(null);
-  const [aspect, setAspect] = useState(1.414);
-  const pageRef = useRef<HTMLDivElement>(null);
-  const drag = useRef<{ dx: number; dy: number } | null>(null);
-
-  // Render the current page preview.
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      const { doc, close } = await openPdf(file);
-      if (cancelled) return close();
-      setPageCount(doc.numPages);
-      const canvas = await renderPage(doc, Math.min(value.page, doc.numPages - 1) + 1, { width: 1200 });
-      if (!cancelled) {
-        setAspect(canvas.height / canvas.width);
-        setPreview(canvas.toDataURL("image/jpeg", 0.85));
-      }
-      canvas.width = 0;
-      await close();
-    })().catch(() => setPreview(null));
-    return () => { cancelled = true; };
-  }, [file, value.page]);
 
   const setSig = (img: SignatureImage | null) => onChange({ ...value, sig: img?.bytes ?? null, sigUrl: img?.url ?? null, sigRatio: img ? img.height / img.width : 1 });
 
@@ -124,28 +101,6 @@ function Workspace({ files, value, onChange }: WorkspaceProps<O>) {
     return () => clearTimeout(handle);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [typed, font, tab]);
-
-  // Drag the placed signature around the page.
-  const onPointerDown = (e: ReactPointerEvent<HTMLImageElement>) => {
-    const box = pageRef.current!.getBoundingClientRect();
-    drag.current = { dx: (e.clientX - box.left) / box.width - value.x, dy: (e.clientY - box.top) / box.height - value.y };
-    e.currentTarget.setPointerCapture(e.pointerId);
-  };
-  const onPointerMove = (e: ReactPointerEvent<HTMLImageElement>) => {
-    if (!drag.current) return;
-    const box = pageRef.current!.getBoundingClientRect();
-    const h = (value.w * value.sigRatio) / aspect;
-    const x = Math.min(1 - value.w, Math.max(0, (e.clientX - box.left) / box.width - drag.current.dx));
-    const y = Math.min(1 - h, Math.max(0, (e.clientY - box.top) / box.height - drag.current.dy));
-    onChange({ ...value, x, y });
-  };
-  const onPointerUp = () => { drag.current = null; };
-  const placeAt = (e: ReactPointerEvent<HTMLDivElement>) => {
-    if (!value.sigUrl || drag.current) return;
-    const box = e.currentTarget.getBoundingClientRect();
-    const h = (value.w * value.sigRatio) / aspect;
-    onChange({ ...value, x: Math.min(1 - value.w, Math.max(0, (e.clientX - box.left) / box.width - value.w / 2)), y: Math.min(1 - h, Math.max(0, (e.clientY - box.top) / box.height - h / 2)) });
-  };
 
   const tabCls = (k: Tab) => `h-10 flex-1 rounded-lg text-sm font-medium ${tab === k ? "bg-lapis text-white" : "bg-ground text-ink hover:bg-line"}`;
 
@@ -182,42 +137,14 @@ function Workspace({ files, value, onChange }: WorkspaceProps<O>) {
         <Checkbox checked={value.allPages} onChange={(allPages) => onChange({ ...value, allPages })} label={t("allPages")} />
       </div>
 
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center justify-between text-sm">
-          <button type="button" disabled={value.page === 0} onClick={() => onChange({ ...value, page: value.page - 1 })} className="h-9 rounded-md border border-line px-3 hover:border-ink-3 disabled:opacity-30">{t("prev")}</button>
-          <span className="text-ink-2">{t("pageOf", { n: value.page + 1, total: pageCount || "…" })}</span>
-          <button type="button" disabled={value.page >= pageCount - 1} onClick={() => onChange({ ...value, page: value.page + 1 })} className="h-9 rounded-md border border-line px-3 hover:border-ink-3 disabled:opacity-30">{t("next")}</button>
-        </div>
-        <div
-          ref={pageRef}
-          onClick={placeAt}
-          data-testid="page-preview"
-          className="relative w-full select-none overflow-hidden rounded-lg border border-line bg-surface shadow-sm"
-          style={{ aspectRatio: `1 / ${aspect}` }}
-        >
-          {preview ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={preview} alt="" className="block h-full w-full" draggable={false} />
-          ) : (
-            <div className="absolute inset-0 grid place-items-center text-sm text-ink-3">…</div>
-          )}
-          {value.sigUrl && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={value.sigUrl}
-              alt={t("placedAlt")}
-              draggable={false}
-              onPointerDown={onPointerDown}
-              onPointerMove={onPointerMove}
-              onPointerUp={onPointerUp}
-              onClick={(e) => e.stopPropagation()}
-              className="absolute cursor-move touch-none rounded border border-dashed border-lapis"
-              style={{ left: `${value.x * 100}%`, top: `${value.y * 100}%`, width: `${value.w * 100}%` }}
-            />
-          )}
-        </div>
-        <span className="text-xs text-ink-2">{t("placeHint")}</span>
-      </div>
+      <PagePlacer
+        file={file}
+        imageUrl={value.sigUrl}
+        ratio={value.sigRatio}
+        value={{ page: value.page, x: value.x, y: value.y, w: value.w }}
+        onChange={(p) => onChange({ ...value, ...p })}
+        imageAlt={t("placedAlt")}
+      />
     </div>
   );
 }

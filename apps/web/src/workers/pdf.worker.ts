@@ -289,14 +289,16 @@ async function dispatch(toolId: string, files: File[], o: Record<string, unknown
       const fonts = Object.fromEntries(await Promise.all(fontIds.map(async (id) => [id, await loadFont(id)] as const)));
       return [{ name: `${base(first.name)}-edited.pdf`, bytes: await applyEdits(bytes, edits, fonts), mime: PDF }];
     }
-    case "sign-pdf": {
+    case "sign-pdf":
+    case "stamp-maker": {
+      // Both place one PNG on a page (or every page) at a fraction-of-page position chosen in the PagePlacer.
       const sig = o.sig as Uint8Array | null;
       if (!sig) throw new Error("no-signature");
       const bytes = await bytesOf(first);
       const n = await pdf.pageCount(bytes);
       const pages = o.allPages ? Array.from({ length: n }, (_, i) => i) : [Math.min(Number(o.page) || 0, n - 1)];
       const placements = pages.map((page) => ({ page, x: Number(o.x) || 0, y: Number(o.y) || 0, w: Number(o.w) || 0.3 }));
-      return [{ name: `${base(first.name)}-signed.pdf`, bytes: await stamp.placeImages(bytes, { bytes: sig, type: "image/png" }, placements), mime: PDF }];
+      return [{ name: `${base(first.name)}-${toolId === "sign-pdf" ? "signed" : "stamped"}.pdf`, bytes: await stamp.placeImages(bytes, { bytes: sig, type: "image/png" }, placements), mime: PDF }];
     }
     case "arabic-fonts": {
       const text = String(o.text ?? "");

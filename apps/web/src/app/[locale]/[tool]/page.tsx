@@ -9,6 +9,7 @@ import { ToolRunner } from "@/components/ToolRunner";
 import { RuntimeBadge } from "@/components/RuntimeBadge";
 import { ToolCard } from "@/components/ToolCard";
 import { ToolIcon } from "@/components/ToolIcon";
+import { PlannedBadge } from "@/components/PlannedBadge";
 
 export const dynamicParams = false;
 
@@ -26,6 +27,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     description: copy.summary,
     alternates: { ...alternates(`/${id}`), canonical: localizedUrl(locale as Locale, `/${id}`) },
     openGraph: { title: `${copy.name} | ${SITE_NAME}`, description: copy.summary },
+    // Planned tools are reviewable but not launched: keep them out of search results until they run.
+    ...(tool.status === "planned" ? { robots: { index: false, follow: true } } : {}),
   };
 }
 
@@ -40,7 +43,8 @@ export default async function ToolPage({ params }: PageProps<"/[locale]/[tool]">
   const copy = tool.copy[locale];
   const isBrowser = tool.runtime === "browser";
   const maxMb = Math.round(tool.limits.maxBytes / (1024 * 1024));
-  const what = t(`tool.what.${tool.accepts[0] === "application/pdf" ? "pdf" : tool.accepts[0].startsWith("image/") ? "image" : "file"}`);
+  const first = tool.accepts[0];
+  const what = t(`tool.what.${first === "application/pdf" ? "pdf" : first.startsWith("image/") ? "image" : first.startsWith("video/") ? "video" : first.startsWith("audio/") ? "audio" : "file"}`);
   const siblings = toolsInGroup(tool.group).filter((s) => s.id !== tool.id).slice(0, 6);
   const groupName = t(`groups.${tool.group}`);
 
@@ -102,7 +106,10 @@ export default async function ToolPage({ params }: PageProps<"/[locale]/[tool]">
             <p className="max-w-[60ch] text-base text-ink-2">{copy.summary}</p>
           </div>
         </div>
-        <RuntimeBadge runtime={tool.runtime} long />
+        <div className="flex flex-wrap items-center gap-2">
+          {tool.status === "planned" && <PlannedBadge long />}
+          <RuntimeBadge runtime={tool.runtime} long />
+        </div>
       </header>
 
       <ToolRunner tool={tool} what={what} />

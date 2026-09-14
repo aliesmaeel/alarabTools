@@ -9,7 +9,8 @@
     "images": "Image tools",
     "ai": "AI",
     "arabic": "Arabic tools",
-    "developers": "Developers"
+    "developers": "Developers",
+    "media": "Video"
   },
   "home": {
     "title": "Every PDF and image tool, in Arabic and English.",
@@ -30,7 +31,9 @@
     "edit": "Edit and protect PDF",
     "image": "Image tools",
     "ai": "AI",
-    "arabic": "Arabic tools"
+    "arabic": "Arabic tools",
+    "media": "Video and audio",
+    "web": "Links and downloads"
   },
   "runtime": {
     "browser": "On your device",
@@ -60,11 +63,14 @@
     "what": {
       "pdf": "PDF",
       "image": "image",
-      "file": "file"
+      "file": "file",
+      "video": "video",
+      "audio": "audio file"
     },
     "step1Text": "Type your text and pick a font, size and colour.",
     "step2Text": "The file is created right in your browser.",
-    "takePhoto": "Take a photo"
+    "takePhoto": "Take a photo",
+    "plannedBadge": "Coming soon"
   },
   "footer": {
     "rights": "© {year} alarabTools",
@@ -112,7 +118,9 @@
     "noProvider": "No AI provider is available right now. Please try again later.",
     "noText": "This PDF has no text to extract. Run OCR on it first.",
     "unrepairable": "The file could not be repaired.",
-    "imageTooLarge": "This image is too large for the chosen scale. Resize it first or pick 2×."
+    "imageTooLarge": "This image is too large for the chosen scale. Resize it first or pick 2×.",
+    "plannedNote": "This tool is planned. The options below show how it will work; it can't process anything yet.",
+    "plannedRun": "Not available yet. This tool is on the roadmap and its options are shown for review only."
   },
   "options": {
     "needPages": "Enter the page numbers first.",
@@ -223,7 +231,7 @@
       "prefixPlaceholder": "e.g. Date:",
       "firstPageOnly": "First page only"
     },
-    "needImage": "Choose a logo image.",
+    "needImage": "Choose a background image.",
     "arabicText": {
       "text": "Text",
       "placeholder": "Type here…",
@@ -496,6 +504,89 @@
       "x4Hint": "Up to about 0.4 megapixels in; slower",
       "same": "Same format as the original",
       "hint": "Runs on your device with an open-source model (ESRGAN); the first run downloads about 1 MB."
+    },
+    "needSocialUrl": "Paste a link from Instagram, Facebook, TikTok or YouTube.",
+    "needOwnContent": "Confirm that the content is yours or that you have permission to download it.",
+    "badTime": "Times must look like 1:30 or 0:01:30.",
+    "shorten": {
+      "url": "Long link",
+      "urlHint": "Must start with https:// or http://.",
+      "alias": "Custom name (optional)",
+      "aliasHint": "Letters, digits and dashes. Leave empty for a random name.",
+      "expiry": "Expires",
+      "never": "Never",
+      "day": "After 1 day",
+      "week": "After 7 days",
+      "month": "After 30 days",
+      "year": "After 1 year",
+      "stats": "Count clicks and show me a statistics page",
+      "safety": "Every destination is checked against Google Safe Browsing. Links to phishing or malware sites are refused, and anyone can report a link."
+    },
+    "video": {
+      "format": "Output format",
+      "gif": "Animated GIF",
+      "mp4Hint": "Plays everywhere. H.264 video with AAC audio.",
+      "webmHint": "Small, open format (VP9/AV1) for the web.",
+      "movHint": "Apple format for Final Cut and iMovie.",
+      "mkvHint": "Keeps every track and subtitle.",
+      "aviHint": "Older Windows format.",
+      "gifHint": "Silent looping clip, best under 15 seconds.",
+      "gifFps": "Frames per second",
+      "quality": "Quality",
+      "same": "Keep the original",
+      "sameHint": "Copies the streams without re-encoding when the format allows; fastest and lossless.",
+      "high": "High",
+      "highHint": "Re-encode with a high bitrate.",
+      "medium": "Balanced",
+      "mediumHint": "Good for sharing; roughly half the size.",
+      "small": "Small file",
+      "smallHint": "For messaging apps; visible quality loss.",
+      "resolution": "Resolution",
+      "original": "Same as the source",
+      "mute": "Remove the audio track"
+    },
+    "audio": {
+      "format": "Output format",
+      "mp3Hint": "Plays everywhere.",
+      "m4aHint": "Better quality than MP3 at the same size.",
+      "wavHint": "Uncompressed, large, for editing.",
+      "bitrate": "Bitrate",
+      "bitrateSmall": "small",
+      "bitrateGood": "good",
+      "bitrateBest": "best",
+      "trim": "Extract only part of the video",
+      "start": "From",
+      "end": "To",
+      "endHint": "Leave empty to go to the end."
+    },
+    "toVideo": {
+      "background": "Background",
+      "image": "Still image",
+      "imageHint": "A cover, a photo or a logo, shown for the whole duration.",
+      "waveform": "Waveform",
+      "waveformHint": "An animated waveform of the audio on a plain background.",
+      "color": "Plain colour",
+      "colorHint": "Just a colour, with the title if you add one.",
+      "chooseImage": "Image",
+      "bgColor": "Background colour",
+      "waveColor": "Waveform colour",
+      "aspect": "Video shape",
+      "landscape": "YouTube, X",
+      "square": "Instagram feed",
+      "portrait": "Stories, Reels, TikTok",
+      "title": "Title (optional)",
+      "titleHint": "Shown on the video, in Arabic or English."
+    },
+    "social": {
+      "url": "Post or video link",
+      "urlHint": "Instagram, Facebook, TikTok or YouTube.",
+      "detected": "Detected: {platform}",
+      "quality": "Quality",
+      "best": "Best available",
+      "small": "Up to 720p (smaller file)",
+      "audio": "Audio only (MP3)",
+      "own": "This content is mine, or I have the owner's permission to download it",
+      "policy": "Only content you own or are allowed to download, through the platforms' official interfaces. Downloading other people's content breaks their terms and copyright law."
     }
   },
   "markdown": {
@@ -551,6 +642,72 @@
       "s1": "Open a .md file, drop it on the editor, or start typing.",
       "s2": "Edit with the toolbar and check the live preview; Arabic lines read right to left.",
       "s3": "Export to PDF, Word or HTML, or download the .md file."
+    },
+    "stamp-maker": {
+      "s1": "Pick a shape and type the top, centre and bottom text; add a date, a logo and a worn look if you like.",
+      "s2": "Watch the preview update: Arabic and English both curve along the edge.",
+      "s3": "Download the stamp as a transparent PNG or SVG, or place it on a PDF page."
+    },
+    "shorten-url": {
+      "s1": "Paste the long link and, if you like, choose a custom name and an expiry.",
+      "s2": "The destination is checked for safety and the short link is created.",
+      "s3": "Copy the short link; the statistics page shows clicks by day and country."
+    },
+    "social-download": {
+      "s1": "Paste the link of a post or video that belongs to you.",
+      "s2": "Choose the quality, or audio only.",
+      "s3": "Download the file."
     }
+  },
+  "stamp": {
+    "shape": "Shape",
+    "round": "Round",
+    "oval": "Oval",
+    "rect": "Rectangle",
+    "text": "Text",
+    "top": "Top text",
+    "topPlaceholder": "e.g. the organisation's name",
+    "center": "Centre text",
+    "centerPlaceholder": "e.g. APPROVED",
+    "bottom": "Bottom text",
+    "bottomPlaceholder": "e.g. city or department",
+    "date": "Date or number",
+    "datePlaceholder": "Leave empty for none",
+    "hijriToday": "Today (Hijri)",
+    "gregorianToday": "Today (Gregorian)",
+    "font": "Font",
+    "textSize": "Text size",
+    "look": "Look",
+    "color": "Ink colour",
+    "customColor": "Custom ink colour",
+    "border": "Border",
+    "double": "Double line",
+    "single": "Single line",
+    "noBorder": "No border",
+    "separators": "Stars at the sides",
+    "worn": "Worn look",
+    "logo": "Logo (optional)",
+    "chooseLogo": "Choose a logo",
+    "changeLogo": "Change logo",
+    "removeLogo": "Remove",
+    "logoTint": "Colour the logo with the ink",
+    "logoTooBig": "The logo must be under 2 MB.",
+    "empty": "Type some text to see your stamp.",
+    "downloadPng": "Download PNG",
+    "downloadSvg": "Download SVG",
+    "pngSize": "PNG width",
+    "working": "Working…",
+    "privacy": "Transparent background. Everything is created in your browser; nothing is uploaded.",
+    "placeTitle": "Place it on a PDF",
+    "placeHint": "Choose a PDF, then click where the stamp should go or drag it.",
+    "choosePdf": "Choose a PDF",
+    "changePdf": "Change PDF",
+    "stampSize": "Stamp size",
+    "allPages": "Stamp every page",
+    "downloadPdf": "Download stamped PDF",
+    "placedAlt": "Placed stamp",
+    "failed": "The stamp could not be created. Try a different font or a smaller logo.",
+    "pdfFailed": "The PDF could not be stamped. Check that it isn't damaged and try again.",
+    "notice": "Imitating the official seals of governments, companies or other organisations is your legal responsibility. Use this tool only for stamps you are entitled to make."
   }
 }
