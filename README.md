@@ -74,7 +74,13 @@ Requested 13 September 2026, not scheduled yet. Each needs a short design pass b
 1. Redis: `redis-server --port 6379` (or `docker compose up redis`).
 2. `apps/web/.env.local`: `REDIS_URL=redis://localhost:6379`, `JOBS_SECRET=<anything>`, `JOBS_DIR=~/alarab-jobs`. Without an S3 bucket the files live in that folder and the browser talks to `/api/files/...` with signed URLs.
 3. `apps/worker/.env`: same three plus `GS_BIN`, `QPDF_BIN`, `SOFFICE_BIN`, `WORK_DIR` (keep it under `$HOME` for the LibreOffice snap) and `CHROME_CHANNEL=chrome`. Then `pnpm --filter worker start`.
-4. `SERVER_TOOLS=1 BASE_URL=http://localhost:3117 pnpm exec playwright test e2e/server-tools.spec.ts`.
+4. Tests use their own Redis database so they never touch your saved provider keys or routing. Start the test web server and a test worker on database 15, then run the suite:
+   ```bash
+   REDIS_URL=redis://localhost:6379/15 AI_MOCK=1 pnpm exec next start -p 3117          # apps/web
+   REDIS_URL=redis://localhost:6379/15 AI_MOCK=1 pnpm --filter worker start             # repo root
+   SERVER_TOOLS=1 BASE_URL=http://localhost:3117 pnpm exec playwright test              # apps/web
+   ```
+   Shell variables override `.env.local` and `apps/worker/.env`. The gateway unit test always uses database 15 (or `AI_TEST_REDIS_URL`) and refuses to run on database 0.
 
 Production: `docker compose up --build` gives Redis + MinIO + the worker image (`apps/worker/Dockerfile`, based on the Playwright image with LibreOffice, Ghostscript, qpdf, poppler and Arabic fonts). On Vercel set `REDIS_URL` (Upstash, `rediss://`) and the `S3_*` variables for R2; the worker gets the same variables wherever it runs. It needs no inbound ports.
 
@@ -84,7 +90,9 @@ See `docs/DEPLOY.md`: web app on Vercel (root directory `apps/web`), Upstash Red
 
 ## Admin dashboard
 
-`/admin` is the owner's area. It needs `ADMIN_PASSWORD`, `ADMIN_SECRET` (signs the 12-hour session cookie), `KEYS_SECRET` (encrypts provider keys at rest; the worker needs the same value) and `REDIS_URL`. Signed-out visitors get a 404 for every admin page; the sign-in form is at `/admin` and is rate-limited to 5 attempts per 15 minutes per IP. Provider keys are written through the dashboard and never shown again (only the last four characters). Set `AI_MOCK=1` to expose a mock provider for tests.
+`/admin` is the owner's area. It needs `ADMIN_PASSWORD`, `ADMIN_SECRET` (signs the 12-hour session cookie), `KEYS_SECRET` (encrypts provider keys at rest; the worker needs the same value) and `REDIS_URL`. Signed-out visitors get a 404 for every admin page; the sign-in form is at `/admin` and is rate-limited to 5 attempts per 15 minutes per IP. Provider keys are written through the dashboard and never shown again (only the last four characters). Set `AI_MOCK=1` to expose a mock provider for tests; never set it in production or in the database your dashboard uses.
+
+Models are not hard-coded. Each LLM adapter reads the provider's model list, picks from a preference list (Groq: `openai/gpt-oss-120b`, then Qwen 3; Groq retired its Llama chat models in September 2026) and retries once if a model disappears. The Test button shows the model in use. Override with `GROQ_MODEL`, `MISTRAL_MODEL`, `GEMINI_MODEL`, `CLOUDFLARE_TEXT_MODEL` or `CLOUDFLARE_TRANSLATE_MODEL` on the worker.
 
 Deviation from the architecture doc, to revisit: keys are encrypted with a symmetric secret shared by the web app and the worker (the doc proposes a worker-only key pair), and sign-in is a password rather than a passkey.
 

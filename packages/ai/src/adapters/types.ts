@@ -42,12 +42,3 @@ export const summarizePrompt = (lang: "ar" | "en", maxWords = 250) =>
 export const translatePrompt = (from: string, to: "ar" | "en") =>
   `Translate the following text ${from === "auto" ? "" : `from ${from === "ar" ? "Arabic" : "English"} `}into ${to === "ar" ? "Modern Standard Arabic" : "English"}. Preserve line breaks, numbers and names. Output only the translation.`;
 
-/** OpenAI-style chat completion shared by Groq, Mistral and Cloudflare. */
-export async function chat(url: string, headers: Record<string, string>, model: string, system: string, user: string, provider: string, maxTokens = 1500): Promise<string> {
-  const res = await fetch(url, { method: "POST", headers: { "content-type": "application/json", ...headers }, body: JSON.stringify({ model, messages: [{ role: "system", content: system }, { role: "user", content: user }], temperature: 0.2, max_tokens: maxTokens }) });
-  if (!res.ok) await failFrom(res, provider);
-  const j = (await res.json()) as { choices?: { message?: { content?: string } }[] };
-  const out = j.choices?.[0]?.message?.content?.trim();
-  if (!out) throw new ProviderError("error", `${provider}: empty completion`);
-  return out;
-}

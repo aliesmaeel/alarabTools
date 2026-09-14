@@ -45,7 +45,14 @@ export async function getConfig(): Promise<AiConfig> {
   if (!raw) return emptyConfig();
   const c = JSON.parse(raw) as Partial<AiConfig>;
   const routing = { ...DEFAULT_ROUTING, ...(c.routing ?? {}) };
-  for (const cap of CAPABILITIES) routing[cap] = routing[cap].filter((id) => PROVIDERS.some((p) => p.id === id && p.capabilities.includes(cap)));
+  for (const cap of CAPABILITIES) {
+    const saved = routing[cap].filter((id) => PROVIDERS.some((p) => p.id === id && p.capabilities.includes(cap)));
+    // Providers added since the order was saved still get tried (after the saved ones), matching what
+    // the Routing page shows. Gemini stays last.
+    const missing = PROVIDERS.filter((p) => p.capabilities.includes(cap) && !saved.includes(p.id)).map((p) => p.id);
+    const all = [...saved, ...missing];
+    routing[cap] = [...all.filter((id) => id !== "gemini"), ...(all.includes("gemini") ? ["gemini"] : [])];
+  }
   return { providers: c.providers ?? {}, routing, margin: typeof c.margin === "number" ? c.margin : 0.9, updatedAt: c.updatedAt ?? 0 };
 }
 
